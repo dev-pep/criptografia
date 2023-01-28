@@ -3,6 +3,11 @@
 # Funciones útiles para otros scripts.
 
 def menu(opciones):
+    """
+    Pinta el menú de opciones (recible tupla de tuplas ("opción", función)), solicita opción y ejecuta la adecuada
+
+    :param opciones: tupla con el menú
+    """
     accion = ''
     while accion != 'X':
         # Pinta el menú:
@@ -29,16 +34,26 @@ def menu(opciones):
             continue
         opciones[numAccion - 1][1]()
 
-def input_int(ms, vals, default=None):
-    # vals puede ser una lista o un range
+def input_int(ms, vals=None, default=None):
+    """
+    Solicita un número entero, y lo retorna
+
+    :param ms: Mensaje del prompt
+    :param vals: Valores aceptados: lista, range, o None (no comprobar)
+    :param default: Valor a retornar si solo se pulsa Intro
+    :return: el número entero introducido
+    """
     resul = None
-    while resul not in vals:
+    ok = False
+    while not ok:
         n = input(f'{ms}: ')
         if n == '':
-            resul = default
-            continue
+            return default
         try:
             resul = int(n)
+            ok = True
         except ValueError:
             continue
+        if vals and resul not in vals:
+            ok = False
     return resul
