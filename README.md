@@ -2,7 +2,11 @@
 
 El repositorio ***criptografia*** contiene utilidades varias, programadas en *Python*, que exploran distintos aspectos de la criptografía.
 
-## Utilidades
+## Scripts
+
+### utils.py
+
+Funciones útiles para los otros *scripts*.
 
 ### bip39.py
 
@@ -11,3 +15,7 @@ Este *script* explora el [Bitcoin Improvement Proposal 39](https://github.com/bi
 ### rsa.py
 
 Obtención del par de claves RSA.
+
+### primos.py
+
+Utilidades relacionadas con el cálculo de números primos.

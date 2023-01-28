@@ -4,3 +4,5 @@ __pycache__/
 # Proyecto PyCharm:
 .idea/
 
+# Otros:
+datos/primos.json

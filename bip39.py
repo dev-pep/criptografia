@@ -6,10 +6,17 @@
 import json
 import random
 import hashlib
+import utils
 
 # Funciones auxiliares *************************************************************************************************
 
-def check_phrase(phrase):  # phrase es una lista de enteros
+def check_phrase(phrase):
+    """
+    Comprueba que los números de índice recibidos (enteros) forman una frase correcta
+
+    :param phrase: Lista de enteros representando una frase
+    :return: True si la phrase es correcta, False si no
+    """
     # String con 0s y 1s de la frase recibida:
     all_bits = ''
     for word in phrase:
@@ -30,8 +37,13 @@ def check_phrase(phrase):  # phrase es una lista de enteros
     # Comparamos:
     return check_bits == check_calc
 
-
 def input_frase(number):
+    """
+    Solicita y retorna una seed phrase personalizada
+
+    :param number: Número de palabras en la frase (entero)
+    :return: Los índices (enteros) de cada palabra
+    """
     # Solicita seed phrase
     global wordlist
     phrase = input(f'Introduce seed phrase correcta de {number} palabras:\n').split()
@@ -46,48 +58,26 @@ def input_frase(number):
 
 
 def list2string(lista):
-    # Lista de enteros a string con la frase
+    """
+    Convierte una lista de índices enteros en un string con la frase correspondiente
+
+    :param lista: Lista de índices (enteros)
+    :return: Frase resultante (string)
+    """
     global wordlist
     resul = ''
     for l in lista:
         resul += ' ' + wordlist[l]
     return resul.strip()
 
-
-def input_int(ms, vals, default=None):
-    # vals puede ser una lista o un range
-    resul = None
-    while resul not in vals:
-        n = input(f'{ms}: ')
-        if n == '':
-            resul = default
-            continue
-        try:
-            resul = int(n)
-        except ValueError:
-            continue
-    return resul
-
-
-def pinta_menu():
-    global menu
-    maxlen = 0
-    for opcion in menu:
-        if len(opcion[0]) > maxlen:
-            maxlen = len(opcion[0])
-    print('╔' + (6 + maxlen) * '═' + '╗')
-    for i in range(len(menu)):
-        relleno = maxlen - len(menu[i][0]) + 1
-        print(f'║ {i + 1:2}. {menu[i][0]}' + relleno * ' ' + '║')
-    print('║  X. Salir' + (maxlen - 4) * ' ' + '║' )
-    print('╚' + (6 + maxlen) * '═' + '╝')
-
 # Funciones de las opciones de menú ************************************************************************************
 
-# Generar seed phrase aleatoria:
 def menu_genera():
+    """
+    Genera una seed phrase aleatoria correcta y la muestra en pantalla
+    """
     # Primero debemos saber cuántas palabras queremos (por defecto 12):
-    nwords = input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
+    nwords = utils.input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
                        [12, 15, 18, 21, 24], 12)
     # Elegimos todas las palabras excepto la última:
     phrase = []
@@ -103,11 +93,12 @@ def menu_genera():
     phrase.append(random.choice(ultimas))
     print(list2string(phrase))
 
-
-# Cálculo última palabra:
 def menu_ultima():
+    """
+    Calcula la última palabra de una frase incompleta (a la que le falta esta) y muestra todas las posibilidades
+    """
     # Primero debemos saber cuántas palabras queremos (por defecto 12):
-    nwords = input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
+    nwords = utils.input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
                        [12, 15, 18, 21, 24], 12)
     lista = input_frase(nwords - 1)
     if not lista:
@@ -123,11 +114,13 @@ def menu_ultima():
         print(wordlist[word], end= ' ')
     print()
 
-
 # Comprobar seed phrase
 def menu_check():
+    """
+    Solicita una seed phrase e indica si es correcta o no
+    """
     # Primero debemos saber cuántas palabras queremos (por defecto 12):
-    nwords = input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
+    nwords = utils.input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
                        [12, 15, 18, 21, 24], 12)
     lista = input_frase(nwords)
     if not lista:
@@ -138,11 +131,13 @@ def menu_check():
     else:
         print('Frase incorrecta.')
 
-
 # Mostrar números de una seed phrase
 def menu_numbers():
+    """
+    Solicita una seed phrase, y muestra los cálculos asociados
+    """
     # Primero debemos saber cuántas palabras queremos (por defecto 12):
-    nwords = input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
+    nwords = utils.input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
                        [12, 15, 18, 21, 24], 12)
     phrase = input_frase(nwords)
     if not phrase:
@@ -175,7 +170,7 @@ def menu_numbers():
 
 # Menu *****************************************************************************************************************
 
-menu = (
+opciones_menu = (
     ("Generar seed phrase aleatoria", menu_genera),
     ("Cálculo última palabra", menu_ultima),
     ("Comprobar seed phrase", menu_check),
@@ -185,21 +180,12 @@ menu = (
 # Programa *************************************************************************************************************
 
 # Leemos wordlist:
-f = open('wordlist.json', 'rt')
+f = open('datos/wordlist.json', 'rt')
 wordlist = json.load(f)
 f.close()
+
 # Bucle principal:
-accion = ''
-while accion != 'X':
-    pinta_menu()
-    accion = input('Introduce opción: ').upper()
-    if accion == 'X':
-        continue
-    try:
-        numAccion = int(accion)
-        if numAccion < 1 or numAccion > len(menu):
-            raise ValueError
-    except ValueError:
-        print('Opción no válida.')
-        continue
-    menu[numAccion - 1][1]()
+accion = utils.menu(opciones_menu)
+while accion:
+    accion()
+    accion = utils.menu(opciones_menu)
