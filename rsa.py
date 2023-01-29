@@ -19,7 +19,4 @@ opciones_menu = (
 # Programa *************************************************************************************************************
 
 # Bucle principal:
-accion = utils.menu(opciones_menu)
-while accion:
-    accion()
-    accion = utils.menu(opciones_menu)
+utils.menu(opciones_menu)

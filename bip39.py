@@ -185,7 +185,4 @@ wordlist = json.load(f)
 f.close()
 
 # Bucle principal:
-accion = utils.menu(opciones_menu)
-while accion:
-    accion()
-    accion = utils.menu(opciones_menu)
+utils.menu(opciones_menu)
