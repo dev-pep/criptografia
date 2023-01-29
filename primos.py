@@ -84,22 +84,6 @@ def menu_genera_json():
     with open("datos/primos.json", "wt") as f:
         json.dump(primos, f, indent=4)
 
-def menu_test_mr():
-    """
-    Comprueba si una serie de números aleatorios son primos o no, usando Miller-Rabin; muestra resultado en pantalla
-    """
-    # Preguntar número de bits; 1º y último bit serán '1'
-    nbits = utils.input_int("Número de bits (8-2048, por defecto 1024)", range(8, 2049), 1024)
-    ninter = utils.input_int("Número de iteraciones (1-100, por defecto 10)", range(1, 101), 10)
-    ntests = utils.input_int("Número de tests (100-10000, por defecto 1000)", range(100, 10001), 1000)
-    for _ in range(ntests):
-        nrand = random.randint(2 ** (nbits-1), 2 ** nbits - 1) | 1
-        print(nrand)
-        if es_primo_mr(nrand, ninter):
-            print("PRIMO")
-        else:
-            print()
-
 def menu_comprobar_num():
     """
     Comprueba si un número determinado es primo o no, y muestra el resultado en pantalla
@@ -118,10 +102,10 @@ def menu_generar_num():
     """
     # Preguntar número de bits; 1º y último bit serán '1'
     nbits = utils.input_int("Número de bits (8-2048, por defecto 1024)", range(8, 2049), 1024)
-    ninter = utils.input_int("Número de iteraciones (1-100, por defecto 10)", range(1, 101), 10)
+    ninter = utils.input_int("Número de iteraciones (1-100, por defecto 64)", range(1, 101), 64)
     primo = False
     while not primo:
-        print(".", end="")
+        print(".", end="", flush=True)
         nrand = random.randint(2 ** (nbits-1), 2 ** nbits - 1) | 1
         primo = es_primo_mr(nrand, ninter)
     print("\nNúmero primo:")
@@ -131,8 +115,7 @@ def menu_generar_num():
 # Menu *****************************************************************************************************************
 
 opciones_menu = (
-    ("Generar primeros", menu_genera_json),
-    ("Test Miller-Rabin", menu_test_mr),
+    ("Generar primeros (JSON)", menu_genera_json),
     ("Comprobar un número", menu_comprobar_num),
     ("Generar número primo", menu_generar_num)
 )
