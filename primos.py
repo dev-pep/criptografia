@@ -24,17 +24,44 @@ def es_primo(n):
             return False
     return True
 
-def es_primo_mr(n, k_total):
+def es_primo_mr(n, k):
     """
     Comprueba si un número es primo o no (Miller-Rabin, no determinista)
 
     :param n: El número entero a comprobar
-    :param k_total: El número máximo de iteraciones
+    :param k: El número máximo de iteraciones
     :return: True si es primo (probablemente), False si no (seguro)
     """
-    # Primero descartaremos que sea divisible por uno de los primeros primos (archivo json generado)
+
+    def mrtest():  # función local
+        """"Una iteración (test) Miller-Rabin"""
+        nonlocal n, d
+        # Obtenemos número a al azar:
+        a = random.randint(2, n - 2)
+        # Obtenemos a^d % n, es decir, a^((2^r)d) % n, con r=0:
+        x = pow(a, d, n)
+        if x == 1 or x == n - 1:
+            return True  # probable primo
+        # Si seguimos con la interacción actual, haremos el resto de r's (0 < r < s), que tienen diferente criterio:
+        # Acelera mucho hacer sucesivamente x = x^2 mod n en lugar de hacer a^((2^r)d) % n incrementando la r:
+        for _ in range(1, s):  # s-1 veces
+            x = pow(x, 2, n)
+            if x == 1:  # Esta comprobación acelera el proceso, aunque funcionaría igual sin ella
+                return False  # compuesto (no primo)
+            # si es 1, ya indica que seguro que es compuesto; si terminamos todas las r sin encontrar 1 ni n-1,
+            # también será un compuesto:
+            if x == n - 1:  # -1 mod n
+                return True  # probable primo
+        # Si no hay 1 ni -1 para ninguna r, es compuesto:
+        return False  # compuesto (no primo)
+
+    # Primero descartaremos que sea < 2, uno de los primeros primos o divisible por uno de ellos (archivo json generado):
+    if n < 2:
+        return False
     with open("datos/primos.json", "rt") as f:
         primos = json.load(f)
+    if n in primos:
+        return True
     for primo in primos:
         if n % primo == 0:
             return False
@@ -46,24 +73,10 @@ def es_primo_mr(n, k_total):
         naux //= 2
         s +=1
     d = (n - 1) // (2 ** s)
-    # Vamos a realizar las iteraciones (k):
-    for k in range(k_total):
-        # Obtenemos número a al azar:
-        a = random.randint(2, n - 2)
-        # Obtenemos a^d % n, es decir, a^((2^r)d) % n, con r=0:
-        x = pow(a, d, n)
-        if x == 1 or x == n - 1:
-            continue  # esta iteración de k ha mostrado que es un probable primo, pasamos a la siguiente
-        # Si seguimos con la interacción actual, haremos el resto de r's (0 < r < s), que tienen diferente criterio:
-        # Acelera mucho en lugar de hacer a^((2^r)d) % n incrementando la r, hacer x = x^2 mod n:
-        for _ in range(1, s):  # quedan s veces
-            x = pow(x, 2, n)
-            # Si x es n-1 (-1 mod n), ya indica posible primo, es decir, pasaremos a la siguiente iteración de k;
-            # si es 1, ya indica que seguro que es compuesto; si terminamos todas las r sin encontrar 1 ni n-1,
-            # también será un compuesto:
-            if x == 1 or x == n - 1:
-                break  # hemos encontrado un valor indicativo en esta iteración de k
-        if x != n - 1:  # solo -1 mod n nos habría indicado posible primo (y por tanto proseguiremos iteraciones)
+    # Vamos a realizar las iteraciones:
+    for _ in range(k):
+        # Si uno solo de los tests falla, el número es compuesto:
+        if not mrtest():
             return False
     return True  # si tras todas las iteraciones no lo hemos podido descartar, es que probablemente sea primo
 
