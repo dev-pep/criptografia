@@ -209,10 +209,7 @@ def menu_generatab():
 def menu_sha256_string():
     """Solicita string y calcula su hash sha-256"""
     ms = input("Introduce cualquier texto: ")
-
-    ms = "RedBlockBlue"
-
-    digest = sha256(bytes(ms, "utf-8"), "bin")
+    digest = sha256(bytes(ms, "utf-8"), "hex")
     print("Resultado:")
     print(digest)
 
