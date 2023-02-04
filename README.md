@@ -2,6 +2,8 @@
 
 El repositorio ***criptografia*** contiene utilidades varias, programadas en *Python*, que pueden resultar útiles para aprender y comprender los distintos aspectos de la criptografía, especialmente la relacionada con los pares de claves RSA.
 
+**IMPORTANTE: Estos scripts no deben usarse para proyectos reales que precisen criptografía. Para ello es recomendable utilizar bibliotecas contrastadas por parte de la comunidad y/o espertos en criptografía.**
+
 ## Scripts
 
 ### utils.py
@@ -10,7 +12,7 @@ Funciones útiles para los demás *scripts*.
 
 ### primos.py
 
-Utilidades relacionadas con el cálculo de números primos.
+Utilidades relacionadas con el cálculo de números primos grandes.
 
 #### Test de Miller-Rabin
 
