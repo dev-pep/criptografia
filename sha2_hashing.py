@@ -2,6 +2,7 @@
 
 # Algoritmos de hashing SHA-2, específicamente SHA-224, SHA-256, SHA-384 y SHA-512.
 
+import os
 import utils
 import json
 import decimal
@@ -515,20 +516,47 @@ def menu_generatabs():
 def menu_sha2_string():
     """Solicita string y calcula sus hashes SHA-2 (SHA-224, SHA-256, SHA-384 y SHA-512)"""
     ms = input("Introduce cualquier texto: ")
-    digest224 = sha224(bytes(ms, "utf-8"), "hex")
-    digest256 = sha256(bytes(ms, "utf-8"), "hex")
-    digest384 = sha384(bytes(ms, "utf-8"), "hex")
-    digest512 = sha512(bytes(ms, "utf-8"), "hex")
-    print("SHA-224:\n   ", digest224)
-    print("SHA-256:\n   ", digest256)
-    print("SHA-384:\n    ", digest384)
-    print("SHA-512:\n    ", digest512)
+    digest = sha224(bytes(ms, "utf-8"), "hex")
+    print("SHA-224:\n   ", digest)
+    digest = sha256(bytes(ms, "utf-8"), "hex")
+    print("SHA-256:\n   ", digest)
+    digest = sha384(bytes(ms, "utf-8"), "hex")
+    print("SHA-384:\n   ", digest)
+    digest = sha512(bytes(ms, "utf-8"), "hex")
+    print("SHA-512:\n   ", digest)
+
+def menu_sha2_file():
+    """Solicita nombre de archivo y calcula sus hashes SHA-2 (SHA-224, SHA-256, SHA-384 y SHA-512)"""
+    archivos = os.listdir(".")
+    arfiles = []
+    for archivo in archivos:
+        if os.path.isfile(archivo):
+            arfiles.append(archivo)
+    print("Archivos del directorio actual:")
+    for arfile in arfiles:
+        print(arfile)
+    arch = input("Archivo (ruta relativa o absoluta): ")
+    try:
+        with open(arch, "rb") as f:
+            ms = f.read()
+    except FileNotFoundError:
+        print("Archivo no encontrado.")
+        return
+    digest = sha224(ms, "hex")
+    print("SHA-224:\n   ", digest)
+    digest = sha256(ms, "hex")
+    print("SHA-256:\n   ", digest)
+    digest = sha384(ms, "hex")
+    print("SHA-384:\n   ", digest)
+    digest = sha512(ms, "hex")
+    print("SHA-512:\n   ", digest)
 
 # Menu *****************************************************************************************************************
 
 opciones_menu = (
     ("Genera tablas", menu_generatabs),
-    ("Hashes SHA-2 de un string", menu_sha2_string)
+    ("Hashes SHA-2 de un string", menu_sha2_string),
+    ("Hashes SHA-2 de un archivo", menu_sha2_file)
 )
 
 # Programa *************************************************************************************************************

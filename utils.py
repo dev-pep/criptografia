@@ -22,17 +22,21 @@ def menu(opciones):
         print('║  X. Salir' + (maxlen - 4) * ' ' + '║')
         print('╚' + (6 + maxlen) * '═' + '╝')
         # Solicita acción:
-        accion = input('Introduce opción: ').upper()
-        if accion == 'X':
-            continue
         try:
-            numAccion = int(accion)
-            if numAccion < 1 or numAccion > len(opciones):
-                raise ValueError
-        except ValueError:
-            print('Opción no válida.')
-            continue
-        opciones[numAccion - 1][1]()
+            accion = input('Introduce opción: ').upper()
+            if accion == 'X':
+                continue
+            try:
+                numAccion = int(accion)
+                if numAccion < 1 or numAccion > len(opciones):
+                    raise ValueError
+            except ValueError:
+                print('Opción no válida.')
+                continue
+            opciones[numAccion - 1][1]()
+        except KeyboardInterrupt:
+            print("\nAbandonando aplicación...")
+            accion = 'X'
 
 def input_int(ms, vals=None, default=None):
     """
