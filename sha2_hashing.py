@@ -211,8 +211,8 @@ def sha256(ms, formato="hex"):
             # Y tenemos que:
             #     SUM0(x) = rr(x,2) xor rr(x,13) xor rr(x,22)
             #     SUM1(x) = rr(x,6) xor rr(x,11) xor rr(x,25)
-            #     ch(x,y,z) bit a bit, si x=0, da z; si x=1, da y
-            #     maj(x,y,z) bit a bit, si hay más 1's que 0's, da 1; si hay más 0's que 1's da 0
+            #     ch(x,y,z) bitwise choice, si x=0, da z; si x=1, da y
+            #     maj(x,y,z) bitwise majority, si hay más 1's que 0's, es 1; si hay más 0's que 1's es 0
             S1 = rr(e, 6, 32) ^ rr(e, 11, 32) ^ rr(e, 25, 32)
             ch = (e & f) ^ ((~e) & g)
             T1 = (h + S1 + ch + K[i] + W[i]) % (2 ** 32)
