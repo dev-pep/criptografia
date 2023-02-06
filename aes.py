@@ -1,8 +1,7 @@
 #!/usr/bin/env python3
 
-# Utilidades relacionadas con el algoritmo RSA.
+# Utilidades relacionadas con el algoritmo AES.
 
-import random
 import utils
 
 # Funciones auxiliares *************************************************************************************************

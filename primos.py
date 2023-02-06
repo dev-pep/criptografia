@@ -135,5 +135,6 @@ opciones_menu = (
 
 # Programa *************************************************************************************************************
 
-# Bucle principal:
-utils.menu(opciones_menu)
+if __name__ == '__main__':  # no ejecutaremos menú si el archivo ha sido importado
+    # Bucle principal:
+    utils.menu(opciones_menu)

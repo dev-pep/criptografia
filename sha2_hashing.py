@@ -51,7 +51,9 @@ def sha224(ms, formato="hex"):
     :param formato: Formato de la salida: 'hex' (string), 'bin' (string) o 'int' (entero)
     :return: El digest resultante
     """
-    global constantes
+    # Leemos el archivo de constantes:
+    with open("datos/hash.json", "rt") as fjson:
+        constantes = json.load(fjson)
     # Al ser la función prácticamente igual a sha256(), solo se comentan las diferencias. El resto, sin comentar.
     longitud = len(ms) * 8
     if len(ms) % 64 != 56:
@@ -134,7 +136,9 @@ def sha256(ms, formato="hex"):
     :param formato: Formato de la salida: 'hex' (string), 'bin' (string) o 'int' (entero)
     :return: El digest resultante
     """
-    global constantes
+    # Leemos el archivo de constantes:
+    with open("datos/hash.json", "rt") as fjson:
+        constantes = json.load(fjson)
     # Esta función está plenamente comentada.
     # Todos los enteros, si no se dice lo contrario, son de 32 bits, Big Endian, y toda suma es módulo 2^32.
     # Se asume que la longitud en bits del mensaje de entrada es siempre múltiplo de 8 (solo bytes completos).
@@ -258,7 +262,9 @@ def sha384(ms, formato="hex"):
     :param formato: Formato de la salida: 'hex' (string), 'bin' (string) o 'int' (entero)
     :return: El digest resultante
     """
-    global constantes
+    # Leemos el archivo de constantes:
+    with open("datos/hash.json", "rt") as fjson:
+        constantes = json.load(fjson)
     # Al ser la función prácticamente igual a sha512(), solo se comentan las diferencias con esta.
     # El resto, sin comentar.
     longitud = len(ms) * 8
@@ -342,7 +348,9 @@ def sha512(ms, formato="hex"):
     :param formato: Formato de la salida: 'hex' (string), 'bin' (string) o 'int' (entero)
     :return: El digest resultante
     """
-    global constantes
+    # Leemos el archivo de constantes:
+    with open("datos/hash.json", "rt") as fjson:
+        constantes = json.load(fjson)
     # Al ser la función prácticamente igual a sha256(), solo se comentan las diferencias con esta.
     # El resto, sin comentar.
     # De entrada, los enteros aquí son Big Endian de 64 bits, y las sumas módulo 2^64.
@@ -561,8 +569,6 @@ opciones_menu = (
 
 # Programa *************************************************************************************************************
 
-# Leemos el archivo de constantes:
-with open("datos/hash.json", "rt") as fjson:
-    constantes = json.load(fjson)
-# Bucle principal:
-utils.menu(opciones_menu)
+if __name__ == '__main__':  # no ejecutaremos menú si el archivo ha sido importado
+    # Bucle principal:
+    utils.menu(opciones_menu)

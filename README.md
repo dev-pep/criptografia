@@ -12,7 +12,7 @@ Funciones útiles para los demás *scripts*.
 
 ### primos.py
 
-Utilidades relacionadas con el cálculo de números primos grandes.
+Utilidades relacionadas con el cálculo de números primos grandes. Necesario para el cálculo de la clave pública del algoritmo *RSA*.
 
 #### Test de Miller-Rabin
 
@@ -30,7 +30,7 @@ El algoritmo es:
 
 ### sha2_hashing.py
 
-Utilidades para calcular *digests* (*hashes*) mediante los algoritmos de la familia *SHA-2*. Se implementan 4 de ellos:
+*Secure Hash Algorithm*. Utilidades para calcular *digests* (*hashes*) mediante los algoritmos de la familia *SHA-2*. Se implementan 4 de ellos:
 
 - *SHA-224*
 - *SHA-256*
@@ -52,8 +52,24 @@ El algoritmo genérico utilizado para todos ellos es, dado un mensaje formado po
 
 ### rsa.py
 
-Utilidades para calcular y trabajar con el algoritmo de encriptación asimétrica RSA.
+Algoritmo de encriptación de **Rivest, Shamir y Adleman**. Utilidades para calcular y trabajar con el algoritmo de encriptación de clave pública *RSA*. Su utilidad no es para mensajes excesivamente largos. En este caso, se puede utilizar para intercambiar previamente una clave y utilizar un algoritmos de clave asimétrica como *AES*.
+
+### aes.py
+
+Algoritmo de encriptación asimétrica **Advanced Encryption Standard**.
 
 ### bip39.py
 
 Explora el [Bitcoin Improvement Proposal 39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki), relativo a la *seed phrase*. Utiliza la *wordlist* oficial en inglés, almacenada en el archivo ***wordlist.json***.
+
+## Apéndices
+
+### Congruencia módulo n
+
+La congruencia módulo n se indica ***a ≡ b (mod n)***. Es una relación de equivalencia compatible con la suma, la resta, multiplicación y exponenciación de enteros positivos. 
+
+Dos número enteros ***a***, ***b*** son congruentes módulo ***n*** si ***n*** es divisor de su diferencia:
+
+a ≡ b (mod n) implica que (a-b) ≡ kn, para algún entero ***k***. Esto implica:
+
+a-b ≡ 0 (mod n), ya que si a mod n = b mod n, entonces (a-b) mod n es cero.

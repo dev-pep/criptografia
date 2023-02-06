@@ -5,7 +5,7 @@
 
 import json
 import random
-import hashlib
+import sha2_hashing
 import utils
 
 # Funciones auxiliares *************************************************************************************************
@@ -15,27 +15,27 @@ def check_phrase(phrase):
     Comprueba que los números de índice recibidos (enteros) forman una frase correcta
 
     :param phrase: Lista de enteros representando una frase
-    :return: True si la phrase es correcta, False si no
+    :return: True si la frase es correcta, False si no
     """
-    # String con 0s y 1s de la frase recibida:
-    all_bits = ''
+    # Cada palabra ocupa 11 bits:
+    int_phrase = 0  # entero con entropía + checksum
     for word in phrase:
-        all_bits += f'{bin(word)[2:]:>011}'
-    # Strings con 0s y 1s de la entropía y el checksum:
+        int_phrase <<= 11
+        int_phrase |= word
     nwords = len(phrase)
-    n_bits_entropy = 32 * nwords // 3
-    n_bits_check = n_bits_entropy // 32
-    entropy_bits = all_bits[:n_bits_entropy]
-    check_bits = all_bits[n_bits_entropy:]
-    # Ahora pasamos entropía a bytes:
-    entropy_bytes = b''
-    for i in range(0, n_bits_entropy, 8):
-        entropy_bytes += int(entropy_bits[i:i+8], 2).to_bytes(1, 'big')
-    check_calc = hashlib.sha256(entropy_bytes).digest()[0]  # primer byte del checksum (tipo bytes)
-    check_calc = f'{bin(check_calc)[2:]:>08}'  # pasamos ese primer byte a string binario
-    check_calc = check_calc[:n_bits_check]  # extraemos los n_bits_check primeros
+    # El número de palabras es siempre múltiplo de 3.
+    n_bits_entropy = 32 * nwords // 3  # de cada 3 palabras (33 bits), 32 bits son de entropía
+    # El número de bits de entropia es siempre múltiplo de 32.
+    n_bits_check = n_bits_entropy // 32  # para cada 32 bits de entropía, habrá un bit adicional de checksum
+    int_entropy = int_phrase >> n_bits_check  # descartamos los bits de checksum que hay a la derecha
+    int_check = int_phrase & (2 ** n_bits_check - 1)
+    # Ahora pasamos entropía a bytes para pasar a SHA256:
+    bytes_entropy = int_entropy.to_bytes(n_bits_entropy // 8, 'big')
+    # Vamos a comprobar si los bits de checksum son correctos:
+    check_calc = sha2_hashing.sha256(bytes_entropy, 'int')  # digest de la entropía como número entero
+    check_calc >>= (256 - n_bits_check)  # entero con solo los primeros bits del checksum
     # Comparamos:
-    return check_bits == check_calc
+    return int_check == check_calc
 
 def input_frase(number):
     """
@@ -44,8 +44,10 @@ def input_frase(number):
     :param number: Número de palabras en la frase (entero)
     :return: Los índices (enteros) de cada palabra
     """
+    # Leemos wordlist:
+    with open("datos/wordlist.json", "rt") as fjson:
+        wordlist = json.load(fjson)
     # Solicita seed phrase
-    global wordlist
     phrase = input(f'Introduce seed phrase correcta de {number} palabras:\n').split()
     if len(phrase) != number:
         return False
@@ -56,7 +58,6 @@ def input_frase(number):
         resul.append(wordlist.index(word))
     return resul
 
-
 def list2string(lista):
     """
     Convierte una lista de índices enteros en un string con la frase correspondiente
@@ -64,7 +65,9 @@ def list2string(lista):
     :param lista: Lista de índices (enteros)
     :return: Frase resultante (string)
     """
-    global wordlist
+    # Leemos wordlist:
+    with open("datos/wordlist.json", "rt") as fjson:
+        wordlist = json.load(fjson)
     resul = ''
     for l in lista:
         resul += ' ' + wordlist[l]
@@ -97,6 +100,9 @@ def menu_ultima():
     """
     Calcula la última palabra de una frase incompleta (a la que le falta esta) y muestra todas las posibilidades
     """
+    # Leemos wordlist:
+    with open("datos/wordlist.json", "rt") as fjson:
+        wordlist = json.load(fjson)
     # Primero debemos saber cuántas palabras queremos (por defecto 12):
     nwords = utils.input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
                        [12, 15, 18, 21, 24], 12)
@@ -133,9 +139,7 @@ def menu_check():
 
 # Mostrar números de una seed phrase
 def menu_numbers():
-    """
-    Solicita una seed phrase, y muestra los cálculos asociados
-    """
+    """Solicita una seed phrase, y muestra los cálculos asociados"""
     # Primero debemos saber cuántas palabras queremos (por defecto 12):
     nwords = utils.input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
                        [12, 15, 18, 21, 24], 12)
@@ -149,24 +153,24 @@ def menu_numbers():
     else:
         print('Frase incorrecta.')
         return
-    # String con 0s y 1s de la frase:
-    all_bits = ''
+    # Cálculo del entero entropía y el checksum; explicaciones en check_phrase().
+    int_phrase = 0
     for word in phrase:
-        all_bits += f'{bin(word)[2:]:>011}'
-    # Strings con 0s y 1s de la entropía y el checksum:
+        int_phrase <<= 11
+        int_phrase |= word
+    nwords = len(phrase)
     n_bits_entropy = 32 * nwords // 3
-    entropy_bits = all_bits[:n_bits_entropy]
-    check_bits = all_bits[n_bits_entropy:]
-    print('Secuencia completa:')
-    print(all_bits)
-    print(f'Entropía ({n_bits_entropy} bits / {n_bits_entropy // 8} bytes):')
-    for i in range(0, n_bits_entropy, 8):
-        if (i % 64 == 0) and (i > 0):
-            print()
-        print(entropy_bits[i:i+8], end=' ')
+    n_bits_check = n_bits_entropy // 32
+    int_entropy = int_phrase >> n_bits_check
+    int_check = int_phrase & (2 ** n_bits_check - 1)
+    # Presentación de resultados
+    print("Secuencia completa binaria:")
+    print(bin(int_phrase)[2:].zfill(n_bits_check + n_bits_entropy))
+    print(f"Entropía ({n_bits_entropy} bits / {n_bits_entropy // 8} bytes):")
+    print(bin(int_entropy)[2:].zfill(n_bits_entropy))
     print()
-    print(f'Entropía (hex): {hex(int(entropy_bits, 2))[2:]}')
-    print(f'Checksum: {check_bits} ({int(check_bits, 2)})')
+    print(f"Entropía (hex): {hex(int_entropy)[2:].zfill(n_bits_entropy // 4)}")
+    print(f"Checksum: {bin(int_check)[2:].zfill(n_bits_check)} ({int_check})")
 
 # Menu *****************************************************************************************************************
 
@@ -179,10 +183,6 @@ opciones_menu = (
 
 # Programa *************************************************************************************************************
 
-# Leemos wordlist:
-f = open('datos/wordlist.json', 'rt')
-wordlist = json.load(f)
-f.close()
-
-# Bucle principal:
-utils.menu(opciones_menu)
+if __name__ == '__main__':  # no ejecutaremos menú si el archivo ha sido importado
+    # Bucle principal:
+    utils.menu(opciones_menu)
