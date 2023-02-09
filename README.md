@@ -88,13 +88,9 @@ C ≡ M ** e (mod n)
 
 M ≡ C ** d (mod n)
 
-### aes.py
-
-Algoritmo de encriptación asimétrica **Advanced Encryption Standard**.
-
 ### bip39.py
 
-Explora el [Bitcoin Improvement Proposal 39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki), relativo a la *seed phrase*. Utiliza la *wordlist* oficial en inglés, almacenada en el archivo ***wordlist.json***.
+Explora el [Bitcoin Improvement Proposal 39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki), relativo a la *seed phrase* y la semilla para la generación de monederos. Utiliza la *wordlist* oficial en inglés, almacenada en el archivo ***wordlist.json***.
 
 ## Aspectos matemáticos
 
