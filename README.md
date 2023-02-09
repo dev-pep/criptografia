@@ -82,7 +82,7 @@ Para su cálculo, se utiliza el llamado **algoritmo de Euclides extendido**.
 
 Nunca se deben revelar p, q ni λ(n) (se pueden simplemente descartar tras los cálculos). Ni por supuesto d.
 
-Si M es el mensaje en claro (pasado a bits, y representado como entero), menor a n, y C es el mensaje cifrado (también menor a n), para encriptar y desencriptar:
+Si M es el mensaje en claro (pasado a bits, y representado como entero), **menor que n**, y C es el mensaje cifrado (lógicamente menor que n, ya que se calcula módulo n), para encriptar y desencriptar:
 
 C ≡ M ** e (mod n)
 M ≡ C ** d (mod n)
