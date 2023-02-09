@@ -85,6 +85,7 @@ Nunca se deben revelar p, q ni λ(n) (se pueden simplemente descartar tras los c
 Si M es el mensaje en claro (pasado a bits, y representado como entero), **menor que n**, y C es el mensaje cifrado (lógicamente menor que n, ya que se calcula módulo n), para encriptar y desencriptar:
 
 C ≡ M ** e (mod n)
+
 M ≡ C ** d (mod n)
 
 ### aes.py
