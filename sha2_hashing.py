@@ -48,7 +48,7 @@ def sha224(ms, formato="hex"):
     Retorna el digest del mensaje de entrada, aplicando SHA-224
 
     :param ms: Mensaje de entrada (bytes)
-    :param formato: Formato de la salida: 'hex' (string), 'bin' (string) o 'int' (entero)
+    :param formato: Formato de la salida: 'hex' (string), 'bin' (string), 'bytes' (bytes) o 'int' (entero)
     :return: El digest resultante
     """
     # Leemos el archivo de constantes:
@@ -124,6 +124,8 @@ def sha224(ms, formato="hex"):
         return int2hex(resultado, 56, "")
     if formato == "bin":
         return int2bin(resultado, 224, "")
+    if formato == "bytes":
+        return int.to_bytes(resultado, 28, "big")
     if formato == "int":
         return resultado
     return None
@@ -133,7 +135,7 @@ def sha256(ms, formato="hex"):
     Retorna el digest del mensaje de entrada, aplicando SHA-256
 
     :param ms: Mensaje de entrada (bytes)
-    :param formato: Formato de la salida: 'hex' (string), 'bin' (string) o 'int' (entero)
+    :param formato: Formato de la salida: 'hex' (string), 'bin' (string), 'bytes' (bytes) o 'int' (entero)
     :return: El digest resultante
     """
     # Leemos el archivo de constantes:
@@ -250,6 +252,8 @@ def sha256(ms, formato="hex"):
         return int2hex(resultado, 64, "")
     if formato == "bin":
         return int2bin(resultado, 256, "")
+    if formato == "bytes":
+        return int.to_bytes(resultado, 32, "big")
     if formato == "int":
         return resultado
     return None
@@ -259,7 +263,7 @@ def sha384(ms, formato="hex"):
     Retorna el digest del mensaje de entrada, aplicando SHA-384
 
     :param ms: Mensaje de entrada (bytes)
-    :param formato: Formato de la salida: 'hex' (string), 'bin' (string) o 'int' (entero)
+    :param formato: Formato de la salida: 'hex' (string), 'bin' (string), 'bytes' (bytes) o 'int' (entero)
     :return: El digest resultante
     """
     # Leemos el archivo de constantes:
@@ -336,6 +340,8 @@ def sha384(ms, formato="hex"):
         return int2hex(resultado, 96, "")
     if formato == "bin":
         return int2bin(resultado, 384, "")
+    if formato == "bytes":
+        return int.to_bytes(resultado, 48, "big")
     if formato == "int":
         return resultado
     return None
@@ -345,7 +351,7 @@ def sha512(ms, formato="hex"):
     Retorna el digest del mensaje de entrada, aplicando SHA-512
 
     :param ms: Mensaje de entrada (bytes)
-    :param formato: Formato de la salida: 'hex' (string), 'bin' (string) o 'int' (entero)
+    :param formato: Formato de la salida: 'hex' (string), 'bin' (string), 'bytes' (bytes) o 'int' (entero)
     :return: El digest resultante
     """
     # Leemos el archivo de constantes:
@@ -430,6 +436,8 @@ def sha512(ms, formato="hex"):
         return int2hex(resultado, 128, "")
     if formato == "bin":
         return int2bin(resultado, 512, "")
+    if formato == "bytes":
+        return int.to_bytes(resultado, 64, "big")
     if formato == "int":
         return resultado
     return None

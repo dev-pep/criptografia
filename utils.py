@@ -3,8 +3,7 @@
 # Funciones útiles para otros scripts.
 
 def menu(opciones):
-    """
-    Pinta el menú de opciones (recible tupla de tuplas ("opción", función)), solicita opción y ejecuta la adecuada
+    """Pinta el menú de opciones (recible tupla de tuplas ("opción", función)), solicita opción y ejecuta la adecuada
 
     :param opciones: tupla con el menú
     """
@@ -39,8 +38,7 @@ def menu(opciones):
             accion = 'X'
 
 def input_int(ms, vals=None, default=None):
-    """
-    Solicita un número entero, y lo retorna
+    """Solicita un número entero, y lo retorna
 
     :param ms: Mensaje del prompt
     :param vals: Valores aceptados: lista, range, o None (no comprobar)
@@ -50,7 +48,7 @@ def input_int(ms, vals=None, default=None):
     resul = None
     ok = False
     while not ok:
-        n = input(f'{ms}: ')
+        n = input(f"{ms}: ")
         if n == '':
             return default
         try:
@@ -61,3 +59,17 @@ def input_int(ms, vals=None, default=None):
         if vals and resul not in vals:
             ok = False
     return resul
+
+def input_bool(ms, default):
+    """Solicita un booleano (sí,no), y lo retorna
+
+    :param ms: Mensaje del prompt
+    :param default: Valor por defecto, si solo se presiona Intro (booleano)
+    :return: el booleano introducido
+    """
+    b = input(f"{ms} (s/n): ")
+    if b == "":
+        return default
+    if b.upper() in ["S", "SI", "SÍ"]:
+        return True
+    return False

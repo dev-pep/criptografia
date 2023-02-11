@@ -2,7 +2,7 @@
 
 El repositorio ***criptografia*** contiene utilidades varias, programadas en *Python*, que pueden resultar útiles para aprender y comprender los distintos aspectos de la criptografía, especialmente la relacionada con los pares de claves RSA.
 
-**IMPORTANTE: Estos scripts no deben usarse para proyectos reales que precisen criptografía. Para ello es recomendable utilizar bibliotecas contrastadas por parte de la comunidad y/o espertos en criptografía.**
+**IMPORTANTE: Estos scripts no deben usarse para proyectos reales que precisen criptografía. Para ello es recomendable utilizar bibliotecas contrastadas y auditadas por parte de la comunidad y/o espertos en criptografía.** Por otro lado, el uso de estos *scripts* no busca la eficiencia, sino ayudar a comprender el funcionamiento de distintos conceptos de la criptografía, con lo que su ejecución puede ser mucho más lenta que la de bibliotecas y utilidades realizadas con la eficiencia en mente, y programadas en lenguajes compilados, mucho más veloces.
 
 ## Scripts
 
@@ -91,6 +91,8 @@ M ≡ C ** d (mod n)
 ### bip39.py
 
 Explora el [Bitcoin Improvement Proposal 39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki), relativo a la *seed phrase* y la semilla para la generación de monederos. Utiliza la *wordlist* oficial en inglés, almacenada en el archivo ***wordlist.json***.
+
+Existe una salvedad a la hora de calcular la *seed*: mientras que el documento oficial indica que se debe usar como sal el *string* "mnemonic" seguido de la passphrase, en muchos lugares parece ser común utilizar simplemente "mnemonic".
 
 ## Aspectos matemáticos
 
