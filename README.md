@@ -92,7 +92,23 @@ M ≡ C ** d (mod n)
 
 Explora el [Bitcoin Improvement Proposal 39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki), relativo a la *seed phrase* y la semilla para la generación de monederos. Utiliza la *wordlist* oficial en inglés, almacenada en el archivo ***wordlist.json***.
 
-Existe una salvedad a la hora de calcular la *seed*: mientras que el documento oficial indica que se debe usar como sal el *string* "mnemonic" seguido de la passphrase, en muchos lugares parece ser común utilizar simplemente "mnemonic".
+La *seed phrase* contiene, en sí, un mecanismo de *checksum*, con lo que no todas las combinaciones de palabras son válidas.
+
+#### PBKDF 2
+
+Una vez obtenida la *seed phrase*, nos sevirá para obtener la semilla (*seed*), de 512 bits, la cual nos servirá más adelante como clave para crear un monedero. La *seed* se calcula mediante una función ***PBKDF2*** (*Password-Based Key Derivation Function 2*).
+
+Es una práctica extendida almacenar las contraseñas a través de funciones *hash*. Sin embargo, dado un *digest hash*, es posible en ocasiones hallar tal contraseña mediante un ataque de fuerza bruta. Las funciones de derivación de claves tienen por objeto evitar esto, y se usan frecuentemente para proteger claves (como podría ser una clave privada RSA). Estas funciones utilizan a su vez unas funciones pseudo aleatorias que generan un *hash*, pero en lugar de tomar un solo argumento (la clave en sí), toman dos: la clave a proteger, y una passphrase o contraseña fácil de recordar. Así, el *digest* resultante combinará ambas.
+
+En el caso específico de BIP-39, la función PBKDF2 se llamará con unos parámetros específicos:
+
+- La función pseudo aleatoria será la ***HMAC-SHA512***. En general, las funciones *hash* HMAC (*hash-based message authentication code*) reciben los dos argumentos mencionados más arriba. Específicamente, la ***HMAC-SHA512*** utiliza SHA-512 para hacer su cálculos.
+- El argumento ***password*** de PBKDF2 será nuestra *seed phrase* (codificada en *bytes* ASCII, o UTF-8).
+- El argumento ***salt*** (sal) será el *string* "mnemonic" con la misma *seed phrase* concatenada a continuación. Es frecuente ver que se usa como sal únicamente "mnemonic", sin concatenar nada.
+- El número de iteraciones se establece en 2048.
+- El número de bits del resultado (la *derived key*) será de 512. Esto nos da la *seed*.
+
+Se pueden utilizar los parámetros aconsejados en el BEP-39 para generar la *seed*, pero también podríamos optar por utilizar nuestros propios parámetros; así, solo nosotros sabríamos cómo obtener la *seed* a partir de la *seed phrase*.
 
 ## Aspectos matemáticos
 

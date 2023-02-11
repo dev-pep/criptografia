@@ -102,49 +102,40 @@ def list2string(lista):
         resul += ' ' + wordlist[l]
     return resul.strip()
 
-def hmac_sha512(k, ms):
+def hmac_sha512(k, sal):
     """Es la función pseudo aleatoria utilizada por pbkdf2()
 
-    :param k: recibe la passphrase del PBKDF2 (bytes)
-    :param ms: recibe la sal del PBKDF2 (bytes)
+    :param k: clave secreta; recibe la seedphrase del PBKDF2 (bytes)
+    :param sal: sal; suele ser "mnemonic"[+seedphrase] (bytes)
     :return: el digest resultante que combina clave y mensaje (bytes)
     """
-
-    def h(b):
-        """Función local para simplificar sintaxis, equivalente a sha2_hashing.sha512(b,"bytes")
-
-        :param b: bytes de entrada
-        :return: bytes con el digest
-        """
-        return sha2_hashing.sha512(b, "bytes")
-
     # Cuando HMAC usa SHA-512, block size es 128 bytes; la salida es de 64 bytes
     # Si la clave excede el tamaño del bloque, aplicamos su hash:
     if len(k) > 128:
-        k = h(k)
+        k = sha2_hashing.sha512(k, "bytes")
     # Sea como sea, la clave tiene que ocupar 128 bytes (rellenar con bytes 0 por la derecha):
     k += (128 - len(k)) * b'\x00'
     # Paddings:
     opad = b'\x5c' * 128
     ipad = b'\x36' * 128
     # Resto de cálculos:
-    return h(xor(k, opad) + h(xor(k, ipad) + ms))
+    return sha2_hashing.sha512(xor(k, opad) + sha2_hashing.sha512(xor(k, ipad) + sal, "bytes"), "bytes")
 
-def pbkdf2(passphrase, niter=2048, append_passphrase=False):
-    """Calcula la derived key mediante la Password-Based Key Derivation Function 2
+def pbkdf2(seedphrase, niter=2048, append_seedphrase=False):
+    """Calcula la seed mediante la Password-Based Key Derivation Function 2
 
-    Parámetros específicos para BIP-39: función pseudo aleatoria HMAC-SHA512, 2048
-    iteraciones, y 512 bits en la salida (clave derivada).
-    :param passphrase: la seed phrase
+    Parámetros específicos para BIP-39: función pseudo aleatoria HMAC-SHA512, sal "mnemonic"+seedphrase,
+    2048 iteraciones, y 512 bits en la salida (derived key).
+    :param seedphrase: la seed phrase
     :param niter: número de iteraciones
-    :param append_passphrase: si True, añade la passphrase a la sal
+    :param append_seedphrase: si True, añade la passphrase a la sal
     :return: la clave derivada
     """
-    password = bytes(passphrase, "utf-8")  # pasamos de string a bytes
+    password = bytes(seedphrase, "utf-8")  # pasamos de string a bytes
     # simplemente "mnemonic":
-    if append_passphrase:  # es lo que dice el documento BIP-39
+    if append_seedphrase:  # es lo que dice el documento BIP-39
         sal = b'mnemonic' + password
-    else:  # es lo que se hace normalmente
+    else:  # es lo que se hace frecuentemente
         sal = b'mnemonic'
     # dklen = hlen, por lo que la DK es igual a T1, es decir, DK = F(Password, Salt, 2048, 1).
     # Vamos a calcular U1, U2,... U2048, y los iremos añadiendo mediante xor al resultado
