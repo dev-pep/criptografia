@@ -52,7 +52,7 @@ El algoritmo genérico utilizado para todos ellos es, dado un mensaje formado po
 
 ### rsa.py
 
-Algoritmo de encriptación de **Rivest, Shamir y Adleman**. Utilidades para calcular y trabajar con el algoritmo de encriptación de clave pública *RSA*. Debido a la lentitud en encriptar (y desencriptar), su utilidad no es para mensajes excesivamente largos. En este caso, se puede utilizar para intercambiar previamente una clave y utilizar un algoritmo de clave asimétrica, mucho más rápido, como es *AES*.
+Algoritmo de encriptación de **Rivest, Shamir y Adleman**. Utilidades para calcular y trabajar con el algoritmo de encriptación de clave pública *RSA*. Debido a la lentitud en encriptar (y desencriptar), su utilidad no es para mensajes excesivamente largos. En este caso, se puede utilizar para intercambiar previamente una clave y utilizar un algoritmo de clave simétrica (mucho más rápidos), como *AES* u otro.
 
 #### Algoritmo
 
@@ -94,19 +94,24 @@ Explora el [Bitcoin Improvement Proposal 39](https://github.com/bitcoin/bips/blo
 
 La *seed phrase* contiene, en sí, un mecanismo de *checksum*, con lo que no todas las combinaciones de palabras son válidas.
 
-#### PBKDF 2
+#### HMAC
 
-Una vez obtenida la *seed phrase*, nos sevirá para obtener la semilla (*seed*), de 512 bits, la cual nos servirá más adelante como clave para crear un monedero. La *seed* se calcula mediante una función ***PBKDF2*** (*Password-Based Key Derivation Function 2*).
+Un algoritmo *HMAC* (*hash-based message authentication code*) genera un código de autenticación de un mensaje, el cual sirve para garantizar la autenticidad de un mensaje (integridad y remitente). En lugar de utilizar una firma digital con criptografía asimétrica, se utiliza una *pre-shared key* y una función *hash* específica (existen así variantes *HMAC-SHA1*, *HMAC-MD5*, etc.). Para poder comprobar la autenticidad del mensaje recibido es necesario poseer la clave compartida. Su ventaja es que no es necesario implementar un sistema de clave pública. 
 
-Es una práctica extendida almacenar las contraseñas a través de funciones *hash*. Sin embargo, dado un *digest hash*, es posible en ocasiones hallar tal contraseña mediante un ataque de fuerza bruta. Las funciones de derivación de claves tienen por objeto evitar esto, y se usan frecuentemente para proteger claves (como podría ser una clave privada RSA). Estas funciones utilizan a su vez unas funciones pseudo aleatorias que generan un *hash*, pero en lugar de tomar un solo argumento (la clave en sí), toman dos: la clave a proteger, y una passphrase o contraseña fácil de recordar. Así, el *digest* resultante combinará ambas.
+#### Derivación de claves y PBKDF2
 
-En el caso específico de BIP-39, la función PBKDF2 se llamará con unos parámetros específicos:
+La derivación de claves (*key derivation*) sirve para derivar (obtener) una o más claves secretas, a partir de un valor secreto (como una contraseña maestra).
 
-- La función pseudo aleatoria será la ***HMAC-SHA512***. En general, las funciones *hash* HMAC (*hash-based message authentication code*) reciben los dos argumentos mencionados más arriba. Específicamente, la ***HMAC-SHA512*** utiliza SHA-512 para hacer su cálculos.
-- El argumento ***password*** de PBKDF2 será nuestra *seed phrase* (codificada en *bytes* ASCII, o UTF-8).
-- El argumento ***salt*** (sal) será el *string* "mnemonic" con la misma *seed phrase* concatenada a continuación. Es frecuente ver que se usa como sal únicamente "mnemonic", sin concatenar nada.
+En BEP-39 se utiliza un algoritmo de derivación de claves llamado *PBKDF* 2 (*password-based key derivation function 2*), el cual genera una clave aplicando de cierta manera (varias iteraciones, etc.) una función hash *HMAC* sobre una contraseña de entrada y una valor de sal. La clave obtenida (derivada) está lista para usarse para otros métodos criptográficos. Así, no es necesario recordar la clave derivada, sino únicamente la contraseña (normalmente más fácil de recordar).
+
+> La sal es utilizada para aumentar la seguridad. Cuando los passwords se almacenan sin sal, puede haber coincidencias que den muchas pistas, cuando dos passwords coincidan. Además, evitan los ataques por fuerza bruta, y hacen inútiles las bases de datos de ejemplos de hashes.
+
+Las entradas de la función *PBKDF* 2 son la *seed phrase* como *string* de *bytes* codificados en *UTF-8*. En este caso, se utiliza la función *hash HMAC-SHA512*, a la que se pasa en las sucesivas llamada, la *seed phrase* al parámetro de clave y un determinado valor cambiante de sal al parámetro de mensaje. El resultado final retornado por esta función será la clave derivada, la *seed* o semilla de 512 bits, que utilizaremos para la creación del monedero.
+
+En el caso específico de BIP-39, la función *PBKDF2* se llamará con otros parámetros específicos:
+
+- La sal de la primera llamada a la función *HMAC* es el *string* "mnemonic" con la misma *seed phrase* concatenada a continuación. Aunque es frecuente ver que se usa únicamente "mnemonic".
 - El número de iteraciones se establece en 2048.
-- El número de bits del resultado (la *derived key*) será de 512. Esto nos da la *seed*.
 
 Se pueden utilizar los parámetros aconsejados en el BEP-39 para generar la *seed*, pero también podríamos optar por utilizar nuestros propios parámetros; así, solo nosotros sabríamos cómo obtener la *seed* a partir de la *seed phrase*.
 

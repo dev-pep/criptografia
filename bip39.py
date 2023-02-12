@@ -102,12 +102,12 @@ def list2string(lista):
         resul += ' ' + wordlist[l]
     return resul.strip()
 
-def hmac_sha512(k, sal):
+def hmac_sha512(k, ms):
     """Es la función pseudo aleatoria utilizada por pbkdf2()
 
-    :param k: clave secreta; recibe la seedphrase del PBKDF2 (bytes)
-    :param sal: sal; suele ser "mnemonic"[+seedphrase] (bytes)
-    :return: el digest resultante que combina clave y mensaje (bytes)
+    :param k: contraseña secreta; recibe la seedphrase del PBKDF2 (bytes)
+    :param ms: mensaje a validar; recibe la sal (bytes)
+    :return: clave derivada; el digest resultante que combina clave y mensaje (bytes)
     """
     # Cuando HMAC usa SHA-512, block size es 128 bytes; la salida es de 64 bytes
     # Si la clave excede el tamaño del bloque, aplicamos su hash:
@@ -119,7 +119,7 @@ def hmac_sha512(k, sal):
     opad = b'\x5c' * 128
     ipad = b'\x36' * 128
     # Resto de cálculos:
-    return sha2_hashing.sha512(xor(k, opad) + sha2_hashing.sha512(xor(k, ipad) + sal, "bytes"), "bytes")
+    return sha2_hashing.sha512(xor(k, opad) + sha2_hashing.sha512(xor(k, ipad) + ms, "bytes"), "bytes")
 
 def pbkdf2(seedphrase, niter=2048, append_seedphrase=False):
     """Calcula la seed mediante la Password-Based Key Derivation Function 2
