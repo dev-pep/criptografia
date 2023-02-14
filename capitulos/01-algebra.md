@@ -4,9 +4,9 @@ Se exponen aquí las bases teóricas que sustentan gran parte de los temas cript
 
 ## Resumen de tipos numéricos
 
-- Enteros ($\mathbb{Z}$): negativos, positivos y 0. $\mathbb{Z}^*$ son los enteros exceptuando el cero.
-- Naturales ($\mathbb{N}$): enteros no negativos. $\mathbb{N}^*$ son los enteros mayores a cero.
-- Racionales ($\mathbb{Q}$): cocientes, fruto de la división de dos enteros cualquiera. $\frac{a}{b}$ es un número racional si $a \in \mathbb{Z}$ y $b \in \mathbb{Z}^*$.
+- Enteros ($\mathbb{Z}$): negativos, positivos y 0. $\mathbb{Z}^\ast$ son los enteros exceptuando el cero.
+- Naturales ($\mathbb{N}$): enteros no negativos. $\mathbb{N}^\ast$ son los enteros mayores a cero.
+- Racionales ($\mathbb{Q}$): cocientes, fruto de la división de dos enteros cualquiera. $\frac{a}{b}$ es un número racional si $a \in \mathbb{Z}$ y $b \in \mathbb{Z}^\ast$.
 - Reales ($\mathbb{R}$): los números que se pueden usar para medir una cantidad real unidimensional.
 - Irracionales: todos los números reales no racionales.
 - Imaginarios: números producto de un real y la unidad imaginaria ($i = \sqrt{-1}$).
@@ -22,7 +22,7 @@ Un **grupo** G es un conjunto de elementos, junto con una operación binaria ($\
 
 Ejemplos de grupos: $(\mathbb{Z}, +)$, $(\mathbb{Q}, \cdot)$.
 
-No es un grupo ($\mathbb{Z}^*, \cdot$) ya que exceptuando el 1, los elementos no tienen inverso.
+No es un grupo ($\mathbb{Z}^\ast, \cdot$) ya que exceptuando el 1, los elementos no tienen inverso.
 
 En criptografía, los grupos suelen ser finitos, por lo tanto el conjunto de elementos suele ser del tipo $\mathbb{Z}_n=\{0,1,2,3,...,n-1\}$. Por ejemplo, $\mathbb{Z}_4=\{0,1,2,3\}$.
 
@@ -42,9 +42,9 @@ Siguiendo con nuestro ejemplo, podemos comprobar que $(\mathbb{Z}, +)$ es un gru
     - $2 + 2 \equiv 0 \pmod 4$
     - $3 + 1 \equiv 0 \pmod 4$
 
-Como ejemplo, $$(\mathbb{Z}^*_4, \cdot)$$ no es un grupo ($$\mathbb{Z}^*_4=\{1,2,3\}$$), porque no todos los elementos tienen inverso. Sin embargo, $(\mathbb{Z}^*_5, \cdot)$ sí lo es.
+Como ejemplo, $$(\mathbb{Z}^\ast_4, \cdot)$$ no es un grupo ($$\mathbb{Z}^\ast_4=\{1,2,3\}$$), porque no todos los elementos tienen inverso. Sin embargo, $(\mathbb{Z}^\ast_5, \cdot)$ sí lo es.
 
-En general, $(\mathbb{Z}^*_p, \cdot)$ **es un grupo si p es un número primo**.
+En general, $(\mathbb{Z}^\ast_p, \cdot)$ **es un grupo si p es un número primo**.
 
 ### Elementos generadores
 
@@ -52,7 +52,7 @@ Un elemento g perteneciente a un grupo G es un **generador** de dicho grupo si t
 
 Si la operación es la multiplicación ($\cdot$), la aplicación repetida de esta sobre g ($g \cdot g \cdot g ...$) se puede expresar como potencia ($g^k$). Si la operación es la suma ($+$), la aplicación repetida de esta sobre g ($g + g + g ...$) se puede expresar como multiplicación ($k \cdot g$).
 
-Por ejemplo, veamos por qué 2 no es un generador de $(\mathbb{Z}^*_7, \cdot)$:
+Por ejemplo, veamos por qué 2 no es un generador de $(\mathbb{Z}^\ast_7, \cdot)$:
 
 - $2^1 \equiv 2 \pmod 7$
 - $2^2 \equiv 4 \pmod 7$
@@ -61,7 +61,7 @@ Por ejemplo, veamos por qué 2 no es un generador de $(\mathbb{Z}^*_7, \cdot)$:
 
 Así, 2 solo genera 3 elementos (2, 4 y 1, que se irían repitiendo: 2, 4, 1, 2, 4, 1,...). Se dice pues que 2 tiene orden 3.
 
-En cambio, 3 sí es generador de $(\mathbb{Z}^*_7, \cdot)$:
+En cambio, 3 sí es generador de $(\mathbb{Z}^\ast_7, \cdot)$:
 
 - $3^1 \equiv 3 \pmod 7$
 - $3^2 \equiv 2 \pmod 7$
@@ -97,7 +97,7 @@ Ejemplos de anillos: $(\mathbb{Z}_n, +, \cdot)$, $(\mathbb{Z}, +, \cdot)$.
 Existe varias formas de definir un campo. Un campo (field) F es un conjunto $\mathbb{F}$ junto a dos operaciones $+$ (suma) y $\star$ (multiplicación), tal que:
 
 - $(\mathbb{F}, +)$ es un grupo abeliano.
-- $(\mathbb{F}^*, \cdot)$ es un grupo abeliano.
+- $(\mathbb{F}^\ast, \cdot)$ es un grupo abeliano.
 
 $(\mathbb{Z}_p, +, \cdot)$ es un campo si p es **primo**, y se denota $(\mathbb{F}_p$.
 
