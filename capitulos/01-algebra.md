@@ -42,7 +42,7 @@ Siguiendo con nuestro ejemplo, podemos comprobar que $(\mathbb{Z}, +)$ es un gru
     - $2 + 2 \equiv 0 \pmod 4$
     - $3 + 1 \equiv 0 \pmod 4$
 
-Como ejemplo, $$(\mathbb{Z}^\ast_4, \cdot)$$ no es un grupo ($$\mathbb{Z}^\ast_4=\{1,2,3\}$$), porque no todos los elementos tienen inverso. Sin embargo, $(\mathbb{Z}^\ast_5, \cdot)$ sí lo es.
+Como ejemplo, $(\mathbb{Z}^\ast_4, \cdot)$ no es un grupo ($\mathbb{Z}^\ast_4=\{1,2,3\}$), porque no todos los elementos tienen inverso. Sin embargo, $(\mathbb{Z}^\ast_5, \cdot)$ sí lo es.
 
 En general, $(\mathbb{Z}^\ast_p, \cdot)$ **es un grupo si p es un número primo**.
 
