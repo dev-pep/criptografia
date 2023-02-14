@@ -6,7 +6,7 @@ Se exponen aquí las bases teóricas que sustentan gran parte de los temas cript
 
 - Enteros ($\mathbb{Z}$): negativos, positivos y 0. $\mathbb{Z}^*$ son los enteros exceptuando el cero.
 - Naturales ($\mathbb{N}$): enteros no negativos. $\mathbb{N}^*$ son los enteros mayores a cero.
-- Racionales ($\mathbb{Q}$): cocientes, fruto de la división de dos enteros cualquiera. $frac{a}{b}$ es un número racional si $a \in \mathbb{Z}$ y $b \in \mathbb{Z}^*$.
+- Racionales ($\mathbb{Q}$): cocientes, fruto de la división de dos enteros cualquiera. $\frac{a}{b}$ es un número racional si $a \in \mathbb{Z}$ y $b \in \mathbb{Z}^*$.
 - Reales ($\mathbb{R}$): los números que se pueden usar para medir una cantidad real unidimensional.
 - Irracionales: todos los números reales no racionales.
 - Imaginarios: números producto de un real y la unidad imaginaria ($i = \sqrt{-1}$).
@@ -20,9 +20,9 @@ Un **grupo** G es un conjunto de elementos, junto con una operación binaria ($\
 - Existencia de un elemento identidad (o neutro) $i$ tal que $a \star i = i \star a = a, \forall a \in G$
 - Inverso: Para todo elemento existe un inverso: $\forall a \in G \exists b$ tal que $ab = i$
 
-Ejemplos de grupos: $(\mathbb{Z}, +)$, $(\mathbb{Q}, \cdot)$
+Ejemplos de grupos: $(\mathbb{Z}, +)$, $(\mathbb{Q}, \cdot)$.
 
-No es un grupo (\mathbb{Z}^*, \cdot) ya que exceptuando el 1, los elementos no tienen inverso.
+No es un grupo ($\mathbb{Z}^*, \cdot$) ya que exceptuando el 1, los elementos no tienen inverso.
 
 En criptografía, los grupos suelen ser finitos, por lo tanto el conjunto de elementos suele ser del tipo $\mathbb{Z}_n=\{0,1,2,3,...,n-1\}$. Por ejemplo, $\mathbb{Z}_4=\{0,1,2,3\}$.
 
@@ -42,7 +42,7 @@ Siguiendo con nuestro ejemplo, podemos comprobar que $(\mathbb{Z}, +)$ es un gru
     - $2 + 2 \equiv 0 \pmod 4$
     - $3 + 1 \equiv 0 \pmod 4$
 
-Como ejemplo, $(\mathbb{Z}^*_4, \cdot)$ no es un grupo ($\mathbb{Z}^*_4=\{1,2,3\}$), porque no todos los elementos tienen inverso. Sin embargo, $(\mathbb{Z}^*_5, \cdot)$ sí lo es.
+Como ejemplo, $$(\mathbb{Z}^*_4, \cdot)$$ no es un grupo ($$\mathbb{Z}^*_4=\{1,2,3\}$$), porque no todos los elementos tienen inverso. Sin embargo, $(\mathbb{Z}^*_5, \cdot)$ sí lo es.
 
 En general, $(\mathbb{Z}^*_p, \cdot)$ **es un grupo si p es un número primo**.
 
@@ -96,12 +96,12 @@ Ejemplos de anillos: $(\mathbb{Z}_n, +, \cdot)$, $(\mathbb{Z}, +, \cdot)$.
 
 Existe varias formas de definir un campo. Un campo (field) F es un conjunto $\mathbb{F}$ junto a dos operaciones $+$ (suma) y $\star$ (multiplicación), tal que:
 
-- $($\mathbb{F}, +)$ es un grupo abeliano.
-- $($\mathbb{F}^*, \cdot)$ es un grupo abeliano.
+- $(\mathbb{F}, +)$ es un grupo abeliano.
+- $(\mathbb{F}^*, \cdot)$ es un grupo abeliano.
 
 $(\mathbb{Z}_p, +, \cdot)$ es un campo si p es **primo**, y se denota $(\mathbb{F}_p$.
 
-También es un campo $(\mathbb{F}_q$ si q es una **potencia prima**, es decir, un entero positivo $p^n$, donde p es primo y n es un entero mayor a 0. Por ejemplo, $5^4$ o $2^128$ son potencias primas.
+También es un campo $(\mathbb{F}_q$ si q es una **potencia prima**, es decir, un entero positivo $p^n$, donde p es primo y n es un entero mayor a 0. Por ejemplo, $5^4$ o $2^{128}$ son potencias primas.
 
 En criptografía es muy frecuente utilizar campos $(\mathbb{F}_q$ en los que q es una potencia (muy grande) de 2.
 
