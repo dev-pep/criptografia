@@ -99,10 +99,10 @@ Existe varias formas de definir un campo. Un campo (field) F es un conjunto $\ma
 - $(\mathbb{F}, +)$ es un grupo abeliano.
 - $(\mathbb{F}^\ast, \cdot)$ es un grupo abeliano.
 
-$(\mathbb{Z}_p, +, \cdot)$ es un campo si p es **primo**, y se denota $(\mathbb{F}_p$.
+$(\mathbb{Z}_p, +, \cdot)$ es un campo si p es **primo**, y se denota $\mathbb{F}_p$.
 
-También es un campo $(\mathbb{F}_q$ si q es una **potencia prima**, es decir, un entero positivo $p^n$, donde p es primo y n es un entero mayor a 0. Por ejemplo, $5^4$ o $2^{128}$ son potencias primas.
+También es un campo $\mathbb{F}_q$ si q es una **potencia prima**, es decir, un entero positivo $p^n$, donde p es primo y n es un entero mayor a 0. Por ejemplo, $5^4$ o $2^{128}$ son potencias primas.
 
-En criptografía es muy frecuente utilizar campos $(\mathbb{F}_q$ en los que q es una potencia (muy grande) de 2.
+En criptografía es muy frecuente utilizar campos $\mathbb{F}_q$ en los que q es una potencia (muy grande) de 2.
 
 ## Relación de congruencia
