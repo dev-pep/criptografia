@@ -44,7 +44,7 @@ def euclid_ext(x, y):
     :param y: segundo entero
     :return: máximo común divisor de los dos enteros, así como los coeficientes de Bezout (mcd, s, t)
     """
-    # Buscaremos el mcd, así como los coeficientes s y t de la identidad de Bezout: mcd = s*x + t*y.
+    # Buscaremos el mcd, así como los coeficientes s y t de la identidad de Bezout: mcd = s*x + t*y para algún x, y.
     # Para ello usaremos 4 series de datos:
     q = [None, max(x, y)]  # cocientes
     r = [max(x, y), min(x, y)]  # restos
@@ -55,7 +55,7 @@ def euclid_ext(x, y):
         r.append(r[-2] - q[-1] * r[-1])
         s.append(s[-2] - q[-1] * s[-1])
         t.append(t[-2] - q[-1] * t[-1])
-    # Ya tenemos el resultado. Si lo usamos para encontrar el inverso módulo n, es decir, un si buscamos
+    # Ya tenemos el resultado. Si lo usamos para encontrar el inverso módulo n, es decir, si buscamos
     # un número N tal que y * N mod x = 1, la respuesta es t[-2] mod x
     return r[-2], s[-2], t[-2]
 

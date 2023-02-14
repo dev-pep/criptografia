@@ -1,10 +1,16 @@
 # Criptografía
 
-El repositorio ***criptografia*** contiene utilidades varias, programadas en *Python*, que pueden resultar útiles para aprender y comprender los distintos aspectos de la criptografía, especialmente la relacionada con los pares de claves RSA.
+Este contiene apuntes de criptografía y utilidades programadas en *Python*, que pueden resultar útiles para aprender y comprender los distintos temas criptográficos.
 
-**IMPORTANTE: Estos scripts no deben usarse para proyectos reales que precisen criptografía. Para ello es recomendable utilizar bibliotecas contrastadas y auditadas por parte de la comunidad y/o espertos en criptografía.** Por otro lado, el uso de estos *scripts* no busca la eficiencia, sino ayudar a comprender el funcionamiento de distintos conceptos de la criptografía, con lo que su ejecución puede ser mucho más lenta que la de bibliotecas y utilidades realizadas con la eficiencia en mente, y programadas en lenguajes compilados, mucho más veloces.
+**IMPORTANTE: Estos scripts no deben usarse para proyectos reales que precisen encriptar datos. Para ello es recomendable utilizar bibliotecas contrastadas y auditadas por parte de la comunidad y/o expertos en criptografía.** Por otro lado, el desarrollo de estos *scripts* no busca la eficiencia, sino ayudar a comprender el funcionamiento de los distintos conceptos, con lo que su ejecución puede ser mucho más lenta que la de bibliotecas y utilidades realizadas con la eficiencia en mente, y programadas en lenguajes compilados, mucho más veloces.
+
+## Tabla de contenidos
+
+1. [Álgebra para criptografía](capitulos/01-algebra.md)
 
 ## Scripts
+
+> Esta sección contiene una breve descripción de la funcionalidad de los *scripts*. Las explicaciones teóricas serán movidas a los capítulos correspondientes.
 
 ### utils.py
 
@@ -96,13 +102,13 @@ La *seed phrase* contiene, en sí, un mecanismo de *checksum*, con lo que no tod
 
 #### HMAC
 
-Un algoritmo *HMAC* (*hash-based message authentication code*) genera un código de autenticación de un mensaje, el cual sirve para garantizar la autenticidad de un mensaje (integridad y remitente). En lugar de utilizar una firma digital con criptografía asimétrica, se utiliza una *pre-shared key* y una función *hash* específica (existen así variantes *HMAC-SHA1*, *HMAC-MD5*, etc.). Para poder comprobar la autenticidad del mensaje recibido es necesario poseer la clave compartida. Su ventaja es que no es necesario implementar un sistema de clave pública. 
+Un algoritmo *HMAC* (*hash-based message authentication code*) genera un código de autenticación de un mensaje, el cual sirve para garantizar la autenticidad de un mensaje (integridad y remitente). En lugar de utilizar una firma digital con criptografía asimétrica, se utiliza una *pre-shared key* y una función *hash* específica (existen así variantes *HMAC-SHA1*, *HMAC-MD5*, etc.). Para poder comprobar la autenticidad del mensaje recibido es necesario poseer la clave compartida. Su ventaja es que no es necesario implementar un sistema de clave pública.
 
 #### Derivación de claves y PBKDF2
 
 La derivación de claves (*key derivation*) sirve para derivar (obtener) una o más claves secretas, a partir de un valor secreto (como una contraseña maestra).
 
-En BEP-39 se utiliza un algoritmo de derivación de claves llamado *PBKDF* 2 (*password-based key derivation function 2*), el cual genera una clave aplicando de cierta manera (varias iteraciones, etc.) una función hash *HMAC* sobre una contraseña de entrada y una valor de sal. La clave obtenida (derivada) está lista para usarse para otros métodos criptográficos. Así, no es necesario recordar la clave derivada, sino únicamente la contraseña (normalmente más fácil de recordar).
+En BIP-39 se utiliza un algoritmo de derivación de claves llamado *PBKDF* 2 (*password-based key derivation function 2*), el cual genera una clave aplicando de cierta manera (varias iteraciones, etc.) una función hash *HMAC* sobre una contraseña de entrada y una valor de sal. La clave obtenida (derivada) está lista para usarse para otros métodos criptográficos. Así, no es necesario recordar la clave derivada, sino únicamente la contraseña (normalmente más fácil de recordar).
 
 > La sal es utilizada para aumentar la seguridad. Cuando los passwords se almacenan sin sal, puede haber coincidencias que den muchas pistas, cuando dos passwords coincidan. Además, evitan los ataques por fuerza bruta, y hacen inútiles las bases de datos de ejemplos de hashes.
 
@@ -113,24 +119,8 @@ En el caso específico de BIP-39, la función *PBKDF2* se llamará con otros par
 - La sal de la primera llamada a la función *HMAC* es el *string* "mnemonic" con la misma *seed phrase* concatenada a continuación. Aunque es frecuente ver que se usa únicamente "mnemonic".
 - El número de iteraciones se establece en 2048.
 
-Se pueden utilizar los parámetros aconsejados en el BEP-39 para generar la *seed*, pero también podríamos optar por utilizar nuestros propios parámetros; así, solo nosotros sabríamos cómo obtener la *seed* a partir de la *seed phrase*.
+Se pueden utilizar los parámetros aconsejados en el BIP-39 para generar la *seed*, pero también podríamos optar por utilizar nuestros propios parámetros; así, solo nosotros sabríamos cómo obtener la *seed* a partir de la *seed phrase*.
 
-## Aspectos matemáticos
-
-### Congruencia módulo n
-
-La congruencia módulo n se indica ***a ≡ b (mod n)***. Es una relación de equivalencia compatible con la suma, la resta, multiplicación y exponenciación de enteros positivos. 
-
-Dos número enteros ***a***, ***b*** son congruentes módulo ***n*** si ***n*** es divisor de su diferencia:
-
-a ≡ b (mod n) implica que (a-b) ≡ kn, para algún entero ***k***. Es lo mismo que decir:
-
-a ≡ kn + b (mod n)
-
-En todo caso:
-
-a-b ≡ 0 (mod n), ya que si a mod n = b mod n, entonces (a-b) mod n es cero.
-
-### Exponenciación módulo n
+## Exponenciación módulo n
 
 En ocasiones, como en la encriptación/desencriptación RSA, es necesario calcular potencias con enteros muy grandes en criptografía. Esta operación puede llevar mucho tiempo. Sin embargo, cuando al resultado se le aplica el módulo n, existen métodos muy rápidos para hacer el cálculo. De hecho la función `pow(b, e, n)` utiliza uno de esos métodos de **exponenciación binaria** (*exponentiation by repeated squaring*).
