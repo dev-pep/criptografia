@@ -73,3 +73,73 @@ def input_bool(ms, default):
     if b.upper() in ["S", "SI", "SÍ"]:
         return True
     return False
+
+# Funciones matemáticas ***********************************************************************************************
+
+def mcd(x, y):
+    """Calcula el máximo común divisor de dos enteros mediante el algoritmo de Euclides
+
+    :param x: primer entero
+    :param y: segundo entero
+    :return: máximo común divisor de los dos enteros
+    """
+    r = x % y
+    while r:  # mientras el resto no sea 0
+        x = y
+        y = r
+        r = x % y
+    return y
+
+def mcm(x, y):
+    """Calcula el mínimo común múltiplo de dos enteros usando el algoritmo de Euclides para encontrar antes el mcd
+
+    :param x: primer entero
+    :param y: segundo entero
+    :return: mínimo común múltiplo de los dos enteros
+    """
+    return abs(x * y) // mcd(x, y)
+
+def euclid_ext(x, y):
+    """Calcula el mcd y los factores de Bezout de dos enteros mediante el algoritmo extendido de Euclides
+
+    :param x: primer entero
+    :param y: segundo entero
+    :return: máximo común divisor de los dos enteros, así como los coeficientes de Bezout (mcd, s, t)
+    """
+    # Buscaremos el mcd, así como los coeficientes s y t de la identidad de Bezout: mcd = s*x + t*y para algún x, y.
+    # Para ello usaremos 4 series de datos:
+    q = [None, None]  # cocientes, q0 y q1 no se usan
+    r = [x, y]  # restos
+    s = [1, 0]  # coeficientes s
+    t = [0, 1]  # coeficientes t
+    while r[-1]:  # mientras el último elemento de r no sea 0
+        new_q = r[-2] // r[-1]
+        new_r = r[-2] - new_q * r[-1]
+        new_s = s[-2] - new_q * s[-1]
+        new_t = t[-2] - new_q * t[-1]
+        q.append(new_q)
+        r.append(new_r)
+        s.append(new_s)
+        t.append(new_t)
+    # Ya tenemos el resultado. Si lo usamos para encontrar el inverso módulo n, es decir, si buscamos
+    # un número t tal que: ta ≡ 1 (mod n), mediante 1 = sn + ta, la respuesta es t[-2] (mod n)
+    return r[-2], s[-2], t[-2]
+
+def inverso_modn(x, n):
+    """Calcula el inverso módulo n del entero x
+
+    Utiliza el algoritmo de Euclides extendido, euclid_ext().
+
+    :param x: entero del que calcular el inverso módulo n
+    :param n: módulo para el cálculo
+    :return: el inverso módulo n calculado
+    """
+    # El resultado será un número y tal que (x * y) % n = 1
+    assert(n > x)
+    inv = euclid_ext(n, x)[2] % n
+    try:
+        assert(x * inv % n == 1)
+    except AssertionError:
+        # x solo tiene inverso módulo n si x y n son coprimos
+        return None
+    return inv

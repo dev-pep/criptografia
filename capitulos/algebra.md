@@ -215,4 +215,70 @@ $\displaystyle \varphi(mn) = \varphi(m) \varphi(n) \frac{d}{\varphi(d)}$, donde 
 
 ## Algoritmo de Euclides
 
-## Algoritmo de Euclides extendido
+Se trata de un algoritmo para calcular el **máximo común divisor** de dos enteros. Se basa en el hecho de que el máximo común divisor de dos números sigue siendo el mismo si se reemplaza el mayor de ellos por la diferencia entre ellos. Aplicando este principio repetidamente, al final ambos números son el mismo, concretamente el mcd de los dos números iniciales.
+
+Una versión más eficiente sustituye el más grande por el resto al ser dividido por el más pequeño. En esta versión, el algoritmo termina al llegar a un resto cero, en cuyo caso, el mcd es el menor de los dos enteros que quedan. Si a y b son los enteros de los que deseamos obtener el mcd, la idea es que $mcd(a,b) = mcd(b, a \bmod b)$.
+
+Veamos un ejemplo. Para hallar el mcd de 201 y 335:
+
+$mcd(335, 201) = mcd(201, 134) = mcd(134, 67) = mcd(67, 0) = 67$
+
+El orden de los argumentos de entrada no es relevante. Si por ejemplo $b > a$, simplemente se realizará una iteración más:
+
+$mcd(201, 335) = mcd(335, 201) = ...$
+
+## Identidad de Bézout y algoritmo extendido de Euclides
+
+La identidad de Bézout afirma que si m es el mcd de dos enteros a y b, este puede expresarse como una suma lineal de dichos enteros. Es decir, es posible encontrar dos enteros s y t tal que $m = sa + tb$.
+
+Estos dos enteros pueden encontrarse a través de los sucesivos valores hallados usando el **algoritmo extendido de Euclides**, que es similar al algoritmo de Euclides visto anteriormente, pero en este caso, a parte de proporcionar los sucesivos restos en las iteraciones, proporciona también los cocientes de la división, y sucesivos valores s y t, los cuales son los coeficientes que al multiplicar a los valores a y b iniciales dan como resultado el resto de la iteración actual. Cuando la iteración coincide con que el resto es mcd(a,b), entonces los valores s y t de esa iteración serán los valores buscados.
+
+En la iteración en la que el resto sea 0, al igual que en el algoritmo de Euclides, sabremos que el resto de la iteración anterior es el mcd, y por lo tanto, los valores s y t de esa penúltima iteración serán los valores buscados.
+
+Para la ejecución del algoritmo, necesitamos cuatro series de valores: $q_i, r_i, s_i, t_i$, es decir, sucesivos cocientes, restos, valores s y valores t. Si a y b son los enteros iniciales, inicializaremos las series así:
+
+- Cocientes ($q_i$): {} (serie vacía).
+- Restos ($r_i$): {a, b}.
+- Valores s ($s_i$): {0, 1}.
+- Valores t ($t_i$): {1, 0}.
+
+Si se desea que la serie de cocientes tenga el mismo número de elementos que las demás series, se puede inicializar con dos valores nulos (no se usan): {nulo, nulo}.
+
+A cada iteración se añade un elemento a cada una de las cuatro series:
+
+- $\displaystyle q_i = \frac{r_{i-2}}{r_{i-1}}$ (suma entera, descartando decimales)
+- $\displaystyle r_i = r_{i-2} - q_i r_{i-1}$
+- $\displaystyle s_i = s_{i-2} - q_i s_{i-1}$
+- $\displaystyle t_i = t_{i-2} - q_i t_{i-1}$
+
+En cada iteración, se cumple $r_i = s_i a + t_i b$. Cuando $r_k = 0$, entonces $mcd(a,b)=r_{k-1}$, y los valores buscados son $s=s_{k-1}$ y $t=t_{k-1}$.
+
+Veamos uno ejemplo, paso a paso, con los números 928 y 348. Tras la inicialización, calculamos primero los valores con i=2:
+
+El cociente $q_2 = \frac{928}{348} = 2$, con resto $r_2 = 232$. En esta iteración, $s_2 = 1$ y $t_2 = -2$. Esto nos indica que $r_2 = s_2 a + t_2 b$. Efectivamente, $232=1 \cdot 928 + (-2) \cdot 348$. Veamos los valores con i=3:
+
+El cociente $q_3 = \frac{348}{232} = 1$, con resto $r_3 = 116$. En esta iteración, $s_3 = -1$ y $t_3 = 3$. Esto nos indica que $r_3 = s_3 a + t_3 b$. Efectivamente, $116=(-1) \cdot 928 + 3 \cdot 348$. Veamos los valores con i=4:
+
+El cociente $q_4 = \frac{232}{116} = 2$, con resto $r_2 = 0$. Hemos terminado. Sabemos que $mcd(928,348)=116$ (es decir, $r_3$), y que $s=-1$ y $t=3$ (es decir, $s_3, t_3$).
+
+| Índice (i) | Cocientes (q<sub>i</sub>) | Restos (r<sub>i</sub>) | s<sub>i</sub> | t<sub>i</sub> |
+| :--------- | :------------------------ | :--------------------- | :------------ | :------------ |
+| 0          | -                         | 928                    | 1             | 0             |
+| 1          | -                         | 348                    | 0             | 1             |
+| 2          | 2                         | 232                    | 1             | -2            |
+| 3          | 1                         | 116                    | -1            | 3             |
+| 4          | 2                         | 0                      | 3             | -8            |
+
+Como en el caso del algoritmo de Euclides, el orden de presentación de los enteros de entrada es irrelevante.
+
+## Cálculo del inverso multiplicativo
+
+Como hemos visto, si a y n son dos enteros, entonces se pueden encontrar dos enteros s y t tales que $mcd(n,a)=sn + ta$. Si a y n son **coprimos**, entonces $sn + ta = 1$. Para ello, consideraremos que **n es un número primo**.
+
+Finalmente, en un anillo $(\mathbb{Z}_n, +, \cdot)$, pasaremos la identidad anterior a aritmética modular:
+
+$ta \equiv 1 \pmod n$
+
+Esto significa que en el mencionado anillo, t es precisamente el inverso multiplicativo de a. Por lo tanto, el algoritmo extendido de Euclides nos servirá para hallar el inverso multiplicativo de un entero a en $(\mathbb{Z}_n, +, \cdot)$ utilizando la identidad de Bézout $mcd(a,b) = sa + tb$ con el algoritmo extendido de Euclides.
+
+> En el algoritmo de cifrado *RSA*, n no es primo, sino el producto de dos números primos. La clave de encriptación (pública) es el inverso multiplicativo de la clave de desencriptación (privada), con lo que a la hora de elegir la primera deberemos asegurarnos de que es un número coprimo con n. Una forma de hacerlo es eligiendo un número primo. De esta forma el inverso será también válido y coprimo con n.
