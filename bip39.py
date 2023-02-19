@@ -10,22 +10,6 @@ import utils
 
 # Funciones auxiliares *************************************************************************************************
 
-def xor(b1, b2):
-    """Calcula el xor de dos secuencias de bytes y lo retorna, también como bytes
-
-    :param b1: primera secuencia bytes
-    :param b2: segunda secuencia bytes
-    :return: resultado, también bytes
-    """
-    # Tanto b1 como b2 deben tener la misma longitud en bytes; el resultado también lo tendrá
-    assert(len(b1) == len(b2))
-    resul = b''
-    for i in range(len(b1)):
-        int1 = b1[i]
-        int2 = b2[i]
-        resul += int.to_bytes(int1 ^ int2, 1, "big")
-    return resul
-
 def check_phrase(phrase):
     """Comprueba que los números de índice recibidos (enteros) forman una frase correcta
 
@@ -119,7 +103,7 @@ def hmac_sha512(k, ms):
     opad = b'\x5c' * 128
     ipad = b'\x36' * 128
     # Resto de cálculos:
-    return sha2_hashing.sha512(xor(k, opad) + sha2_hashing.sha512(xor(k, ipad) + ms, "bytes"), "bytes")
+    return sha2_hashing.sha512(utils.xor(k, opad) + sha2_hashing.sha512(utils.xor(k, ipad) + ms, "bytes"), "bytes")
 
 def pbkdf2(seedphrase, niter=2048, append_seedphrase=False):
     """Calcula la seed mediante la Password-Based Key Derivation Function 2
@@ -145,7 +129,7 @@ def pbkdf2(seedphrase, niter=2048, append_seedphrase=False):
     # Quedan niter-1 iteraciones, porque la primera (U1) ya está hecha:
     for _ in range(niter - 1):
         u_next = hmac_sha512(password, u_anterior)  # u_anterior hace de sal
-        resul = xor(resul, u_next)
+        resul = utils.xor(resul, u_next)
         u_anterior = u_next
     return resul
 

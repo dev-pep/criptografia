@@ -2,6 +2,8 @@
 
 # Funciones útiles para otros scripts.
 
+# Menú principal *******************************************************************************************************
+
 def menu(opciones):
     """Pinta el menú de opciones (recible tupla de tuplas ("opción", función)), solicita opción y ejecuta la adecuada
 
@@ -36,6 +38,8 @@ def menu(opciones):
         except KeyboardInterrupt:
             print("\nAbandonando aplicación...")
             accion = 'X'
+
+# Entrada de datos *****************************************************************************************************
 
 def input_int(ms, vals=None, default=None):
     """Solicita un número entero, y lo retorna
@@ -143,3 +147,19 @@ def inverso_modn(x, n):
         # x solo tiene inverso módulo n si x y n son coprimos
         return None
     return inv
+
+def xor(b1, b2):
+    """Calcula el xor de dos secuencias de bytes y lo retorna, también como bytes
+
+    :param b1: primera secuencia bytes
+    :param b2: segunda secuencia bytes
+    :return: resultado, también bytes
+    """
+    # Tanto b1 como b2 deben tener la misma longitud en bytes; el resultado también lo tendrá
+    assert(len(b1) == len(b2))
+    resul = b''
+    for i in range(len(b1)):
+        int1 = b1[i]
+        int2 = b2[i]
+        resul += int.to_bytes(int1 ^ int2, 1, "big")
+    return resul

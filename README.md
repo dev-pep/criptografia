@@ -1,17 +1,21 @@
 # Criptografía
 
-Este repositorio contiene apuntes de criptografía y utilidades programadas en *Python*, que pueden resultar útiles para aprender y comprender los distintos temas criptográficos.
+Este repositorio contiene apuntes de criptografía y utilidades programadas en *Python*, que pueden resultar útiles para aprender y comprender los distintos conceptos criptográficos.
 
 **IMPORTANTE: Estos scripts no deben usarse para proyectos reales que precisen encriptar datos. Para ello es recomendable utilizar bibliotecas contrastadas y auditadas por parte de la comunidad y/o expertos en criptografía.** Por otro lado, el desarrollo de estos *scripts* no busca la eficiencia, sino ayudar a comprender el funcionamiento de los distintos conceptos, con lo que su ejecución puede ser mucho más lenta que la de bibliotecas y utilidades realizadas con la eficiencia en mente, y programadas en lenguajes compilados, mucho más veloces.
 
 ## Tabla de contenidos
 
 1. [Álgebra para criptografía](capitulos/algebra.md)
+1. Algoritmos discretos
 1. [Números primos](capitulos/primos.md)
 1. [Hashing](capitulos/hashing.md)
 1. AES
 1. [RSA](capitulos/rsa.md)
+1. Criptografía de Curva Elíptica
 1. [BIP-39](capitulos/bip39.md)
+1. BIP-32
+1. BIP-44
 
 ## Scripts
 

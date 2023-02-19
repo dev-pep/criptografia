@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 
 # Algoritmos de hashing SHA-2, específicamente SHA-224, SHA-256, SHA-384 y SHA-512.
+#
+# La función correspondiente al algoritmo SHA-256, sha256(), está comentada completamente. El resto de
+# vesiones documenta las diferencias con esta.
 
 import os
 import utils
@@ -141,14 +144,13 @@ def sha256(ms, formato="hex"):
     # Leemos el archivo de constantes:
     with open("datos/hash.json", "rt") as fjson:
         constantes = json.load(fjson)
-    # Esta función está plenamente comentada.
     # Todos los enteros, si no se dice lo contrario, son de 32 bits, Big Endian, y toda suma es módulo 2^32.
     # Se asume que la longitud en bits del mensaje de entrada es siempre múltiplo de 8 (solo bytes completos).
     longitud = len(ms) * 8  # longitud del mensaje en bits
     # Relleno del mensaje: longitud tiene que ser 448 bits tras aplicar módulo 512, es decir, 56 bytes tras
     # aplicar módulo 64. El relleno consiste en un bit '1' seguido de todos los bits '0' necesarios, es
     # decir un byte b'\x80' (0b10000000) seguido de todos los bytes b'\x00' (0b00000000) necesarios.
-    # Si es necesario, añadimos el byte b'\x80'.
+    # Primero de todo, si es necesario, añadimos el byte b'\x80'.
     if len(ms) % 64 != 56:
         ms += b'\x80'
     # Ahora calcularemos el número de bytes b'\x00' necesarios:
