@@ -50,7 +50,7 @@ En cuanto al **número de iteraciones**, suponiendo que un número $n$ sea compu
 - Esto es una iteración, que se repetirá ***k*** veces:
     - Elegimos al azar un número ***a*** perteneciente al intervalo [2, n-2].
     - Calculamos los sucesivos valores de `a^((2^r)d) % n` (elevando al cuadrado a cada iteración), para ***r*** tomando los valores 0 <= r < s:
-        - Para r=0, si da 1 (1 mod n) o n-1 (-1 mod n), indica que es un probable primo y pasamos a la siguiente iteración de ***k***.
-        - Desde r=1 hasta r<s, si da 1, es un número compuesto seguro y terminamos aquí, retornando ***False***. Si da n-1 (-1 mod n), es un probable primo para esta base, con lo que pasamos a la siguiente iteración de ***k***.
-        - Si agotamos todas las ***r*** sin haber encontrado 1 ni -1, es un compuesto, terminamos aquí, retornando ***False***.
-    - Si tras probar todas las ***r*** no hemos podido comprobar que ***n*** es compuesto, es un probable primo, con lo que pasamos a la siguiente iteración.
+        - Para r=0, si da 1 (1 mod n) o n-1 (-1 mod n), indica que es un probable primo y pasamos a la siguiente iteración de ***k*** (probaremos otra base).
+        - Desde r=1 hasta r<s, si da 1, es un número compuesto seguro y terminamos aquí, retornando ***False***. Si da n-1 (-1 mod n), es un probable primo para esta base, con lo que pasamos a la siguiente iteración de ***k*** (probaremos con otra base).
+    - Si agotamos todas las ***r*** sin haber visto que era un probable primo, es un número compuesto y terminamos aquí, retornando ***False***.
+- Si tras probar ***k*** iteraciones con distintas bases (***a***) no hemos podido comprobar que es compuesto, es un probable primo, y retornamos ***True***.
