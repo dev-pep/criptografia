@@ -7,7 +7,7 @@ Este repositorio contiene apuntes de criptografía y utilidades programadas en *
 ## Tabla de contenidos
 
 1. [Álgebra para criptografía](capitulos/algebra.md)
-1. Logaritmos discretos
+1. [Problema del logaritmo discreto](capitulos/logaritmo-discreto.md)
 1. [Números primos](capitulos/primos.md)
 1. [Hashing](capitulos/hashing.md)
 1. AES

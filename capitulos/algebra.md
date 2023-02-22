@@ -44,7 +44,7 @@ Siguiendo con nuestro ejemplo, podemos comprobar que $(\mathbb{Z}, +)$ es un gru
 
 Como ejemplo, $(\mathbb{Z}^\ast_4, \cdot)$ no es un grupo ($\mathbb{Z}^\ast_4=\{1,2,3\}$), porque no todos los elementos tienen inverso. Sin embargo, $(\mathbb{Z}^\ast_5, \cdot)$ sí lo es.
 
-En general, $(\mathbb{Z}^\ast_p, \cdot)$ **es un grupo si p es un número primo**.
+En general, $(\mathbb{Z}^\ast_p, \cdot)$ **es un grupo si p es un número primo**, dado que en un grupo $(\mathbb{Z}^\ast_n, \cdot)$, un elemento $a$ perteneciente al grupo, tendrá inverso $a^{-1}$ si y solo si $a$ y $n$ son coprimos.
 
 ### Elementos generadores
 
