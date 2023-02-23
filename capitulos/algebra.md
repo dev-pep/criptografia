@@ -177,6 +177,10 @@ Otras propiedades de la función:
 
 Por otro lado, cualquier número natural se descompone en factores primos, tal que $n=p^{k_1}_1 p^{k_2}_2 ... p^{k_r}_r$. De este modo, tenemos una primera fórmula para calcular totiente de Euler de n:
 
+$\varphi(n) = \varphi(p^{k_1}_1) \varphi(p^{k_2}_2) ...  \varphi(p^{k_r}_r)$
+
+Esto es así porque $p^{k_a}_a$ es siempre coprimo con $p^{k_b}_b$, ya que no tienen factores comunes. Por lo tanto:
+
 $\varphi(n) = p^{k_1-1}_1(p_1-1) p^{k_2-1}_2(p_2-1) ... p^{k_r-1}_r(p_r-1)$
 
 Existe otra formulación para la función:

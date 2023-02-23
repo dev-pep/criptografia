@@ -24,7 +24,7 @@ $\displaystyle \lambda(n) = \frac{|(p-1)(q-1)|}{mcd(p-1,q-1)}$
 
 ### Clave pública
 
-Luego se calcula el otro número que forma parte de la clave pública a parte de $n$: de trata de un número $e$, tal que $2 < e < \lambda(n)$. Por otro lado, $e$ y $\lambda(n)$ deben ser coprimos, es decir, $mcd(e,\lambda(n))=1$. Dado que la encriptación utiliza exponenciación binaria para el cálculo, cuanto más corto sea este número y cuantos menos bits 1 contenga, más eficiente será dicha encriptación. Anteriormente se solía utilizar siempre $e=3$ (no importa, es la clave pública), pero esto le confería menos seguridad al algoritmo. Un número frecuentemente utilizado es $2^{16} + 1$ (65537), que es un número primo (seguro pues que es coprimo con $\lambda(n)$ ) y con solo dos bits a 1 (el primero y el último).
+Luego se calcula el otro número que forma parte de la clave pública a parte de $n$: de trata de un número $e$, tal que $2 < e < \lambda(n)$ (si $e=1$, el mensaje encriptado será idéntico al mensaje sin encriptar). Por otro lado, $e$ y $\lambda(n)$ deben ser coprimos, es decir, $mcd(e,\lambda(n))=1$. Dado que la encriptación utiliza exponenciación binaria para el cálculo, cuanto más corto sea este número y cuantos menos bits 1 contenga, más eficiente será dicha encriptación. Anteriormente se solía utilizar siempre $e=3$ (no importa, es la clave pública), pero esto le confería menos seguridad al algoritmo. Un número frecuentemente utilizado es $2^{16} + 1$ (65537), que es un número primo (seguro pues que es coprimo con $\lambda(n)$ ) y con solo dos bits a 1 (el primero y el último).
 
 ### Clave privada
 
@@ -34,9 +34,11 @@ $d \cdot e \equiv 1 \pmod {\lambda(n)}$
 
 Para su cálculo, utilizaremos el **algoritmo de Euclides extendido**.
 
+## Conclusión
+
 Nunca se deben revelar $p$, $q$ ni $\lambda(n)$ (se pueden simplemente descartar tras los cálculos). Ni por supuesto $d$.
 
-## Conclusión
+Se puede demostrar que esto funciona aunque el mensaje $m$ no sea coprimo con $n$.
 
 Si $M$ es el mensaje en claro (pasado a bits, y representado como entero), **siempre menor que n**, por pertenecer a $\mathbb{Z}^\ast_n$, y $C$ es el mensaje encriptado (lógicamente también menor que $n$), para encriptar y desencriptar:
 
