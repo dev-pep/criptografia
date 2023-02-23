@@ -14,37 +14,35 @@ Pongamos, por ejemplo, que el grupo es el habitual $(\mathbb{Z}^\ast_p, \cdot)$.
 
 Se podría intentar por fuerza bruta, por ejemplo. En todo caso, para que realmente no sea facible hallar $a$, el grupo debe ser muy grande ($p$ debería tener cientos o incluso miles de bits).
 
-> Para los siguientes ejemplos se utilizarán relaciones de identidad corrientes por simplicidad, pero se entiende que en la práctica se utiliza aritmética modular.
-
 ## Método Diffie-Hellman
 
-Este método es un ejemplo de cómo intercambiar un par de claves sobre un medio no seguro utilizando el problema del logaritmo discreto. Sean A y B los dos extremos de la comunicación. El valor $g$ es público:
+Este método es un ejemplo de cómo intercambiar un par de claves sobre un medio no seguro utilizando el problema del logaritmo discreto. Sean A y B los dos extremos de la comunicación. Los valores $g$ y $p$ son públicos:
 
-- A genera un número aleatorio $a$ y envía $g^a$ a B. Mantiene $a$ en secreto.
-- B genera un número aleatorio $b$ y envía $g^b$ a A. Mantiene $b$ en secreto.
-- A calcula el número $(g^b)^a = g^{ba}$.
-- B calcula el número $(g^a)^b = g^{ab} = g^{ba}$.
+- A genera un número aleatorio $a$ y envía $g^a \bmod p$ a B. Mantiene $a$ en secreto.
+- B genera un número aleatorio $b$ y envía $g^b \bmod p$ a A. Mantiene $b$ en secreto.
+- A calcula el número $(g^b)^a \bmod p = g^{ba} \bmod p$.
+- B calcula el número $(g^a)^b \bmod p = g^{ab} \bmod p = g^{ba} \bmod p$.
 
-Ahora ambos tienen ya la clave secreta ($g^{ab}$). Cualquiera que intercepte el mensaje no podrá obtener la clave si no dispone de $a$ o de $b$.
+Ahora ambos tienen ya la clave secreta ($g^{ba} \bmod p$). Cualquiera que intercepte uno de los dos mensajes no podrá obtener la clave si no dispone de $a$ o de $b$.
 
 ## Generación de un par de claves
 
-Veamos otro ejemplo: una forma simple de generar una clave pública y su correspondiente clave privada. Como siempre, $g$ es público.
+Veamos otro ejemplo: una forma simple de generar una clave pública y su correspondiente clave privada. Como siempre, $g$ y $p$ son públicos.
 
 - Generamos un número aleatorio $x$ (clave privada).
-- Calculamos $y=g^x$. La clave pública es el par $(g, y)$.
-- Alguien utiliza nuestra clave pública para encriptar un mensaje. Elige un número al azar $r$, y nos envía:
-    - $u = g^r$
-    - $v = m \cdot y^r$ ($m$ es el mensaje)
-- Como disponemos de la clave privada $x$, desencriptamos: $m=v \cdot u^{-x}$.
+- Calculamos $y \equiv g^x \pmod p$. La clave pública está formada por los números $(p, g, y)$.
+- Alguien utiliza nuestra clave pública para encriptar un mensaje. Elige un número al azar $r$, y nos envía $u$ y $v$:
+    - $u \equiv g^r \pmod p$
+    - $v \equiv m \cdot y^r \pmod p$ ($m$ es el mensaje, que debe ser menor a $p$)
+- Como disponemos de la clave privada $x$, desencriptamos: $m \equiv v \cdot u^{-x} \pmod p$.
 
 Veamos por qué:
 
-$v \cdot u^{-x} = m \cdot y^r \cdot (g^r)^{-x} = m \cdot y^r \cdot g^{-xr}$
+$v \cdot u^{-x} \equiv m \cdot y^r \cdot (g^r)^{-x} \equiv m \cdot y^r \cdot g^{-xr} \pmod p$
 
-Dado que $y = g^x$, entonces esto es igual a:
+Dado que $y \equiv g^x \pmod p$, entonces esto es congruente con:
 
-$m \cdot g^{xr} \cdot g^{-xr} = m$
+$m \cdot g^{xr} \cdot g^{-xr} \equiv m \pmod p$
 
 ## Otros
 
