@@ -44,6 +44,11 @@ Dado que $y \equiv g^x \pmod p$, entonces esto es congruente con:
 
 $m \cdot g^{xr} \cdot g^{-xr} \equiv m \pmod p$
 
+
+## Exponenciación módulo n
+
+En criptografía es frecuante tener que calcular potencias con enteros muy grandes. Esta operación puede llevar mucho tiempo y consumir muchos recursos de CPU. Sin embargo, cuando el resultado es módulo n, existen métodos muy rápidos para hacer el cálculo. La misma función `pow(b, e, n)` de *Python* utiliza uno de esos métodos, llamados de **exponenciación binaria** (*exponentiation by repeated squaring*).
+
 ## Otros
 
 Para encriptar utilizando el esquema simple del problema del logaritmo discreto, la clave privada deberá ser muy larga. En la actualidad, se estima que por encima de los 3000 bits. En otros algoritmos como el de Curva Elíptica es suficiente una clave privada de 256 bits.

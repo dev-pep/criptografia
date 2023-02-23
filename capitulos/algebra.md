@@ -164,7 +164,7 @@ Algunas propiedades más de la congruencia módulo n:
 
 > Dos enteros a y b con **coprimos** si su máximo común divisor es 1, es decir, si no tienen factores comunes.
 
-> El totiente de Euler de un entero n indica la cantidad de enteros positivos menores a n que son coprimos con n.
+> El totiente de Euler de un entero n ($\varphi(n)$) indica la cantidad de enteros positivos menores a n que son coprimos con n.
 
 Si p es un número primo, lógicamente todo número a $0 < a < p$ es coprimo con p. Por lo tanto, ya tenemos una primera propiedad de la función totiente de Euler:
 
