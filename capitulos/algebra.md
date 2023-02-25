@@ -72,6 +72,14 @@ En cambio, 3 sí es generador de $(\mathbb{Z}^\ast_7, \cdot)$:
 
 Así, 3 genera todos los miembros del grupo (tiene orden 6).
 
+Se dice que **un grupo es cíclico** cuando existe por lo menos un elemento perteneciente a dicho grupo que genera todos los elementos del grupo. Es decir, un elemento cuyo orden (o cardinalidad, número de elementos que genera) es igual al orden del grupo (número de elementos que contiene).
+
+Una propiedad de los grupos cíclicos es que **todo grupo cíclico es abeliano** (véase a continuación).
+
+Por otro lado, todo elemento de un grupo (cíclico o no) genera un subgrupo, el cual es cíclico (lógicamente).
+
+Otra característica es que un grupo de orden primo (con un número primo de elementos) es un grupo cíclico.
+
 ## Grupos abelianos
 
 Un grupo es **abeliano** si además de las propiedades vistas hasta ahora, su operación es conmutativa:
