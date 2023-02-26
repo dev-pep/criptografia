@@ -24,6 +24,10 @@ Este repositorio contiene apuntes de criptografía y utilidades programadas en *
 
 Funciones útiles para los demás *scripts*.
 
+### algebra.py
+
+Algunas funciones auxiliares que permiten experimentar con grupos de enteros.
+
 ### primos.py
 
 Utilidades relacionadas con el cálculo de números primos grandes. Necesario, por ejemplo, para el cálculo de las claves del algoritmo *RSA*. Permite generar en disco la relación de los primeros primos.

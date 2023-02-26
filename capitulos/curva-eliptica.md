@@ -102,12 +102,10 @@ Existen una serie de juegos o conjuntos de parámetros estandarizados para crear
 - $a=0$
 - $b=7$
 - Número $G$ generador. No genera todos los elementos del grupo original, pero se acerca. En todo caso, nuestro grupo tiene orden (cardinalidad) $n$, que es el orden del punto $G$.
-- Cofactor $h=1$. Lo explicamos a continuación.
+- Cofactor $h=1$.
 
 ## El cofactor h
 
-Normalmente, el orden del grupo es $n$. Sin embargo, a veces se desea trabajar con un subgrupo de orden primo $r$ (el número de elementos del subgrupo es primo), donde $r$ divide $n$. En este caso, el *cofactor* es $h=\frac{n}{r}$, y suele ser un número pequeño (2, 4, etc.).
+De forma similar a lo que se puede hacer en grupos del tipo $(\mathbb{Z}_n, +)$, por ejemplo, podríamos aplicar un cofactor $h$ al generador de nuestro grupo. En este caso habría que multiplicar dicho cofactor por el punto generador de nuestro grupo, y generar el grupo a partir de ese resultado.
 
-Esto no es posible cuando el grupo inicial es de orden primo, es decir, cuando $n$ es primo, el cofactor es obligatoriamente $1$.
-
-Se debe definir cómo crear el subgrupo. Por ejemplo, multiplicando cualquier punto de la curva $P \in E(\mathbb{F}_n)$ por el cofactor $h$, obtenemos un punto $hP$ que es, o bien un punto en el infinito, o bien un generador del subgrupo de orden $r$.
+Sin embargo, *SECP256K1* no define cofactor, es decir, $h=1$, con lo que usaremos todos los puntos generados por $G$, siendo el orden del grupo el mismo que el orden de $G$.
