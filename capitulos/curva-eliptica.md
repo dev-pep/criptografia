@@ -98,14 +98,19 @@ Es decir, los elementos de nuestro grupo serán $P, 2P, 3P,...$ Si nuestro grupo
 
 Existen una serie de juegos o conjuntos de parámetros estandarizados para crear curvas elípticas. Uno de estos juegos de parámetros es el *SECP256K1*, que es el seguido para generar claves públicas en la *blockchain* de ***Bitcoin***, y muchas otras tras esta (como ***Ethereum***). Estos parámetros son:
 
-- Curva $E(\mathbb{F}_p)$, con $p=2^{256} - 2^{32} - 2^9 - 2^8 - 2^7 - 2^6 - 2^4 - 1$ (es un número primo).
+- Curva $E(\mathbb{F}_p)$, con $p=2^{256} - 2^{32} - 2^9 - 2^8 - 2^7 - 2^6 - 2^4 - 1$ (es un número primo). En haxadecimal es:
+    - fffffffffffffffffffffffffffffffffffffffffffffffffffffffefffffc2f
 - $a=0$
 - $b=7$
-- Número $G$ generador. No genera todos los elementos del grupo original, pero se acerca. En todo caso, nuestro grupo tiene orden (cardinalidad) $n$, que es el orden del punto $G$.
+- Número $G$ generador. No genera todos los elementos del grupo original, pero se acerca. En todo caso, el grupo tendrá orden (cardinalidad) $n$, que es el orden del punto $G$. Las coordenadas del punto $G$ son (en hexadecimal):
+    - x: 79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
+    - y: 483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8
+- Orden del grupo ($n$):
+    - fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
 - Cofactor $h=1$.
 
 ## El cofactor h
 
-De forma similar a lo que se puede hacer en grupos del tipo $(\mathbb{Z}_n, +)$, por ejemplo, podríamos aplicar un cofactor $h$ al generador de nuestro grupo. En este caso habría que multiplicar dicho cofactor por el punto generador de nuestro grupo, y generar el grupo a partir de ese resultado.
+De forma similar a lo que se puede hacer en grupos del tipo $(\mathbb{Z}_n, +)$, por ejemplo, podríamos aplicar un cofactor $h$ al punto $G$ generador de nuestro grupo ($hG$). En este caso habría que multiplicar dicho cofactor por el punto generador de nuestro grupo, y generar el grupo a partir de ese resultado. La multiplicación sería, como de costumbre, aplicar la suma de $G$ $h$ veces.
 
 Sin embargo, *SECP256K1* no define cofactor, es decir, $h=1$, con lo que usaremos todos los puntos generados por $G$, siendo el orden del grupo el mismo que el orden de $G$.
