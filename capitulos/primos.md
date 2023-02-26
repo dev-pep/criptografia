@@ -46,11 +46,11 @@ En cuanto al **número de iteraciones**, suponiendo que un número $n$ sea compu
 
 ### Algoritmo
 
-- Dado el número (entero e impar) a comprobar, ***n***, lo escribiremos de esta forma: `n-1 = d*2^s`. Dado que ***n-1*** es par, ***s*** será como mínimo 1. El número ***d*** es impar (se han factorizado todos los factores 2 fuera).
-- Esto es una iteración, que se repetirá ***k*** veces:
-    - Elegimos al azar un número ***a*** perteneciente al intervalo [2, n-2].
-    - Calculamos los sucesivos valores de `a^((2^r)d) % n` (elevando al cuadrado a cada iteración), para ***r*** tomando los valores 0 <= r < s:
-        - Para r=0, si da 1 (1 mod n) o n-1 (-1 mod n), indica que es un probable primo y pasamos a la siguiente iteración de ***k*** (probaremos otra base).
-        - Desde r=1 hasta r<s, si da 1, es un número compuesto seguro y terminamos aquí, retornando ***False***. Si da n-1 (-1 mod n), es un probable primo para esta base, con lo que pasamos a la siguiente iteración de ***k*** (probaremos con otra base).
-    - Si agotamos todas las ***r*** sin haber visto que era un probable primo, es un número compuesto y terminamos aquí, retornando ***False***.
-- Si tras probar ***k*** iteraciones con distintas bases (***a***) no hemos podido comprobar que es compuesto, es un probable primo, y retornamos ***True***.
+- Dado el número (entero e impar) a comprobar, $n$, lo escribiremos de esta forma: $n-1 = d \cdot 2^s$. Dado que $n-1$ es par, $s$ será como mínimo 1. El número $d$ es impar (se han factorizado todos los factores 2 fuera).
+- Esto es una iteración, que se repetirá $k$ veces:
+    - Elegimos al azar un número $a$ perteneciente al intervalo $[2, n-2]$.
+    - Calculamos los sucesivos valores de $a^{{2^r}d} \bmod n$ (elevando al cuadrado a cada iteración), para $r$ tomando los valores $0 <= r < s$:
+        - Para $r=0$, si da 1 (módulo $n$) o n-1 (que es $-1 \pmod n$), indica que es un probable primo y pasamos a la siguiente iteración de $k$ (probaremos otra base).
+        - Desde $r=1$ hasta $r<s$, si da 1, es un número compuesto seguro y terminamos aquí, retornando ***False***. Si da $n-1$ (o sea $-1 \pmod n$), es un probable primo para esta base, con lo que pasamos a la siguiente iteración de $k$ (probaremos con otra base).
+    - Si agotamos todas las $r$ sin haber visto que era un probable primo, es un número compuesto y terminamos aquí, retornando ***False***.
+- Si tras probar $k$ iteraciones con distintas bases ($a$) no hemos podido comprobar que es compuesto, es un probable primo, y retornamos ***True***.
