@@ -126,11 +126,13 @@ def euclid_ext(x, y):
         s.append(new_s)
         t.append(new_t)
     # Ya tenemos el resultado. Si lo usamos para encontrar el inverso módulo n, es decir, si buscamos
-    # un número t tal que: ta ≡ 1 (mod n), mediante 1 = sn + ta, la respuesta es t[-2] (mod n)
+    # un número t tal que: ta ≡ 1 (mod n), mediante 1 = sn + ta, la respuesta es t[-2] (mod n). Al llamar a
+    # esta función debemos tener en cuenta que si buscamos el inverso multiplicativo, tendremos que aplicarle
+    # (módulo x) a ese t[-2], ya que este podría ser negativo.
     return r[-2], s[-2], t[-2]
 
 def inverso_modn(x, n):
-    """Calcula el inverso módulo n del entero x
+    """Calcula el inverso multiplicativo módulo n del entero x
 
     Utiliza el algoritmo de Euclides extendido, euclid_ext().
 
@@ -138,9 +140,9 @@ def inverso_modn(x, n):
     :param n: módulo para el cálculo
     :return: el inverso módulo n calculado
     """
-    # El resultado será un número y tal que (x * y) % n = 1
-    assert(n > x)
-    inv = euclid_ext(n, x)[2] % n
+    # El resultado será un número y tal que x*y ≡ 1 (mod n)
+    assert n > x
+    inv = euclid_ext(n, x)[2] % n  # aplicamos %n porque el resultado retornado puede ser negativo
     try:
         assert(x * inv % n == 1)
     except AssertionError:

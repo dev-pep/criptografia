@@ -82,14 +82,6 @@ Otra característica es que un grupo de orden primo (con un número primo de ele
 
 En el caso de $(\mathbb{Z}_n, +)$, **todos los elementos** del grupo son generadores del mismo.
 
-## Cofactor h
-
-Supongamos que tenemos un grupo de orden $n$, pero que solo deseamos trabajar con un subgrupo de este. El subgrupo deseado tendrá un orden $r$. Para ello deberemos especificar un factor $h$ tal que $r=\frac{n}{h}$. Lógicamente esto no puede hacerse en grupos de orden primo, ya que $n$ debe ser divisible entre $h$ para obtener un subgrupo de orden $r$. Normalmente es deseable que $r$ sí sea primo, dado que así obtenemos un subgrupo de orden primo.
-
-Pongamos por ejemplo $(\mathbb{Z}_{404}, +)$. En este caso $404 = 4 \cdot 101$ (101 es primo), y concretamente cualquier número impar perteneciente al grupo es generador del mismo. Así, podríamos utilizar el número 11 para generar el grupo arriba mencionado, o podríamos aplicar un cofactor $h=4$ para obtener un subgrupo de orden primo (orden 101). Así, solo deberíamos multiplicar el generador (11) por el cofactor, con lo que resultaría el generador 44, que nos proporcionaría ese subgrupo de orden 101. Concretamente, los números múltiplos de 4.
-
-Siguiendo con el mismo ejemplo, también sería posible aplicar un cofactor 2 al generador (sería 22), lo cual nos daría un subgrupo de 202 elementos (los elementos pares). Este subgrupo, sin embargo, no es de orden primo.
-
 ## Grupos abelianos
 
 Un grupo es **abeliano** si además de las propiedades vistas hasta ahora, su operación es conmutativa:
