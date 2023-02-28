@@ -34,7 +34,9 @@ Siguiendo con nuestro ejemplo, podemos comprobar que $(\mathbb{Z}, +)$ es un gru
 
 Como ejemplo, $(\mathbb{Z}^\ast_4, \cdot)$ no es un grupo ($\mathbb{Z}^\ast_4=\lbrace 1,2,3 \rbrace$), porque no todos los elementos tienen inverso. Sin embargo, $(\mathbb{Z}^\ast_5, \cdot)$ sí lo es.
 
-En general, $(\mathbb{Z}^\ast_p, \cdot)$ **es un grupo si p es un número primo**, dado que en un grupo $(\mathbb{Z}^\ast_n, \cdot)$, un elemento $a$ perteneciente al grupo, tendrá inverso $a^{-1}$ si y solo si $a$ y $n$ son coprimos (véase más abajo la explicación sobre coprimos, y división en la aritmética modular).
+En general, $(\mathbb{Z}^\ast_p, \cdot)$ **es un grupo si y solo si p es un número primo**. Esto puede verse del siguiente modo: si $n$ es un número compuesto, es porque tiene, como mínimo dos factores. En ese caso, $n=p \cdot q$. Tanto $p$ como $q$ son elementos del conjunto, y la operación $p \cdot q \equiv n \pmod n$, es decir, $p \cdot q \equiv 0 \pmod n$, el resultado es $0$, un elemento que no pertenece al conjunto.
+
+Por otro lado, y como se verá más adelante, en $(\mathbb{Z}^\ast_n, \cdot)$, un elemento $a$ perteneciente al conjunto, tendrá inverso $a^{-1}$ si y solo si $a$ y $n$ son coprimos, con lo que si $n$ no es primo, habrá elementos sin inverso multiplicativo.
 
 ## Números coprimos y totiente de Euler
 
@@ -227,7 +229,9 @@ De forma análoga, si la operación es la suma:
 
 $G=\lbrace i, g, 2g, 3g,..., (n-1)g \rbrace$, donde $i=0g$. En este caso es fácil ver que $i \equiv ng \pmod n$.
 
-Otra característica es que un grupo cíclico **de orden primo** (con un número primo de elementos) no puede descomponerse en subgrupos menores que él, lo cual significa que **todos los elementos** del grupo son generadores del mismo. En cambio, si el orden del grupo es compuesto, habrá elementos que generarán subgrupos menores. Esto es importante, por ejemplo, en criptografía de curva elíptica, para el llamado *cofactor h*.
+Otra característica es que un grupo cíclico **de orden primo** (con un número primo de elementos) no trivial solo puede descomponerse en dos subgrupos: el grupo trivial, y él mismo, lo cual significa que **todos los elementos** del grupo son generadores del mismo, a excepción del elemento identidad, que genera el grupo trivial. En cambio, si el orden del grupo es compuesto, habrá elementos que generarán subgrupos menores no triviales.
+
+Por ejemplo, en el grupo $(\mathbb{Z}_n, +)$, un elemento $g$ distinto del elemento identidad genera exactamente un subgrupo de $\displaystyle \frac{n}{mcd(n,d)}$ elementos. Así, cualquier número del grupo, coprimo con $n$, es un generador del grupo. Esto es útil, por ejemplo, en criptografía de curva elíptica, para el llamado *cofactor h*.
 
 ## Anillos y campos
 
