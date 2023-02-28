@@ -122,7 +122,7 @@ Siguiendo con las propiedades de la congruencia:
 
 - Si $a$ tiene inverso multiplicativo módulo $n$ y $a \equiv b \pmod n$, entonces $a^{-1} \equiv b^{-1} \pmod n$ (compatibilidad con el inverso multiplicativo).
 - División en aritmética modular: en general, si $a \equiv b \pmod n$, no se puede afirmar que $\displaystyle \frac{a}{k} \equiv \frac{b}{k} \pmod n$. Otra forma de expresarlo es: si $ak \equiv bk \pmod n$, no se puede afirmar que $a \equiv b \pmod n$. Pero sí se puede decir que $\displaystyle a \equiv b \pmod {\frac{n}{mcd(k,n)}}$, donde $mcd(k,n)$ es el **máximo común divisor** de $k$ y $n$.
-- División en aritmética modular cuando $k$ es coprimo con $n$: en este caso, $mcd(k,n)=1$, con lo que podemos decir que si $a \cdot k \equiv b \cdot k \pmod n$, entonces $a \equiv b \pmod n$. Esto coincide con el hecho de que $k$ tenga inverso multiplicativo módulo $n$, así que si $a \cdot k \equiv b \cdot k \pmod n$, entonces $a \cdot k \cdot k^{-1} \equiv b \cdot k \cdot k^{-1} \pmod n$, con lo que $a \equiv b \pmod n$. Podemos comprobar, pues, que si $k$ y $n$ son coprimos, se puede dividir cualquier entero entre $k$ multiplicando ese entero por el inverso multiplicativo $k^{-1}$.
+- División en aritmética modular cuando $k$ es coprimo con $n$: en este caso, $mcd(k,n)=1$, con lo que podemos decir que si $a \cdot k \equiv b \cdot k \pmod n$, entonces $a \equiv b \pmod n$. Esto coincide con el hecho de que $k$ tenga inverso multiplicativo módulo $n$, así que si $a \cdot k \equiv b \cdot k \pmod n$, entonces $a \cdot k \cdot k^{-1} \equiv b \cdot k \cdot k^{-1} \pmod n$, con lo que $a \equiv b \pmod n$. Podemos comprobar, pues, que si $k$ y $n$ son coprimos, se puede dividir cualquier entero entre $k$ multiplicando ese entero por el inverso multiplicativo $k^{-1}$ y aplicando módulo $n$.
 
 Normalmente no se utiliza la notación de la división $\displaystyle \frac{a}{b}$, a no ser que el grupo sea abeliano (multiplicación conmutativa), ya que la notación anterior es ambigua, por no especificar si se trata de $a^{-1} \cdot b$ o $b \cdot a^{-1}$.
 
@@ -160,6 +160,26 @@ En cambio, $3$ sí es generador de $(\mathbb{Z}^\ast_7, \cdot)$:
 - $3^6 \equiv 1 \pmod 7$ ($3^5 \cdot 3 \equiv 5 \cdot 3 \pmod 7$)
 
 Así, $3$ genera todos los miembros del grupo (tiene orden 6).
+
+## Teorema de Euler
+
+Dice así: dados dos números naturales $a$ y $n$, coprimos entre sí, entonces:
+
+$a^{\varphi(n)} \equiv 1 \pmod n$
+
+En el caso específico que $n$ sea primo, entonces estamos ante el **pequeño teorema de Fermat**. Es decir, sea $p$ un número primo, entonces para cualquier entero $a$, $a^p-a$ es múltiplo de $p$. Es decir, $a^p-a \equiv 0 \pmod p$, y por lo tanto $a^p \equiv a \pmod p$, y $a^{p-1} \equiv 1 \pmod p$. Dado que $p$ es primo, $\varphi(p)=p-1$, con lo cual se llega al teorema de Euler.
+
+Por poner un ejemplo, supongamos que $n$ es $31$ (número primo). Entonces podemos decir que para cualquier número entero $a$:
+
+$a^{30} \equiv 1 \pmod {31}$
+
+## Otras fórmulas
+
+Si $a \mid b$ (si $a$ divide a $b$), entonces $\varphi(a) \mid \varphi(b)$.
+
+En general, para cualquier par de números naturales $m$ y $n$:
+
+$\displaystyle \varphi(mn) = \varphi(m) \varphi(n) \frac{d}{\varphi(d)}$, donde $d=mcd(m,n)$ (máximo común divisor).
 
 ## Isomorfismos
 
@@ -233,26 +253,6 @@ El anillo $(\mathbb{Z}_p, +, \cdot)$ es un campo si $p$ es **primo**, y se denot
 También es un campo $(\mathbb{F}_q, +, \cdot)$ si $q$ es una **potencia prima**, es decir, un entero positivo $p^n$, donde $p$ es primo y $n$ es un entero mayor a $0$. Por ejemplo, $5^4$ o $2^{128}$ son potencias primas.
 
 En criptografía es muy frecuente utilizar campos $\mathbb{F}_q$ en los que $q$ es una potencia (muy grande) de 2.
-
-### Teorema de Euler
-
-Dice así: dados dos números naturales $a$ y $n$, coprimos entre sí, entonces:
-
-$a^{\varphi(n)} \equiv 1 \pmod n$
-
-En el caso específico que $n$ sea primo, entonces estamos ante el **pequeño teorema de Fermat**. Es decir, sea $p$ un número primo, entonces para cualquier entero $a$, $a^p-a$ es múltiplo de $p$. Es decir, $a^p-a \equiv 0 \pmod p$, y por lo tanto $a^p \equiv a \pmod p$, y $a^{p-1} \equiv 1 \pmod p$. Dado que $p$ es primo, $\varphi(p)=p-1$, con lo cual se llega al teorema de Euler.
-
-Por poner un ejemplo, supongamos que $n$ es $31$ (número primo). Entonces podemos decir que para cualquier número entero $a$:
-
-$a^{30} \equiv 1 \pmod {31}$
-
-### Otras fórmulas
-
-Si $a \mid b$ (si $a$ divide a $b$), entonces $\varphi(a) \mid \varphi(b)$.
-
-En general, para cualquier par de números naturales $m$ y $n$:
-
-$\displaystyle \varphi(mn) = \varphi(m) \varphi(n) \frac{d}{\varphi(d)}$, donde $d=mcd(m,n)$ (máximo común divisor).
 
 ## Algoritmo de Euclides
 
