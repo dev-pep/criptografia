@@ -231,7 +231,11 @@ $G=\lbrace i, g, 2g, 3g,..., (n-1)g \rbrace$, donde $i=0g$. En este caso es fác
 
 Otra característica es que un grupo cíclico **de orden primo** (con un número primo de elementos) no trivial solo puede descomponerse en dos subgrupos: el grupo trivial, y él mismo, lo cual significa que **todos los elementos** del grupo son generadores del mismo, a excepción del elemento identidad, que genera el grupo trivial. En cambio, si el orden del grupo es compuesto, habrá elementos que generarán subgrupos menores no triviales.
 
-Por ejemplo, en el grupo $(\mathbb{Z}_n, +)$, un elemento $g$ distinto del elemento identidad genera exactamente un subgrupo de $\displaystyle \frac{n}{mcd(n,d)}$ elementos. Así, cualquier número del grupo, coprimo con $n$, es un generador del grupo. Esto es útil, por ejemplo, en criptografía de curva elíptica, para el llamado *cofactor h*.
+Por ejemplo, en el grupo $(\mathbb{Z}_n, +)$, un elemento $g$ distinto del elemento identidad genera exactamente un subgrupo de $\displaystyle \frac{n}{mcd(n,d)}$ elementos. Así, cualquier número del grupo, coprimo con $n$, es un generador del grupo.
+
+> En todo caso, según el teorema de Lagrange, dado un grupo finito $G$, cualquier subgrupo $H$ de este tiene un orden ($|H|$) que es divisor del orden de $G$ ($|G|$). De este modo, siempre hay un número entero $h$ tal que $|G|=h \cdot |H|$, que puede ir desde $h=1$ (cuando $H=G$), hasta $h=|G|$ (cuando $H$ es el grupo trivial). Dicho entero $h$ se denomina el **cofactor**.
+
+Esto es útil, por ejemplo, en criptografía de curva elíptica, ya que el cofactor es uno de los parámtros utilizados.
 
 ## Anillos y campos
 
