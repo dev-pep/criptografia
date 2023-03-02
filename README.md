@@ -38,7 +38,11 @@ Utilidades relacionadas con el cálculo de números primos grandes. Necesario, p
 
 ### rsa.py
 
-Utilidades para calcular pares de claves y trabajar con el algoritmo de encriptación (asimétrico) de clave pública *RSA*.
+Utilidades para calcular pares de claves y trabajar con el algoritmo de encriptación de clave pública *RSA*.
+
+### ce.py
+
+Utilidades relacionadas con la criptografía de curva elíptica.
 
 ### bip39.py
 

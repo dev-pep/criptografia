@@ -16,7 +16,7 @@ Para su uso, las partes deben estar de acuerdo en los parámetros del dominio qu
 
 Por un lado, está el tamaño u **orden del campo finito** sobre el que se construirá la curva. Este viene indicado como $p$, y suele ser un número grande primo, o una potencia grande de 2 ($2^m$), aunque en este último caso existe algún parámetro extra que no trataremos, por lo que nos centraremos en el primer caso (el más común, sobre todo en aplicaciones como *blockchains*).
 
-Por otro lado, se definen las **constantes** $a$ y $b$ de la ecuación. Lo único que hay que tener en cuenta es que se debe cumplir $4a^3+27b^2 \neq 0$, de lo contrario, habría rectas (distintas a la verticales) que no intersectarían en 3 puntos de la curva sino solamente en 2.
+Por otro lado, se definen las **constantes** $a$ y $b$ de la ecuación. Lo único que hay que tener en cuenta es que se debe cumplir $4a^3+27b^2 \neq 0$, de lo contrario, no todas las rectas que intersectan la recta en 2 puntos la intersectan también en un tercero.
 
 También existe el **punto base** $G$, que es el elemento generador de todos los puntos del grupo con el que trabajaremos. El **orden de este punto** $G$ es otro de los parámetros, $n$. Como todos los puntos de la curva son generados por este elemento $G$, nuestro grupo es un grupo cíclico.
 
@@ -69,12 +69,16 @@ Si $P,Q,R \in E(\mathbb{F}_p)$ y $0 \in E(\mathbb{F}_p)$ es el elemento neutro d
 
 - $P+0=0+P=P$
 - Si $P=(x,y)$, entonces $-P=(x,-y)$, y $P+(-P)=0$.
-- Si $P=(x_1,y_1)$, $Q=(x_2,y_2)$, y $P\neq \pm Q$, entonces $R=P+Q=(x_3,y_3)$ y:
+- Suma de puntos. Si $P=(x_1,y_1)$, $Q=(x_2,y_2)$, y $P\neq \pm Q$, entonces $R=P+Q=(x_3,y_3)$ y:
     - $\displaystyle x_3 = \left( \frac{y_2-y_1}{x_2-x_1} \right)^2 - x_1 - x_2$
     - $\displaystyle y_3 = \left( \frac{y_2-y_1}{x_2-x_1} \right) (x_1-x_3) - y_1$
-- Si $P=(x_1,y_1)$, y $P\neq-P$, entonces $R=2P=(x_3,y_3)$ y:
+- Duplicar punto (*point doubling*). Si $P=(x_1,y_1)$, y $P\neq-P$, entonces $R=2P=(x_3,y_3)$ y:
     - $\displaystyle x_3 = \left( \frac{3x^2_1+a}{2y_1} \right)^2 - 2x_1$
     - $\displaystyle y_3 = \left( \frac{3x^2_1+a}{2y_1} \right) (x_1-x_3) - y_1$
+
+A la hora de hacer los cálculos, hay que tener en cuenta que cuando estamos en el dominio del campo $\mathbb{F}_p$ las operaciones son módulo $p$. Además, las divisiones son en aritmética modular, y se deber realizar multiplicando por el inverso. En cuanto a las raíces cuadradas, se usará también la raíz cuadrada modular.
+
+Cuando multipliquemos enteros por un punto (el punto generador, normalmente), hay que tener en cuenta que la operación no se puede hacer sumando el punto $G$ una y otra vez, ya que el entero suele ser inmenso (cientos de bits), con lo que se con técnicas del tipo doblar y añadir.
 
 ## Parámetros estandarizados
 

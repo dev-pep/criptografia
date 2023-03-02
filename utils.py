@@ -2,6 +2,9 @@
 
 # Funciones útiles para otros scripts.
 
+import random
+import primos
+
 # Menú principal *******************************************************************************************************
 
 def menu(opciones):
@@ -136,19 +139,70 @@ def inverso_modn(x, n):
 
     Utiliza el algoritmo de Euclides extendido, euclid_ext().
 
-    :param x: entero del que calcular el inverso módulo n
+    :param x: entero distinto de 0 del que calcular el inverso módulo n
     :param n: módulo para el cálculo
     :return: el inverso módulo n calculado
     """
-    # El resultado será un número y tal que x*y ≡ 1 (mod n)
-    assert n > x
+    # El resultado será un número y tal que x*y ≡ 1 (mod n).
+    # Aplicamos primero módulo n a la entrada:
+    x = x % n
+    assert x != 0
     inv = euclid_ext(n, x)[2] % n  # aplicamos %n porque el resultado retornado puede ser negativo
     try:
-        assert(x * inv % n == 1)
+        assert (x * inv) % n == 1
     except AssertionError:
         # x solo tiene inverso módulo n si x y n son coprimos
         return None
     return inv
+
+def sqrt_mod(n, p):
+    """ Calcula la raíz cuadrada del número n, módulo p, usando el algoritmo Tonelli–Shanks
+
+    :param n: número del que calcular la raíz cuadrada (si no es mod p, se le aplicará al principio mod p)
+    :param p: módulo (debe ser primo, mayor que 2)
+    :return: las dos raíces (r1, r2), (0, None) si n=0, o (None, None) si no hay solución
+    """
+    if n == 0:
+        return 0, None
+    n = n % p
+    if not primos.es_primo_mr(p, 10) or p <= 2:
+        return None, None
+    test = pow(n, (p - 1) // 2, p)    # tiene solución si da 1; si da -1 (o sea m-1) no (criterio de Euler)
+    if test == p - 1:
+        return None, None
+    assert test == 1    # si no era -1, tiene que ser 1 (tiene solución)
+    # Hallemos la solución. Primero calculamos Q y S tal que p-1 = Q * 2^S:
+    Q = (p - 1) // 2
+    S = 1
+    while Q % 2 == 0:
+        Q //= 2
+        S += 1
+    # Buscamos un entero z que no sea un residuo cuadrático (o sea, que no tenga raíz cuadrada módulo p):
+    test = 1
+    while test != p - 1:
+        z = random.randint(2, p - 1)
+        test = pow(z, (p - 1) // 2, p)    # criterio de Euler nuevamente
+    M = S
+    c = pow(z, Q, p)
+    t = pow(n, Q, p)
+    R = pow(n, (Q + 1) // 2, p)
+    while True:
+        if t == 0:
+            r = 0
+            break
+        if t == 1:
+            r = R
+            break
+        for i in range(1, M):
+            if pow(t, 2 ** i, p) == 1:
+                break
+        assert pow(t, 2 ** i, p) == 1
+        b = pow(c, 2 ** (M - i - 1), p)
+        M = i
+        c = (b ** 2) % p
+        t = (t * b ** 2) % p
+        R = (R * b) % p
+    return r, p - r
 
 def xor(b1, b2):
     """Calcula el xor de dos secuencias de bytes y lo retorna, también como bytes
