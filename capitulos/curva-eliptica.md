@@ -42,7 +42,7 @@ En este punto, si el orden de la curva $|E(\mathbb{F}_p)|$ es primo, sabemos que
 
 En cambio, si $|E(\mathbb{F}_p)|$ no es primo, buscamos el factor primo más grande, teniendo en cuenta que $h \leq 4$. Si $h$ va a ser grande, volvemos a empezar (con otra curva).
 
-Si lo que hallamos es un orden tal que $1<h \leq 4$, entonces simplemente habrá que buscar un punto $G$ que genere un grupo de orden $\displaystyle \frac{|E(\mathbb{F}_p)|}{h}$. Para ello, elegiremos un punto cualquiera $P$ de la curva, y lo multiplicaremos por el cofactor; eso nos dará $G$, es decir $G=hP$. ¿Por qué? Lo entenderemos haciendo un símil con el grupo $(\mathbb{Z}_n, +)$, con $n$ primo o compuesto:
+Si lo que hallamos es un orden tal que $1 < h \leq 4$, entonces simplemente habrá que buscar un punto $G$ que genere un grupo de orden $\displaystyle \frac{|E(\mathbb{F}_p)|}{h}$. Para ello, elegiremos un punto cualquiera $P$ de la curva, y lo multiplicaremos por el cofactor; eso nos dará $G$, es decir $G=hP$. ¿Por qué? Lo entenderemos haciendo un símil con el grupo $(\mathbb{Z}_n, +)$, con $n$ primo o compuesto:
 
 En dicho grupo, exceptuando la identidad (número $0$), cada elemento $a$ genera un subgrupo de orden $\displaystyle \frac{n}{mcd(n,a)}$. Si $a$ es coprimo con $n$, entonces $a$ generará el grupo entero. Pero supongamos que $p$ es un número primo y que $n=4p$. En este caso tendríamos un cofactor $h=4$. Si elegimos un elemento $a$ al azar para generar un subgrupo, y que $a$ es primo. Como $a$ y $n$ son coprimos ($mcd(n,a)=1$), $a$ generará todo el grupo. Pero si en lugar de $a$ elegimos $b=ha=4a$. Entonces, $mcd(n,b)=4$, con lo que $b$ generará un subgrupo de orden $p$, que es lo que buscábamos.
 
@@ -91,6 +91,6 @@ Existen una serie de juegos o conjuntos de parámetros estandarizados para crear
 - Punto $G$ generador. El grupo tendrá orden (cardinalidad) $n$, que es el orden del punto $G$. Las coordenadas del punto $G$ son (en hexadecimal):
     - x: 79be667ef9dcbbac55a06295ce870b07029bfcdb2dce28d959f2815b16f81798
     - y: 483ada7726a3c4655da4fbfc0e1108a8fd17b448a68554199c47d08ffb10d4b8
-- Orden del grupo ($n$, orden de la curva):
+- Orden del grupo final ($n$, orden de $G$):
     - fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
-- Cofactor $h=1$ ($n$ es primo).
+- Cofactor $h=1$ (el orden de la curva completa es primo).
