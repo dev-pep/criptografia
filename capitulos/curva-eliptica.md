@@ -94,3 +94,18 @@ Existen una serie de juegos o conjuntos de parámetros estandarizados para crear
 - Orden del grupo final ($n$, orden de $G$):
     - fffffffffffffffffffffffffffffffebaaedce6af48a03bbfd25e8cd0364141
 - Cofactor $h=1$ (el orden de la curva completa es primo).
+
+## Aplicaciones
+
+La clave pública suele ser un punto que es el producto del punto generador $G$ multiplicado por un entero. Existen $n$ puntos distintos, o $n-1$ si excluimos el punto $0$ ($G, 2 \cdot G, 3 \cdot G,..., (n-1) \cdot G$), y sus coordenadas son enteros módulo $p$. Es por ello que $n$ debería ser lo más cercano a $p$ posible.
+
+Así, la clave pública es un punto $d \cdot G$, mientras que la clave privada es el entero $d$ usado para multiplicar. Obteniendo la clave pública no es factible obtener la privada.
+
+#### ECDH
+
+El algoritmo *Elliptic Curve Diffie-Hellman* se usa para compartir una clave previamente al uso de cualquier algoritmo de clave simétrica. En este caso, en lugar de utilizar un logaritmo discreto, lo haremos con una curva elíptica.
+
+En este caso, Alice genera un entero aleatorio $a_k$ (su clave privada) en el intervalo $[1, n-1]$, y lo multiplica por el punto generador, enviando a Bob el punto $a_k \cdot G$. A su vez, Bob hace lo mismo con un número $b_k$, enviando a Alice el punto $b_k \cdot G$. Cuando Bob recibe $a_k \cdot G$, lo multiplica por su clave privada $b_k$, obteniendo $(a_k \cdot b_k) \cdot G$, mientras que Alice, tras recibir $b_k \cdot G$ lo multiplica por su clave privada $a_k$, obteniendo a su vez $(a_k \cdot b_k) \cdot G$ también, lo cual es la clave secreta que comparten.
+
+Si por el camino Eve intercepta $a_k \cdot G$ y/o $b_k \cdot G$, no podrá deducir $(a_k \cdot b_k) \cdot G$ sin tener ninguna de las claves privadas $a_k$ o $b_k$.
+

@@ -173,12 +173,41 @@ class Curva:
 
 # Funciones de las opciones de menú ************************************************************************************
 
+def menu_genera_punto():
+    """Simplemente genera un punto aleatorio de la curva y lo muestra"""
+    curva = Curva("secp256k1")
+    print(curva.punto_random_g())
+
+def menu_ecdh():
+    """Genera un ejemplo de pre-shared key con ECDH (Elliptic Curve Diffie-Hellman)"""
+    print("Calculando...")
+    curva = Curva("secp256k1")
+    # Claves privadas:
+    ak = random.randint(1, curva.n)  # de Alice
+    bk = random.randint(1, curva.n)  # de Bob
+    # Mensajes:
+    akG = curva.k_g(ak)  # A -> B
+    bkG = curva.k_g(bk)  # B -> A
+    # Clave secreta:
+    sec_a = curva.k_punto(ak, bkG)
+    sec_b = curva.k_punto(bk, akG)
+    # Presentación de resultados:
+    print(f"Alice obtiene una clave privada ka={ak}.")
+    print(f"Bob obtiene una clave privada: kb={bk}.")
+    print("Alice envia el punto ak x G a Bob:")
+    print(akG)
+    print("Bob envia el punto bk x G a Alice:")
+    print(bkG)
+    print("Alice calcula la clave secreta ak x bk x G:")
+    print(sec_a)
+    print("Bob calcula la clave secreta bk x ak x G:")
+    print(sec_b)
+
 # Menu *****************************************************************************************************************
 
 opciones_menu = (
-    ("Generar primeros (JSON)", menu_genera_json),
-    ("Comprobar un número", menu_comprobar_num),
-    ("Generar número primo", menu_generar_num)
+    ("Generar punto aleatorio", menu_genera_punto),
+    ("Ejemplo EC Diffie-Hellman", menu_ecdh)
 )
 
 # Programa *************************************************************************************************************
