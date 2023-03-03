@@ -12,6 +12,7 @@ Este repositorio contiene apuntes de criptografía y utilidades programadas en *
 1. [Hashing](capitulos/hashing.md)
 1. [RSA](capitulos/rsa.md)
 1. [Criptografía de Curva Elíptica](capitulos/curva-eliptica.md)
+1. [Firma digital](capitulos/firma.md)
 1. [BIP-39](capitulos/bip39.md)
 1. BIP-32
 1. BIP-44
@@ -43,6 +44,10 @@ Utilidades para calcular pares de claves y trabajar con el algoritmo de encripta
 ### ce.py
 
 Utilidades relacionadas con la criptografía de curva elíptica.
+
+### firma.py
+
+Funciones relacionadas con la firma digital.
 
 ### bip39.py
 

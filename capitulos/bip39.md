@@ -1,12 +1,12 @@
 # BIP-39
 
-La *seed phrase* contiene, en sí, un mecanismo de *checksum*, con lo que no todas las combinaciones de palabras son válidas.
+La *seed phrase* contiene, en sí, un mecanismo de *checksum*, con lo que no todas las combinaciones de palabras son válidas. Para más detalles al respecto, véase el código fuente en ***bip39.py***.
 
-#### HMAC
+## HMAC
 
 Un algoritmo *HMAC* (*hash-based message authentication code*) genera un código de autenticación de un mensaje, el cual sirve para garantizar la autenticidad de un mensaje (integridad y remitente). En lugar de utilizar una firma digital con criptografía asimétrica, se utiliza una *pre-shared key* y una función *hash* específica (existen así variantes *HMAC-SHA1*, *HMAC-MD5*, etc.). Para poder comprobar la autenticidad del mensaje recibido es necesario poseer la clave compartida. Su ventaja es que no es necesario implementar un sistema de clave pública.
 
-#### Derivación de claves y PBKDF2
+## Derivación de claves y PBKDF2
 
 La derivación de claves (*key derivation*) sirve para derivar (obtener) una o más claves secretas, a partir de un valor secreto (como una contraseña maestra).
 
