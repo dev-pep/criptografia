@@ -7,6 +7,7 @@ import random
 import sha2_hashing
 import utils
 import primos
+import ce
 
 # Funciones de las opciones de menú ************************************************************************************
 
@@ -87,6 +88,7 @@ def menu_dsa():
 
 opciones_menu = (
     ("Ejemplo de firma con DSA", menu_dsa),
+    ("Ejemplo de firma con ECDSA", ce.menu_ecdsa),
 )
 
 # Programa *************************************************************************************************************

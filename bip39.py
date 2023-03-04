@@ -171,7 +171,6 @@ def menu_ultima():
         print(wordlist[word], end= ' ')
     print()
 
-# Comprobar seed phrase
 def menu_check():
     """Solicita una seed phrase e indica si es correcta o no"""
     lista = input_frase()
@@ -183,7 +182,6 @@ def menu_check():
     else:
         print('Frase incorrecta.')
 
-# Mostrar números de una seed phrase
 def menu_numbers():
     """Solicita una seed phrase y algunos datos más, y muestra los cálculos asociados"""
     phrase = input_frase()
@@ -192,13 +190,14 @@ def menu_numbers():
         return
     # Ahora comprobamos que la frase sea correcta:
     if check_phrase(phrase):
-        print("Frase correcta. Calculando...")
+        print("Frase correcta.")
     else:
         print("Frase incorrecta.")
         return
     niter = utils.input_int("Número de iteraciones PBKDF2 (1-50000). Por defecto 2048 (especificado por BIP-39)",
                             range(1, 50001), 2048)
     passphrase = input("Passphrase (opcional): ")
+    print("Calculando...")
     # Cálculo del entero entropía y el checksum; explicaciones en check_phrase().
     int_phrase = 0
     for word in phrase:

@@ -30,6 +30,12 @@ def rnd_primo(nbits=1024, k=10):
     return entero
 
 def genera_claves_rsa(nbits, k):
+    """Genera claves pública y privada RSA y las retorna
+
+    :param nbits: número de bits de cada primo (p y q)
+    :param k: número de iteraciones en el algoritmo de primalidad Miller-Rabin
+    :return: orden n (p*q), clave pública, clave privada
+    """
     # Primero, obtenemos los números primos p y q (y n):
     p = rnd_primo(nbits, k)
     q = rnd_primo(nbits, k)
@@ -57,10 +63,30 @@ def menu_genera_claves():
     print("Clave privada:")
     print("d:", d)
 
+def menu_ejemplo():
+    """Una simulación de encriptación / desencriptación"""
+    ms_bytes = b"Luke, yo soy tu padre" # mensaje a encriptar
+    ms_int = int.from_bytes(ms_bytes, "big")
+    n, e, d = genera_claves_rsa(1024, 10)
+    print(f"Mensaje a encriptar: {ms_bytes}")
+    print(f"Mensaje pasado a entero (hex): {hex(ms_int)[2:]}")
+    print(f"Orden p*q (n): {hex(n)[2:]}")
+    print(f"Clave pública (e): {hex(e)[2:]}")
+    print(f"Clave privada (d): {hex(d)[2:]}")
+    ms_d = pow(ms_int, d, n)  # encriptamos con clave privada
+    print(f"Mensaje encriptado con la clave privada: {hex(ms_d)[2:]}")
+    ms_int = pow(ms_d, e, n)  # desencriptamos con la clave pública
+    print(f"Mensaje desencriptado con la clave pública: {hex(ms_int)[2:]}")
+    ms_e = pow(ms_int, e, n)  # encriptamos con clave pública
+    print(f"Mensaje encriptado con la clave pública: {hex(ms_e)[2:]}")
+    ms_int = pow(ms_e, d, n)  # desencriptamos con la clave privada
+    print(f"Mensaje desencriptado con la clave privada: {hex(ms_int)[2:]}")
+
 # Menu *****************************************************************************************************************
 
 opciones_menu = (
     ("Genera par de claves", menu_genera_claves),
+    ("Ejemplo de funcionamiento", menu_ejemplo),
 )
 
 # Programa *************************************************************************************************************
