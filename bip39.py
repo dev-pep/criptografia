@@ -192,9 +192,9 @@ def menu_numbers():
     if not phrase:
         print('Cancelado.')
         return
-    niter = utils.input_int("Número de iteraciones PBKDF2 (1-50000). Por defecto 2048 (especificado por PIB-39)",
+    niter = utils.input_int("Número de iteraciones PBKDF2 (1-50000). Por defecto 2048 (especificado por BIP-39)",
                             range(1, 50001), 2048)
-    append = utils.input_bool("¿Añadir passphrase a la sal (no se suele, PIB-39 indica sí; por defecto no)?", False)
+    append = utils.input_bool("¿Añadir passphrase a la sal (no se suele, BIP-39 indica sí; por defecto no)?", False)
     # Ahora comprobamos que la frase sea correcta:
     if check_phrase(phrase):
         print("Frase correcta. Calculando...")
