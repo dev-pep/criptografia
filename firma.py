@@ -48,6 +48,9 @@ def menu_dsa():
 
     # Firma del mensaje:
     m = b"Luke, yo soy tu padre"  # mensaje
+    digest = sha2_hashing.sha224(m, "int")
+    # Como n=160, solo usaremos los 160 primeros bits, con lo que eliminamos los 64 menos significativos:
+    digest >>= 64
     r = s = 0
     while r == 0 or s == 0:
         k = random.randint(1, q - 1)  # se debe crear un k aleatorio distinto cada nueva firma
@@ -55,9 +58,6 @@ def menu_dsa():
         if r == 0:
             continue
         k_inverso = utils.inverso_modn(k, q)
-        digest = sha2_hashing.sha224(m, "int")
-        # Como n=160, solo usaremos los 160 primeros bits, con lo que eliminamos los 64 menos significativos:
-        digest >>= 64
         s = (k_inverso * (digest + x * r)) % q
     # La firma es (r, s).
     print("Envío del firmante:")

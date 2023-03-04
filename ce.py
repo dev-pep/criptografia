@@ -5,6 +5,7 @@
 import random
 import json
 import utils
+import sha2_hashing
 
 # Funciones auxiliares *************************************************************************************************
 
@@ -203,11 +204,77 @@ def menu_ecdh():
     print("Bob calcula la clave secreta bk x ak x G:")
     print(sec_b)
 
+def menu_ecdsa():
+    """Muestra un ejemplo de funcionamiento de firma con ECDSA"""
+    # Generamos la curva:
+    crv = "secp256k1"  # podríamos elegir otra curva estándar
+    curva = Curva(crv)
+    # Usaremos como función hash la SHA-512 porque no sabemos cuál será la longitud en bits del orden n de la curva
+    # (puede ser cualquiera de las SHA-2, incluso SHA-1, y otras)
+    Ln = len(bin(curva.n)) - 2  # longitud del orden n de la curva (bits)
+    print("Parámetros del dominio de la curva se comparten entre todos:")
+    print(f"Curva: {crv}")
+    print(f"Ln: {Ln}")
+
+    # Cálculo de las claves:
+    dA = random.randint(1, curva.n - 1)  # dA es la clave privada
+    QA = curva.k_g(dA)  # QA es la clave pública
+    print("Claves del firmante:")
+    print(f"Clave privada: {dA}")
+    print(f"Clave pública: {QA}")
+
+    # Firma del mensaje:
+    m = b"Luke, yo soy tu padre"  # mensaje
+    digest = sha2_hashing.sha512(m, "int")
+    # Como la longitud en bits del digest no puede sobrepasar la del orden n de la curva, eliminamos bits necesarios:
+    if 512 > Ln:
+        digest >>= 512 - Ln
+    r = s = 0
+    while r == 0 or s == 0:
+        k = random.randint(1, curva.n - 1)  # se debe crear un k aleatorio distinto cada nueva firma
+        Pk = curva.k_g(k)
+        r = Pk["x"] % curva.n
+        if r == 0:
+            continue
+        k_inverso = utils.inverso_modn(k, curva.n)
+        s = (k_inverso * (digest + dA * r)) % curva.n
+    # La firma es (r, s).
+    print("Envío del firmante:")
+    print(f"Mensaje: {m}")
+    print("Firma:")
+    print(f"r: {r}")
+    print(f"s: {s}")
+
+    # Lado receptor. El receptor recibe (m, QA, r, s), es decir, el mensaje en claro, la clave pública del remitente
+    # que firma, y la firma en sí. Por otro lado, todos conocen los parámetros de la curva. Pero solo el remitente
+    # dispone de dA.
+    # Comprobaciones:
+    assert 0 < r < curva.n and 0 < s < curva.n
+    w = utils.inverso_modn(s, curva.n)
+    digest = sha2_hashing.sha512(m, "int")  # calcula el digest por su cuenta
+    # Como la longitud en bits del digest no puede sobrepasar la del orden n de la curva, eliminamos bits necesarios:
+    if 512 > Ln:
+        digest >>= 512 - Ln
+    u1 = (digest * w) % curva.n
+    u2 = (r * w) % curva.n
+    # Vamos a calcular el punto P = u1 G + u2 QA:
+    P1 = curva.k_g(u1)
+    P2 = curva.k_punto(u2, QA)
+    P = curva.suma_puntos(P1, P2)
+    assert P["x"] != float("inf")  # si P es el punto en el infinito, la curva es inválida
+    v = P["x"] % curva.n
+    # La firma es válida solo si v == r:
+    assert v == r
+    print("Comprobación de la firma; el valor calculado v debe ser igual a r para que la firma sea válida:")
+    print(f"r: {r}")
+    print(f"v: {v}")
+
 # Menu *****************************************************************************************************************
 
 opciones_menu = (
     ("Generar punto aleatorio", menu_genera_punto),
-    ("Ejemplo EC Diffie-Hellman", menu_ecdh)
+    ("Ejemplo EC Diffie-Hellman", menu_ecdh),
+    ("Ejemplo EC DSA", menu_ecdsa)
 )
 
 # Programa *************************************************************************************************************

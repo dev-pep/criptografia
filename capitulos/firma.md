@@ -9,3 +9,7 @@ La idea es la siguiente: Alice redacta un mensaje M. Luego genera un hash de dic
 ## DSA
 
 Para ver el funcionamiento del algoritmo *DSA* (*Digital Signature Algorithm*) véase el código fuente en ***firma.py***.
+
+## ECDSA
+
+El *Elliptic Curve Digital Signature Algorithm* está basado en *DSA*, pero usa curva elíptica en lugar de logaritmos discreto. Véase el código fuente en ***ce.py***.
