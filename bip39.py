@@ -93,7 +93,7 @@ def hmac_sha512(k, ms):
     :param ms: mensaje a validar; recibe la sal (bytes)
     :return: clave derivada; el digest resultante que combina clave y mensaje (bytes)
     """
-    # Cuando HMAC usa SHA-512, block size es 128 bytes; la salida es de 64 bytes
+    # Cuando HMAC usa SHA-512, block size es 128 bytes; la salida es de 64 bytes.
     # Si la clave excede el tamaño del bloque, aplicamos su hash:
     if len(k) > 128:
         k = sha2_hashing.sha512(k, "bytes")
@@ -110,6 +110,7 @@ def pbkdf2(seedphrase, niter=2048, append_seedphrase=False):
 
     Parámetros específicos para BIP-39: función pseudo aleatoria HMAC-SHA512, sal "mnemonic"+seedphrase,
     2048 iteraciones, y 512 bits en la salida (derived key).
+
     :param seedphrase: la seed phrase
     :param niter: número de iteraciones
     :param append_seedphrase: si True, añade la passphrase a la sal
