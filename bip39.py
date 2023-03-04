@@ -105,31 +105,28 @@ def hmac_sha512(k, ms):
     # Resto de cálculos:
     return sha2_hashing.sha512(utils.xor(k, opad) + sha2_hashing.sha512(utils.xor(k, ipad) + ms, "bytes"), "bytes")
 
-def pbkdf2(seedphrase, niter=2048, append_seedphrase=False):
+def pbkdf2(seedphrase, passphrase, niter=2048):
     """Calcula la seed mediante la Password-Based Key Derivation Function 2
 
-    Parámetros específicos para BIP-39: función pseudo aleatoria HMAC-SHA512, sal "mnemonic"+seedphrase,
+    Parámetros específicos para BIP-39: función pseudo aleatoria HMAC-SHA512, sal "mnemonic"+passphrase,
     2048 iteraciones, y 512 bits en la salida (derived key).
 
     :param seedphrase: la seed phrase
+    :param passphrase: contraseña opcional
     :param niter: número de iteraciones
-    :param append_seedphrase: si True, añade la passphrase a la sal
-    :return: la clave derivada
+    :return: la clave derivada (bip-39 seed)
     """
-    password = bytes(seedphrase, "utf-8")  # pasamos de string a bytes
-    # simplemente "mnemonic":
-    if append_seedphrase:  # es lo que dice el documento BIP-39
-        sal = b'mnemonic' + password
-    else:  # es lo que se hace frecuentemente
-        sal = b'mnemonic'
+    seedphrase = bytes(seedphrase, "utf-8")  # pasamos de string a bytes
+    # Sal: "mnemonic" + passphrase (la passphrase puede estar vacía)
+    sal = b'mnemonic' + bytes(passphrase, "utf-8")
     # dklen = hlen, por lo que la DK es igual a T1, es decir, DK = F(Password, Salt, 2048, 1).
     # Vamos a calcular U1, U2,... U2048, y los iremos añadiendo mediante xor al resultado
-    resul = hmac_sha512(password, sal + b'\x00\x00\x00\x01')
+    resul = hmac_sha512(seedphrase, sal + b'\x00\x00\x00\x01')
     # resul contiene U1; falta añadir (con xor) U2,...U2048:
     u_anterior = resul
     # Quedan niter-1 iteraciones, porque la primera (U1) ya está hecha:
     for _ in range(niter - 1):
-        u_next = hmac_sha512(password, u_anterior)  # u_anterior hace de sal
+        u_next = hmac_sha512(seedphrase, u_anterior)  # u_anterior hace de sal
         resul = utils.xor(resul, u_next)
         u_anterior = u_next
     return resul
@@ -193,15 +190,15 @@ def menu_numbers():
     if not phrase:
         print('Cancelado.')
         return
-    niter = utils.input_int("Número de iteraciones PBKDF2 (1-50000). Por defecto 2048 (especificado por BIP-39)",
-                            range(1, 50001), 2048)
-    append = utils.input_bool("¿Añadir passphrase a la sal (no se suele, BIP-39 indica sí; por defecto no)?", False)
     # Ahora comprobamos que la frase sea correcta:
     if check_phrase(phrase):
         print("Frase correcta. Calculando...")
     else:
         print("Frase incorrecta.")
         return
+    niter = utils.input_int("Número de iteraciones PBKDF2 (1-50000). Por defecto 2048 (especificado por BIP-39)",
+                            range(1, 50001), 2048)
+    passphrase = input("Passphrase (opcional): ")
     # Cálculo del entero entropía y el checksum; explicaciones en check_phrase().
     int_phrase = 0
     for word in phrase:
@@ -213,7 +210,7 @@ def menu_numbers():
     int_entropy = int_phrase >> n_bits_check
     int_check = int_phrase & (2 ** n_bits_check - 1)
     # Vamos a generar la semilla (seed):
-    seed = pbkdf2(list2string(phrase), niter, append)
+    seed = pbkdf2(list2string(phrase), passphrase, niter)
     seed = int.from_bytes(seed, "big")
     # Presentación de resultados
     print("Secuencia completa binaria:")

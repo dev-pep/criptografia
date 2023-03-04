@@ -42,10 +42,10 @@ Para obtener una *seed* BIP-39, las entradas de la función *PBKDF* 2 son:
 
 - Función pseudoaleatoria: *HMAC-SHA512*.
 - Contraseña: la *seed phrase* como *string* de *bytes* codificados en *UTF-8*.
-- Sal: esta sal se pasa al parámetro de mensaje en la primera llamada a la función *HMAC*, y es el *string* "mnemonic" con la misma *seed phrase* concatenada a continuación. Aunque es frecuente ver que se usa únicamente "mnemonic".
+- Sal: esta sal se pasa al parámetro de mensaje en la primera llamada a la función *HMAC*, y es el *string* "mnemonic" con una contraseña (*passphrase*) opcional concatenada a continuación.
 - c: 2048.
 - dkLen: 512 bits.
 
 En las sucesivas llamadas a *HMAC-SHA512*, se pasa la *seed phrase* al parámetro de clave. Al parámetro mensaje, a partir de la segunda llamada se pasa un determinado valor cambiante.
 
-Se pueden utilizar los parámetros aconsejados en el BIP-39 para generar la *seed*, pero también podríamos optar por utilizar nuestros propios parámetros; así, solo nosotros sabríamos cómo obtener la *seed* a partir de la *seed phrase*.
+Se pueden utilizar los parámetros aconsejados en el BIP-39 para generar la *seed*, pero también podríamos optar por utilizar nuestros propios parámetros (cambiar la sal inicial por una contraseña propia, distinto número de iteraciones, distinto juego de palabras, etc.); así, solo nosotros sabríamos cómo obtener la *seed* a partir de la *seed phrase*. Las aplicaciones que se ajustan a este estándar son todas compatibles entre sí, y una misma *seed phrase* nos serviría para todos ellos, ya que a través de esta obtendríamos el mismo *wallet* en todas estas aplicaciones.
