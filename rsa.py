@@ -76,11 +76,15 @@ def menu_ejemplo():
     ms_d = pow(ms_int, d, n)  # encriptamos con clave privada
     print(f"Mensaje encriptado con la clave privada: {hex(ms_d)[2:]}")
     ms_int = pow(ms_d, e, n)  # desencriptamos con la clave pública
+    ms_bytes = utils.int2bytes(ms_int)
     print(f"Mensaje desencriptado con la clave pública: {hex(ms_int)[2:]}")
+    print(f"Mensaje desencriptiado pasado a bytes: {ms_bytes}")
     ms_e = pow(ms_int, e, n)  # encriptamos con clave pública
     print(f"Mensaje encriptado con la clave pública: {hex(ms_e)[2:]}")
     ms_int = pow(ms_e, d, n)  # desencriptamos con la clave privada
     print(f"Mensaje desencriptado con la clave privada: {hex(ms_int)[2:]}")
+    ms_bytes = utils.int2bytes(ms_int)
+    print(f"Mensaje desencriptado pasado a bytes: {ms_bytes}")
 
 # Menu *****************************************************************************************************************
 

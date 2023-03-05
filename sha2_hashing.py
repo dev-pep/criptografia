@@ -68,7 +68,7 @@ def sha224(ms, formato="hex"):
     else:
         bytes0_padding = 120 - (len(ms) % 64)
     ms += bytes0_padding * b'\x00'
-    long64 = int.to_bytes(longitud, 8, 'big')
+    long64 = longitud.to_bytes(8, 'big')
     ms += long64
     bloques = [ms[i:i+64] for i in range(0, len(ms), 64)]
     H = []
@@ -128,7 +128,7 @@ def sha224(ms, formato="hex"):
     if formato == "bin":
         return int2bin(resultado, 224, "")
     if formato == "bytes":
-        return int.to_bytes(resultado, 28, "big")
+        return resultado.to_bytes(28, "big")
     if formato == "int":
         return resultado
     return None
@@ -164,7 +164,7 @@ def sha256(ms, formato="hex"):
     ms += bytes0_padding * b'\x00'
     # Ahora hay que añadirle un entero de 64 bits (8 bytes) Big Endian con la longitud (en bits) del mensaje inicial.
     # Tranquilos, 64 bits son suficientes para expresar una longitud de más de 2 millones de terabytes.
-    long64 = int.to_bytes(longitud, 8, 'big')
+    long64 = longitud.to_bytes(8, 'big')
     ms += long64
     # Ya está preparado el mensaje en 'ms'. Ahora dividimos el mensaje en bloques de 512 bits (64 bytes), y realizamos
     # la misma operación sobre cada uno de estos bloques.
@@ -255,7 +255,7 @@ def sha256(ms, formato="hex"):
     if formato == "bin":
         return int2bin(resultado, 256, "")
     if formato == "bytes":
-        return int.to_bytes(resultado, 32, "big")
+        return resultado.to_bytes(32, "big")
     if formato == "int":
         return resultado
     return None
@@ -283,7 +283,7 @@ def sha384(ms, formato="hex"):
     else:
         bytes0_padding = 240 - (len(ms) % 128)
     ms += bytes0_padding * b'\x00'
-    long128 = int.to_bytes(longitud, 16, 'big')
+    long128 = longitud.to_bytes(16, 'big')
     ms += long128
     bloques = [ms[i:i+128] for i in range(0, len(ms), 128)]
     H = []
@@ -343,7 +343,7 @@ def sha384(ms, formato="hex"):
     if formato == "bin":
         return int2bin(resultado, 384, "")
     if formato == "bytes":
-        return int.to_bytes(resultado, 48, "big")
+        return resultado.to_bytes(48, "big")
     if formato == "int":
         return resultado
     return None
@@ -374,7 +374,7 @@ def sha512(ms, formato="hex"):
         bytes0_padding = 240 - (len(ms) % 128)  # 128 - (len(ms) % 128) + 112: los que faltan para 128, más otros 112
     ms += bytes0_padding * b'\x00'
     # El entero con la longitud del mensaje inicial es un big endian de 128 bits (16 bytes):
-    long128 = int.to_bytes(longitud, 16, 'big')
+    long128 = longitud.to_bytes(16, 'big')
     ms += long128
     # El mensaje se divide en bloques de 1024 bits (128 bytes)
     bloques = [ms[i:i+128] for i in range(0, len(ms), 128)]
@@ -439,7 +439,7 @@ def sha512(ms, formato="hex"):
     if formato == "bin":
         return int2bin(resultado, 512, "")
     if formato == "bytes":
-        return int.to_bytes(resultado, 64, "big")
+        return resultado.to_bytes(64, "big")
     if formato == "int":
         return resultado
     return None

@@ -204,6 +204,8 @@ def sqrt_mod(n, p):
         R = (R * b) % p
     return r, p - r
 
+# Bytes ****************************************************************************************************************
+
 def xor(b1, b2):
     """Calcula el xor de dos secuencias de bytes y lo retorna, también como bytes
 
@@ -217,5 +219,144 @@ def xor(b1, b2):
     for i in range(len(b1)):
         int1 = b1[i]
         int2 = b2[i]
-        resul += int.to_bytes(int1 ^ int2, 1, "big")
+        resul += (int1 ^ int2).to_bytes(1, "big")
     return resul
+
+def int2bytes(entero, bigendian=True):
+    """Convierte un entero a bytes, sin tener que indicar longitud
+
+    :param entero: entero a convertir
+    :param bigendian: True indica Big Endian; False Little Endian
+    :return: secuencia bytes resultante
+    """
+    resul = b""
+    while entero:
+        nextbyte = (entero & 0xff).to_bytes(1, "big")
+        if bigendian:
+            resul = nextbyte + resul
+        else:
+            resul += nextbyte
+        entero >>= 8
+    return resul
+
+def to_base64(entero):
+    """Convierte un entero o secuencia de bytes en una secuencia de bytes codificada en base64
+
+    :param entero: entero o bytes a convertir
+    :return: secuencia resultante
+    """
+    tabla = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+    if isinstance(entero, int):
+        entero = int2bytes(entero)
+    # El entero ya es una secuencia de bytes.
+    resul = b""
+    while len(entero):
+        if len(entero) >= 3:  # cada 3 bytes de entrada serán 4 bytes de 6 bits en la salida
+            fragmento = int.from_bytes(entero[:3], "big")
+            padding = b""
+            entero = entero[3:]
+            outbytes = 4
+        elif len(entero) == 2:  # con 2 bytes de entrada serán 3 bytes de 6 bits en la salida, y padding "="
+            fragmento = int.from_bytes(entero, "big")
+            fragmento <<= 2  # 2*8+2=3*6
+            padding = b"="
+            entero = b""
+            outbytes = 3
+        elif len(entero) == 1:  # con 1 byte de entrada serán 2 bytes de 6 bits en la salida, y padding "="
+            fragmento = int.from_bytes(entero, "big")
+            fragmento <<= 4  # 1*8+4=2*6
+            padding = b"=="
+            entero = b""
+            outbytes = 2
+        # Construimos el nuevo fragmento
+        newchunk = b""
+        for i in range(outbytes):
+            newchunk = tabla[fragmento & 0x3f].to_bytes(1, "big") + newchunk
+            fragmento >>= 6
+        resul += newchunk + padding
+    return resul
+
+def from_base64(ms, formato="hex"):
+    """Decodifica una secuencia de bytes o string (utf-8) en base 64 a entero
+
+    :param ms: mensaje a decodificar (bytes o string)
+    :param formato: formato de salida "int" (entero), "hex" (string) o "bytes" (bytes)
+    :return: el mensaje decodificado
+    """
+    tabla = b"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/"
+    if len(ms) % 4 != 0:  # un mensaje base64 tiene siempre una longitud múltiplo de 4 caracteres
+        return None
+    if isinstance(ms, str):
+        ms = ms.encode("utf-8")
+    # Ya tenemos el mensaje ms en una secuencia bytes; vamos a pasar a índices de la tabla:
+    aux = ms
+    ms = b""
+    for b in aux:
+        if b == 61:  # código de b"="
+            ms += b"="
+        else:
+            ms += tabla.find(b).to_bytes(1, "big")
+    # Ya están pasados a índices los bytes; procedamos a la decodificación:
+    resul = b""
+    while len(ms):
+        fragmento = ms[:4]
+        ms = ms[4:]
+        if fragmento.endswith(b"=="):  # hay 1 byte
+            byte1 = ((fragmento[0] << 2) | (fragmento[1] >> 4)).to_bytes(1, "big")
+            fragmento = byte1
+        elif fragmento.endswith(b"="):  # hay 2 bytes
+            byte1 = ((fragmento[0] << 2) | (fragmento[1] >> 4)).to_bytes(1, "big")
+            byte2 = ((fragmento[1] << 4) & 0xff | (fragmento[2] >> 2)).to_bytes(1, "big")
+            fragmento = byte1 + byte2
+        else:  # hay 3 bytes
+            byte1 = ((fragmento[0] << 2) | (fragmento[1] >> 4)).to_bytes(1, "big")
+            byte2 = ((fragmento[1] << 4) & 0xff | (fragmento[2] >> 2)).to_bytes(1, "big")
+            byte3 = ((fragmento[2] << 6) & 0xff | fragmento[3]).to_bytes(1, "big")
+            fragmento = byte1 + byte2 + byte3
+        resul += fragmento
+    if formato == "bytes":
+        return resul
+    if formato == "int":
+        return int.from_bytes(resul, "big")
+    return hex(int.from_bytes(resul, "big"))[2:]
+
+def to_base58(entero):
+    """Convierte un entero o secuencia de bytes en una secuencia de bytes codificada en base58
+
+    Base58 se hizo para generar direcciones Bitcoin, eliminando los caracteres "+/lI0O" de base64.
+    :param entero: entero o bytes a convertir
+    :return: secuencia resultante
+    """
+    tabla = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+    prefix = b""
+    if isinstance(entero, bytes):
+        # Los leading zeroes se deben traducir al final como 1's:
+        i = 0
+        while entero[i] == 0:
+            prefix += b"1"
+            i += 1
+        # Convertimos los bytes a entero:
+        entero = int.from_bytes(entero, "big")
+    # Ya tenemos el entero como tal, y el prefijo de unos que aplicaremos al final. Empecemos la codificación:
+    resul = b""
+    while entero:
+        resul = tabla[entero % 58].to_bytes(1, "big") + resul
+        entero //= 58
+    return prefix + resul
+
+def from_base58(entero, formato="int"):
+    """Convierte un entero o secuencia de bytes codificada en base58 en un entero
+
+    Base58 se hizo para generar direcciones Bitcoin, eliminando los caracteres "+/lI0O" de base64.
+    :param entero: entero a decodificar (bytes)
+    :param formato: formato de salida "int" (entero) o "hex" (string)
+    :return: el mensaje decodificado
+    """
+    tabla = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
+    resul = 0
+    for b in entero:
+        numero = tabla.find(b)
+        resul = resul * 58 + numero
+    if formato == "int":
+        return resul
+    return hex(resul)[2:]
