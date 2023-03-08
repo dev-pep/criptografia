@@ -344,17 +344,17 @@ def to_base58(entero):
         entero //= 58
     return prefix + resul
 
-def from_base58(entero, formato="int"):
-    """Convierte un entero o secuencia de bytes codificada en base58 en un entero
+def from_base58(ent_bytes, formato="int"):
+    """Convierte una secuencia de bytes codificada en base58 en un entero
 
     Base58 se hizo para generar direcciones Bitcoin, eliminando los caracteres "+/lI0O" de base64.
-    :param entero: entero a decodificar (bytes)
+    :param ent_bytes: secuencia de bytes a decodificar (bytes)
     :param formato: formato de salida "int" (entero) o "hex" (string)
     :return: el mensaje decodificado
     """
     tabla = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
     resul = 0
-    for b in entero:
+    for b in ent_bytes:
         numero = tabla.find(b)
         resul = resul * 58 + numero
     if formato == "int":

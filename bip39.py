@@ -111,10 +111,10 @@ def pbkdf2(seedphrase, passphrase, niter=2048):
     Parámetros específicos para BIP-39: función pseudo aleatoria HMAC-SHA512, sal "mnemonic"+passphrase,
     2048 iteraciones, y 512 bits en la salida (derived key).
 
-    :param seedphrase: la seed phrase
-    :param passphrase: contraseña opcional
+    :param seedphrase: la seed phrase (string)
+    :param passphrase: contraseña opcional (string)
     :param niter: número de iteraciones
-    :return: la clave derivada (bip-39 seed)
+    :return: la clave derivada (bip-39 seed) (bytes)
     """
     seedphrase = bytes(seedphrase, "utf-8")  # pasamos de string a bytes
     # Sal: "mnemonic" + passphrase (la passphrase puede estar vacía)
@@ -131,14 +131,16 @@ def pbkdf2(seedphrase, passphrase, niter=2048):
         u_anterior = u_next
     return resul
 
-# Funciones de las opciones de menú ************************************************************************************
+def random_phrase(nwords, formato="num"):
+    """Genera y retorna una seed phrase aleatoria correcta
 
-def menu_genera():
-    """Genera una seed phrase aleatoria correcta y la muestra en pantalla"""
-    # Primero debemos saber cuántas palabras queremos (por defecto 12):
-    nwords = utils.input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
-                       [12, 15, 18, 21, 24], 12)
-    # Elegimos todas las palabras excepto la última:
+    :param nwords: número de palabras (12, 15, 18, 21 o 24)
+    :param formato: formato deseado: "num" (lista de índices enteros), "str" o "bytes"
+    :return: seed phrase (string)
+    """
+    if nwords not in [12, 15, 18, 21, 24]:
+        return None
+    # Primero elegimos todas las palabras excepto la última:
     phrase = []
     while len(phrase) != nwords - 1:
         num = random.randint(0, 2047)  # no hay problema con repetir palabras
@@ -150,7 +152,20 @@ def menu_genera():
             ultimas.append(word)
     # Ahora, de entre las candidatas, elegiremos una:
     phrase.append(random.choice(ultimas))
-    print(list2string(phrase))
+    if formato == "num":
+        return phrase
+    if formato == "str":
+        return list2string(phrase)
+    return bytes(list2string(phrase), "utf-8")
+
+# Funciones de las opciones de menú ************************************************************************************
+
+def menu_genera():
+    """Genera una seed phrase aleatoria correcta y la muestra en pantalla"""
+    # Primero debemos saber cuántas palabras queremos (por defecto 12):
+    nwords = utils.input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
+                       [12, 15, 18, 21, 24], 12)
+    print(random_phrase(nwords, "str"))
 
 def menu_ultima():
     """Calcula la última palabra de una frase incompleta (a la que le falta esta) y muestra todas las posibilidades"""
