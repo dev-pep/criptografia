@@ -30,15 +30,19 @@ Nos interesaría que $h$ fuese lo menor posible, ya que así dispondríamos de m
 
 Supongamos que $|E(\mathbb{F}_p)| = 4n$, con $n$ primo. Es decir, que el orden de la curva entera no es primo, sino un número primo multiplicado por $4$. Si utilizamos como generador un punto $Q$ que tiene orden $4n$, no obtenemos beneficio adicional en cuanto a seguridad respecto a si usamos un grupo generado por $G$, con orden $n$. Y sin embargo estaríamos utilizando 4 veces más de puntos inútilmente. Es preferible utilizar el mínimo imprescindible de puntos ($n$), y usar el punto $G$.
 
+Hay que tener en cuenta que todo punto de la curva se compone de dos coordenadas $(x,y)$, ambas pertenecientes al campo finito, es decir, dentro del rango $[0,p-1]$. Como para cada coordenada $x$ existen dos puntos de la curva, podríamos pensar que podemos obtener un orden $n$ de hasta $2p$. Sin embargo, el orden de una curva definida sobre un campo $\mathbb{F}_p$ es siempre menor a $p$ (por lo que sea). La gracia es, por un lado, diseñar una curva cuyo orden sea lo más próximo posible a $p$, y por otro, encontrar un buen generador $G$ que genere todos los puntos de esa curva ($h=1$), o una parte importante de ellos ($h \leq 4$). Si el orden de la curva es primo, entonces $h=1$ siempre.
+
 > Si deseamos utilizar encriptación para una aplicación práctica, no es aconsejable calcular nuestros propios parámetros de dominio, sino utilizar un juego de parámetros contrastado y diseñado por expertos.
 
-El principal problema es el cálculo del orden de la curva y del punto generador, ya que es complejo de implementar, y consume grandes cantidades de tiempo. Por suerte, existen entidades de estandarización que han diseñado juegos de parámetros. El método utilizado podría ser algo así:
+El principal problema, pues, es el cálculo del orden de la curva y el del punto generador, ya que es un problema muy complejo de implementar, y consume grandes cantidades de tiempo. Por suerte, existen entidades de estandarización que han diseñado juegos de parámetros.
 
-- Elección del orden $p$ del campo $\mathbb{F}_p$ sobre el que construir la curva $E(\mathbb{F}_p)$. En este caso, tendríamos el campo $(\mathbb{Z}_p, +, \cdot)$. A tener en cuenta, el orden del campo debería tener una longitud aproximada del doble de las claves a utilizar. Es decir, si deseamos una seguridad de 256 bits, $p$ debería tener unos 512 bits.
+El método utilizado para estos cálculos podría ser algo así:
+
+- Elección del orden $p$ del campo $\mathbb{F}_p$ sobre el que construir la curva $E(\mathbb{F}_p)$. En este caso, tendríamos el campo $(\mathbb{Z}_p, +, \cdot)$. El número $p$ se elegirá teniendo en cuenta la relación que suele tener con el orden $n$, el cual se elegirá en función de la longitud de las claves que deseemos.
 - Elección de los parámetros de la ecuación $a$ y $b$.
 - Cálculo del orden de la curva. Este complejo cálculo se realiza mediante el algoritmo de Schoof, o similar. Los elementos del grupo, $E(\mathbb{F}_p)$ son todos los puntos $(x, y)$ que pertenecen a la curva.
 
-En este punto, si el orden de la curva $|E(\mathbb{F}_p)|$ es primo, sabemos que cualquier punto (excepto el $0$) generará todos los puntos, y que $h=1$. Elegimos un puntos $G$ al azar, y ya hemos terminado.
+En este punto, si el orden de la curva $|E(\mathbb{F}_p)|$ es primo, sabemos que cualquier punto (excepto el $0$) generará todos los puntos, y que $h=1$. Elegimos un punto $G$ al azar, y ya hemos terminado.
 
 En cambio, si $|E(\mathbb{F}_p)|$ no es primo, buscamos el factor primo más grande, teniendo en cuenta que $h \leq 4$. Si $h$ va a ser grande, volvemos a empezar (con otra curva).
 
