@@ -21,34 +21,34 @@ Este repositorio contiene apuntes de criptografía y utilidades programadas en *
 
 > Esta sección contiene una breve descripción de la funcionalidad de los *scripts*. Las explicaciones teóricas pueden encontrarse en los capítulos correspondientes.
 
-### utils.py
+### [utils.py](../utils.py)
 
 Funciones útiles para los demás *scripts*.
 
-### algebra.py
-
-Algunas funciones auxiliares que permiten experimentar con grupos de enteros.
-
-### primos.py
+### [primos.py](../primos.py)
 
 Utilidades relacionadas con el cálculo de números primos grandes. Necesario, por ejemplo, para el cálculo de las claves del algoritmo *RSA*. Permite generar en disco la relación de los primeros primos.
 
-### sha2_hashing.py
+### [sha2_hashing.py](../sha2_hashing.py)
 
 *Secure Hash Algorithm*. Utilidades para calcular *digests* (*hashes*) mediante los algoritmos de la familia *SHA-2*. Se implementan 4 de ellos: *SHA-224*, *SHA-256*, *SHA-384* y *SHA-512*.
 
-### rsa.py
+### [ripemd_hashing.py](../ripemd_hashing.py)
+
+Utilidades para calcular *digests* con el algoritmo *RIPEMD-160*.
+
+### [rsa.py](../rsa.py)
 
 Utilidades para calcular pares de claves y trabajar con el algoritmo de encriptación de clave pública *RSA*.
 
-### ce.py
+### [ce.py](../ce.py)
 
-Utilidades relacionadas con la criptografía de curva elíptica.
+Utilidades relacionadas con la **criptografía de curva elíptica**.
 
-### firma.py
+### [firma.py](../firma.py)
 
 Funciones relacionadas con la firma digital.
 
-### bip39.py
+### [bip39.py](../bip39.py)
 
 Explora el [Bitcoin Improvement Proposal 39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki), relativo a la *seed phrase* y la semilla para la generación de monederos. Utiliza la *wordlist* oficial en inglés, almacenada en el archivo ***wordlist.json***.

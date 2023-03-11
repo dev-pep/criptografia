@@ -4,6 +4,8 @@
 
 import random
 import primos
+import utils
+
 
 # Menú principal *******************************************************************************************************
 
@@ -204,7 +206,53 @@ def sqrt_mod(n, p):
         R = (R * b) % p
     return r, p - r
 
-# Bytes ****************************************************************************************************************
+# Bytes y enteros ******************************************************************************************************
+
+def lr(entero, n, ancho):
+    """
+    Left rotation, rotación cíclica de bits a la izquierda
+
+    :param entero:   El entero a rotar
+    :param n:        Cuántos bits hay que rotar
+    :param ancho:    Cuántos bits componen el entero
+    :return: El entero rotado
+    """
+    assert(entero < 2 ** ancho)
+    return (entero << n | entero >> (ancho - n)) & (2 ** ancho - 1)
+
+def rr(entero, n, ancho):
+    """
+    Right rotation, rotación cíclica de bits a la derecha
+
+    :param entero:   El entero a rotar
+    :param n:        Cuántos bits hay que rotar
+    :param ancho:    Cuántos bits componen el entero
+    :return: El entero rotado
+    """
+    assert(entero < 2 ** ancho)
+    return (entero >> n | entero << (ancho - n)) & (2 ** ancho - 1)
+
+def int2hex(entero, ancho, prefijo="0x"):
+    """
+    A partir de un entero, retorna un string con el mismo, en formato de literal hexadecimal
+
+    :param entero:  El entero en sí
+    :param ancho:   El número de cifras hexadecimales; no corta, pero puede añadir ceros a la izquierda
+    :param prefijo: Prefijo a añadir
+    :return: El string con el entero, en formato de literal entero hexadecimal
+    """
+    return prefijo + format(hex(entero)[2:], f">0{ancho}")
+
+def int2bin(entero, ancho, prefijo="0b"):
+    """
+    A partir de un entero, retorna un string con el mismo, en formato de literal binario
+
+    :param entero:  El entero en sí
+    :param ancho:   El número de cifras binarias; no corta, pero puede añadir ceros a la izquierda
+    :param prefijo: Prefijo a añadir
+    :return: El string con el entero, en formato de literal entero binario
+    """
+    return prefijo + format(bin(entero)[2:], f">0{ancho}")
 
 def xor(b1, b2):
     """Calcula el xor de dos secuencias de bytes y lo retorna, también como bytes
@@ -238,6 +286,26 @@ def int2bytes(entero, bigendian=True):
             resul += nextbyte
         entero >>= 8
     return resul
+
+def bytes_reverse(b):
+    """Retorna una secuencia de bytes en el orden inverso
+
+    :param b: secuencia de bytes
+    :return: secuencia invertida resultante (bytes)
+    """
+    return b[-1:0:-1] + b[0:1]
+
+def int_reverse_bytes(i, n):
+    """Retorna un entero con la endianness invertida a nivel de bytes
+
+    :param i: entero a invertir
+    :param n: número de bytes que componen el entero (int)
+    :return: resultado (entero) invertido
+    """
+    bi = i.to_bytes(n, "big")
+    return int.from_bytes(bi, "little")
+
+# Base-64 y Base-58 ****************************************************************************************************
 
 def to_base64(entero):
     """Convierte un entero o secuencia de bytes en una secuencia de bytes codificada en base64

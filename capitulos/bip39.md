@@ -1,6 +1,20 @@
 # BIP-39
 
-La *seed phrase* contiene, en sí, un mecanismo de *checksum*, con lo que no todas las combinaciones de palabras son válidas. Para más detalles al respecto, véase el código fuente en ***bip39.py***.
+Este documento expone una forma estándar de generar una semilla (*seed*) a partir de una frase semilla (*seed phrase*). Dicha semilla se utilizará luego para generar un monedero de criptomonedas.
+
+## Seed phrase
+
+Las palabras se escogen de [una lista](../datos/wordlist.json) de 2048 posibles (*wordlist*). Por lo tanto, cada palabra tendrá un índice de 11 bits. La frase contiene normalmente entre 12 y 24 palabras, de tal modo que define un entero de entre 132 (12x11) y 264 (24x11) bits.
+
+La *seed phrase* contiene, en sí, un mecanismo de *checksum*, con lo que no todas las combinaciones de palabras son válidas: de cada 33 bits, 32 pertenecen a la llamada **entropía**, y uno a dicho ***checksum***.
+
+Supongamos, por ejemplo, una *seed phrase* de 12 palabras. En este caso, tenemos 132 bits, de los cuales los 128 primeros corresponden a la entropía, y los 4 finales al *checksum*. La entropía es siempre 32 veces más larga que el *checksum*. La única razón de dividir entre entropía y *checksum* es para disminuir la probabilidad de introducir frases incorrectas.
+
+Las palabras de la *wordlist* (en inglés) se han elegido de tal forma que es poco probable confundir una palabra con otra. Por otro lado, existen *wordlists* en otros idiomas, aunque se recomienda utilizar la lista en inglés, ya que tiene un alfabeto poco ambiguo, y la codificación de sus caracteres es *ASCII* simple.
+
+Dado que para obtener la semilla del monedero (semilla BIP-39) se utiliza la codificación *UTF-8* de la *seed phrase*, en algunos idiomas es necesario pre-procesar la frase para que se usen caracteres ambiguos (con distintas codificaciones, compuestos, etc.) de una forma estandarizada. Esto no es necesario si se usa la *wordlist* inglesa.
+
+A partir de la *seed phrase*, se usará una función *PBKDF2*, que usa internamente una función *HMAC*, que utiliza a su vez una función *SHA-512*, del modo que se describirá a continuación. El resultado es una **semilla de 512 bits**.
 
 ## HMAC
 

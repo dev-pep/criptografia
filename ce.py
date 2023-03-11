@@ -224,7 +224,7 @@ def menu_ecdsa():
     # Firma del mensaje:
     m = b"Luke, yo soy tu padre"  # mensaje
     digest = sha2_hashing.sha512(m, "int")
-    # Como la longitud en bits del digest no puede sobrepasar la del orden n de la curva, eliminamos bits necesarios:
+    # Como la longitud en bits del digest no puede sobrepasar la del orden n de la curva, eliminamos bits innecesarios:
     if 512 > Ln:
         digest >>= 512 - Ln
     r = s = 0

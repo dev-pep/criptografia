@@ -6,7 +6,7 @@ Los algoritmos de *hashing* producen, a partir de unos datos de entrada, un *dig
 
 Se implementan las versiones *SHA-224*, *SHA-256*, *SHA-384* y *SHA-512*. Cada uno de ellos tiene unos parámetros de funcionamiento distintos, pero en general realizan una serie de acciones parecidas sobre los datos de entrada. La entrada consiste en una serie arbitraria de *bytes*, y en general, las acciones son estas:
 
-- Se aplica el *padding* oportuno al mensaje.
+- Se aplica el *padding* oportuno al mensaje (un bit 1 obligatorio, seguido de los 0's necesarios y el entero con la longitud inicial).
 - Se divide el mensaje en bloques (de 512 o 1024 bits, según la versión).
 - Se inicializa un vector H (de 8 elementos) y un vector K (de 64 o 80 elementos).
 - Para cada bloque del mensaje:
@@ -18,3 +18,15 @@ Se implementan las versiones *SHA-224*, *SHA-256*, *SHA-384* y *SHA-512*. Cada u
 - Al final, el resultado es la concatenación del vector H, desde su primer elemento hasta el último, penúltimo o antepenúltimo.
 
 Para más detalles, en la implementación en *Python*, la función correspondiente al algoritmo *SHA-256* está profusamente comentada. El resto de funciones documenta las diferencias con la anterior.
+
+## Algoritmos RIPEMD
+
+Se implementa la versión *RIPEMD-160*.
+
+### RIPEMD-160
+
+En este algoritmo es importante tener en cuenta la *endianness*: el mensaje está dividido en bloques de 512 bits (64 bytes). Estos bloques está a su vez divididos en palabras de 32 bits (4 bytes). Estas palabras están codificadas como Little Endian, con lo que el orden de los 4 bytes que la componen va de menos significativo a más significativo. Sin embargo, la ordenación interna de cada byte es big endian.
+
+A tener en cuenta, el *padding* inicial del mensaje lleva al final un entero de 64 bits (8 bytes): este entero también es little endian, con lo que debe invertirse la secuencia de 8 bytes al añadirse. 
+
+El resultado del *digest* es de 160 bits.

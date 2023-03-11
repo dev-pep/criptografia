@@ -29,9 +29,9 @@ def check_phrase(phrase):
     int_entropy = int_phrase >> n_bits_check  # descartamos los bits de checksum que hay a la derecha
     int_check = int_phrase & (2 ** n_bits_check - 1)
     # Ahora pasamos entropía a bytes para pasar a SHA256:
-    bytes_entropy = int_entropy.to_bytes(n_bits_entropy // 8, 'big')
+    bytes_entropy = int_entropy.to_bytes(n_bits_entropy // 8, "big")
     # Vamos a comprobar si los bits de checksum son correctos:
-    check_calc = sha2_hashing.sha256(bytes_entropy, 'int')  # digest de la entropía como número entero
+    check_calc = sha2_hashing.sha256(bytes_entropy, "int")  # digest de la entropía como número entero
     check_calc >>= (256 - n_bits_check)  # entero con solo los primeros bits del checksum
     # Comparamos:
     return int_check == check_calc
@@ -72,11 +72,12 @@ def input_frase(full=True):
             resul.append(wordlist.index(word))
     return resul
 
-def list2string(lista):
+def list2string(lista, tobytes=False):
     """Convierte una lista de índices enteros en un string con la frase correspondiente
 
     :param lista: Lista de índices (enteros)
-    :return: Frase resultante (string)
+    :param tobytes: Si es True, el resultado a retornar será bytes en lugar de string
+    :return: Frase resultante: string (o bytes si tobytes es True)
     """
     # Leemos wordlist:
     with open("datos/wordlist.json", "rt") as fjson:
@@ -84,7 +85,10 @@ def list2string(lista):
     resul = ''
     for l in lista:
         resul += ' ' + wordlist[l]
-    return resul.strip()
+    resul = resul.strip()
+    if tobytes:
+        resul = bytes(resul, "utf-8")
+    return resul
 
 def hmac_sha512(k, ms):
     """Es la función pseudo aleatoria utilizada por pbkdf2()
@@ -111,14 +115,13 @@ def pbkdf2(seedphrase, passphrase, niter=2048):
     Parámetros específicos para BIP-39: función pseudo aleatoria HMAC-SHA512, sal "mnemonic"+passphrase,
     2048 iteraciones, y 512 bits en la salida (derived key).
 
-    :param seedphrase: la seed phrase (string)
-    :param passphrase: contraseña opcional (string)
+    :param seedphrase: la seed phrase (bytes)
+    :param passphrase: contraseña opcional (bytes)
     :param niter: número de iteraciones
     :return: la clave derivada (bip-39 seed) (bytes)
     """
-    seedphrase = bytes(seedphrase, "utf-8")  # pasamos de string a bytes
     # Sal: "mnemonic" + passphrase (la passphrase puede estar vacía)
-    sal = b'mnemonic' + bytes(passphrase, "utf-8")
+    sal = b'mnemonic' + passphrase
     # dklen = hlen, por lo que la DK es igual a T1, es decir, DK = F(Password, Salt, 2048, 1).
     # Vamos a calcular U1, U2,... U2048, y los iremos añadiendo mediante xor al resultado
     resul = hmac_sha512(seedphrase, sal + b'\x00\x00\x00\x01')
@@ -224,7 +227,7 @@ def menu_numbers():
     int_entropy = int_phrase >> n_bits_check
     int_check = int_phrase & (2 ** n_bits_check - 1)
     # Vamos a generar la semilla (seed):
-    seed = pbkdf2(list2string(phrase), passphrase, niter)
+    seed = pbkdf2(bytes(list2string(phrase), "utf-8"), bytes(passphrase, "utf-8"), niter)
     seed = int.from_bytes(seed, "big")
     # Presentación de resultados
     print("Secuencia completa binaria:")
@@ -233,7 +236,7 @@ def menu_numbers():
     print(bin(int_entropy)[2:].zfill(n_bits_entropy))
     print(f"Entropía (hex): {hex(int_entropy)[2:].zfill(n_bits_entropy // 4)}")
     print(f"Checksum: {bin(int_check)[2:].zfill(n_bits_check)} ({int_check})")
-    print("Seed (512 bits):")
+    print("Seed BIP-39 (512 bits):")
     print(f"{hex(seed)[2:].zfill(128)}")
 
 # Menu *****************************************************************************************************************

@@ -12,40 +12,6 @@ import decimal
 
 # Funciones auxiliares *************************************************************************************************
 
-def rr(entero, n, ancho):
-    """
-    Right rotation, rotación cíclica de bits a la derecha
-
-    :param entero:   El entero a rotar
-    :param n:        Cuántos bits hay que rotar
-    :param ancho:    Cuántos bits componen el entero
-    :return: El entero rotado
-    """
-    assert(entero < 2 ** ancho)
-    return (entero >> n | entero << (ancho - n)) & (2 ** ancho - 1)
-
-def int2hex(entero, ancho, prefijo="0x"):
-    """
-    A partir de un entero, retorna un string con el mismo, en formato de literal hexadecimal
-
-    :param entero:  El entero en sí
-    :param ancho:   El número de cifras hexadecimales; no corta, pero puede añadir ceros a la izquierda
-    :param prefijo: Prefijo a añadir
-    :return: El string con el entero, en formato de literal entero hexadecimal
-    """
-    return prefijo + format(hex(entero)[2:], f">0{ancho}")
-
-def int2bin(entero, ancho, prefijo="0b"):
-    """
-    A partir de un entero, retorna un string con el mismo, en formato de literal binario
-
-    :param entero:  El entero en sí
-    :param ancho:   El número de cifras binarias; no corta, pero puede añadir ceros a la izquierda
-    :param prefijo: Prefijo a añadir
-    :return: El string con el entero, en formato de literal entero binario
-    """
-    return prefijo + format(bin(entero)[2:], f">0{ancho}")
-
 def sha224(ms, formato="hex"):
     """
     Retorna el digest del mensaje de entrada, aplicando SHA-224
@@ -59,8 +25,7 @@ def sha224(ms, formato="hex"):
         constantes = json.load(fjson)
     # Al ser la función prácticamente igual a sha256(), solo se comentan las diferencias. El resto, sin comentar.
     longitud = len(ms) * 8
-    if len(ms) % 64 != 56:
-        ms += b'\x80'
+    ms += b'\x80'
     if len(ms) % 64 == 56:
         bytes0_padding = 0
     elif len(ms) % 64 < 56:
@@ -85,9 +50,9 @@ def sha224(ms, formato="hex"):
         for m in M:
             W.append(int.from_bytes(m, 'big'))
         for t in range(16, 64):
-            s0 = rr(W[t - 15], 7, 32) ^ rr(W[t - 15], 18, 32) ^ (W[t - 15] >> 3)
-            s1 = rr(W[t - 2], 17, 32) ^ rr(W[t - 2], 19, 32) ^ (W[t - 2] >>  10)
-            nextW = (s0 + W[t - 16] + s1 + W[t - 7]) % (2 ** 32)
+            s0 = utils.rr(W[t - 15], 7, 32) ^ utils.rr(W[t - 15], 18, 32) ^ (W[t - 15] >> 3)
+            s1 = utils.rr(W[t - 2], 17, 32) ^ utils.rr(W[t - 2], 19, 32) ^ (W[t - 2] >>  10)
+            nextW = (s0 + W[t - 16] + s1 + W[t - 7]) % 0x100000000
             W.append(nextW)
         a = H[0]
         b = H[1]
@@ -98,35 +63,35 @@ def sha224(ms, formato="hex"):
         g = H[6]
         h = H[7]
         for i in range(64):
-            S1 = rr(e, 6, 32) ^ rr(e, 11, 32) ^ rr(e, 25, 32)
+            S1 = utils.rr(e, 6, 32) ^ utils.rr(e, 11, 32) ^ utils.rr(e, 25, 32)
             ch = (e & f) ^ ((~e) & g)
-            T1 = (h + S1 + ch + K[i] + W[i]) % (2 ** 32)
-            S0 = rr(a, 2, 32) ^ rr(a, 13, 32) ^ rr(a, 22, 32)
+            T1 = (h + S1 + ch + K[i] + W[i]) % 0x100000000
+            S0 = utils.rr(a, 2, 32) ^ utils.rr(a, 13, 32) ^ utils.rr(a, 22, 32)
             maj = (a & b) ^ (a & c) ^ (b & c)
-            T2 = (S0 + maj) % (2 ** 32)
+            T2 = (S0 + maj) % 0x100000000
             h = g
             g = f
             f = e
-            e = (d + T1) % (2 ** 32)
+            e = (d + T1) % 0x100000000
             d = c
             c = b
             b = a
-            a = (T1 + T2) % (2 ** 32)
-        H[0] = (H[0] + a) % (2 ** 32)
-        H[1] = (H[1] + b) % (2 ** 32)
-        H[2] = (H[2] + c) % (2 ** 32)
-        H[3] = (H[3] + d) % (2 ** 32)
-        H[4] = (H[4] + e) % (2 ** 32)
-        H[5] = (H[5] + f) % (2 ** 32)
-        H[6] = (H[6] + g) % (2 ** 32)
-        H[7] = (H[7] + h) % (2 ** 32)
+            a = (T1 + T2) % 0x100000000
+        H[0] = (H[0] + a) % 0x100000000
+        H[1] = (H[1] + b) % 0x100000000
+        H[2] = (H[2] + c) % 0x100000000
+        H[3] = (H[3] + d) % 0x100000000
+        H[4] = (H[4] + e) % 0x100000000
+        H[5] = (H[5] + f) % 0x100000000
+        H[6] = (H[6] + g) % 0x100000000
+        H[7] = (H[7] + h) % 0x100000000
     resultado = 0
     for i in range(7):  # A diferencia de SHA-256, H[7] se descarta, quedando solo H[0..6]
         resultado += H[i] << (32 * (6 - i))
     if formato == "hex":
-        return int2hex(resultado, 56, "")
+        return utils.int2hex(resultado, 56, "")
     if formato == "bin":
-        return int2bin(resultado, 224, "")
+        return utils.int2bin(resultado, 224, "")
     if formato == "bytes":
         return resultado.to_bytes(28, "big")
     if formato == "int":
@@ -145,15 +110,14 @@ def sha256(ms, formato="hex"):
     with open("datos/hash.json", "rt") as fjson:
         constantes = json.load(fjson)
     # Todos los enteros, si no se dice lo contrario, son de 32 bits, Big Endian, y toda suma es módulo 2^32.
-    # Se asume que la longitud en bits del mensaje de entrada es siempre múltiplo de 8 (solo bytes completos).
-    longitud = len(ms) * 8  # longitud del mensaje en bits
+    # Se asume que la longitud en bits del mensaje de entrada es siempre múltiplo de 8 (porque la entrada es en bytes).
+    longitud = len(ms) * 8  # longitud del mensaje inicial en bits
     # Relleno del mensaje: longitud tiene que ser 448 bits tras aplicar módulo 512, es decir, 56 bytes tras
-    # aplicar módulo 64. El relleno consiste en un bit '1' seguido de todos los bits '0' necesarios, es
-    # decir un byte b'\x80' (0b10000000) seguido de todos los bytes b'\x00' (0b00000000) necesarios.
-    # Primero de todo, si es necesario, añadimos el byte b'\x80'.
-    if len(ms) % 64 != 56:
-        ms += b'\x80'
-    # Ahora calcularemos el número de bytes b'\x00' necesarios:
+    # aplicar módulo 64. El relleno consiste en un bit '1' (obligatorio) seguido de todos los bits '0' necesarios, es
+    # decir un byte b'\x80' (0b10000000) seguido, opcionalmente, de los bytes b'\x00' (0b00000000) necesarios.
+    # Primero añadimos el byte b'\x80' (siempre):
+    ms += b'\x80'  # como hay que añadir un bit 1 de padding, seguro que por lo menos hay que añadir también 7 ceros
+    # Ahora calcularemos el número de bytes b'\x00' adicionales necesarios:
     if len(ms) % 64 == 56:
         bytes0_padding = 0
     elif len(ms) % 64 < 56:
@@ -196,9 +160,9 @@ def sha256(ms, formato="hex"):
         for m in M:  # primeros 16, convertidos de bytes a int
             W.append(int.from_bytes(m, 'big'))
         for t in range(16, 64):  # resto
-            s0 = rr(W[t - 15], 7, 32) ^ rr(W[t - 15], 18, 32) ^ (W[t - 15] >> 3)
-            s1 = rr(W[t - 2], 17, 32) ^ rr(W[t - 2], 19, 32) ^ (W[t - 2] >>  10)
-            nextW = (s0 + W[t - 16] + s1 + W[t - 7]) % (2 ** 32)
+            s0 = utils.rr(W[t - 15], 7, 32) ^ utils.rr(W[t - 15], 18, 32) ^ (W[t - 15] >> 3)
+            s1 = utils.rr(W[t - 2], 17, 32) ^ utils.rr(W[t - 2], 19, 32) ^ (W[t - 2] >>  10)
+            nextW = (s0 + W[t - 16] + s1 + W[t - 7]) % 0x100000000
             W.append(nextW)
         # Ya tenemos los W[0..63]
         # Ahora inicializamos las variables a..h al valor hash actual, para aplicar la "función de compresión":
@@ -221,39 +185,39 @@ def sha256(ms, formato="hex"):
             #     SUM1(x) = rr(x,6) xor rr(x,11) xor rr(x,25)
             #     ch(x,y,z) bitwise choice, si x=0, da z; si x=1, da y
             #     maj(x,y,z) bitwise majority, si hay más 1's que 0's, es 1; si hay más 0's que 1's es 0
-            S1 = rr(e, 6, 32) ^ rr(e, 11, 32) ^ rr(e, 25, 32)
+            S1 = utils.rr(e, 6, 32) ^ utils.rr(e, 11, 32) ^ utils.rr(e, 25, 32)
             ch = (e & f) ^ ((~e) & g)
-            T1 = (h + S1 + ch + K[i] + W[i]) % (2 ** 32)
-            S0 = rr(a, 2, 32) ^ rr(a, 13, 32) ^ rr(a, 22, 32)
+            T1 = (h + S1 + ch + K[i] + W[i]) % 0x100000000
+            S0 = utils.rr(a, 2, 32) ^ utils.rr(a, 13, 32) ^ utils.rr(a, 22, 32)
             maj = (a & b) ^ (a & c) ^ (b & c)
-            T2 = (S0 + maj) % (2 ** 32)
+            T2 = (S0 + maj) % 0x100000000
             # Cambiamos las variables a..h:
             h = g
             g = f
             f = e
-            e = (d + T1) % (2 ** 32)
+            e = (d + T1) % 0x100000000
             d = c
             c = b
             b = a
-            a = (T1 + T2) % (2 ** 32)
+            a = (T1 + T2) % 0x100000000
         # Ya tenemos el resultado de la función de compresión, que es a..h. Sumaremos esto al valor hash actual:
-        H[0] = (H[0] + a) % (2 ** 32)
-        H[1] = (H[1] + b) % (2 ** 32)
-        H[2] = (H[2] + c) % (2 ** 32)
-        H[3] = (H[3] + d) % (2 ** 32)
-        H[4] = (H[4] + e) % (2 ** 32)
-        H[5] = (H[5] + f) % (2 ** 32)
-        H[6] = (H[6] + g) % (2 ** 32)
-        H[7] = (H[7] + h) % (2 ** 32)
+        H[0] = (H[0] + a) % 0x100000000
+        H[1] = (H[1] + b) % 0x100000000
+        H[2] = (H[2] + c) % 0x100000000
+        H[3] = (H[3] + d) % 0x100000000
+        H[4] = (H[4] + e) % 0x100000000
+        H[5] = (H[5] + f) % 0x100000000
+        H[6] = (H[6] + g) % 0x100000000
+        H[7] = (H[7] + h) % 0x100000000
     # Hemos terminado. El hash es la concatenación de los enteros H[0..7]:
     resultado = 0
     for i in range(8):
         resultado += H[i] << (32 * (7 - i))
     # Formateamos el resultado y lo retornamos:
     if formato == "hex":
-        return int2hex(resultado, 64, "")
+        return utils.int2hex(resultado, 64, "")
     if formato == "bin":
-        return int2bin(resultado, 256, "")
+        return utils.int2bin(resultado, 256, "")
     if formato == "bytes":
         return resultado.to_bytes(32, "big")
     if formato == "int":
@@ -274,8 +238,7 @@ def sha384(ms, formato="hex"):
     # Al ser la función prácticamente igual a sha512(), solo se comentan las diferencias con esta.
     # El resto, sin comentar.
     longitud = len(ms) * 8
-    if len(ms) % 128 != 112:
-        ms += b'\x80'
+    ms += b'\x80'
     if len(ms) % 128 == 112:
         bytes0_padding = 0
     elif len(ms) % 128 < 112:
@@ -300,9 +263,9 @@ def sha384(ms, formato="hex"):
         for m in M:
             W.append(int.from_bytes(m, 'big'))
         for t in range(16, 80):
-            s0 = rr(W[t - 15], 1, 64) ^ rr(W[t - 15], 8, 64) ^ (W[t - 15] >> 7)
-            s1 = rr(W[t - 2], 19, 64) ^ rr(W[t - 2], 61, 64) ^ (W[t - 2] >>  6)
-            nextW = (s0 + W[t - 16] + s1 + W[t - 7]) % (2 ** 64)
+            s0 = utils.rr(W[t - 15], 1, 64) ^ utils.rr(W[t - 15], 8, 64) ^ (W[t - 15] >> 7)
+            s1 = utils.rr(W[t - 2], 19, 64) ^ utils.rr(W[t - 2], 61, 64) ^ (W[t - 2] >>  6)
+            nextW = (s0 + W[t - 16] + s1 + W[t - 7]) % 0x10000000000000000
             W.append(nextW)
         a = H[0]
         b = H[1]
@@ -313,35 +276,35 @@ def sha384(ms, formato="hex"):
         g = H[6]
         h = H[7]
         for i in range(80):
-            S1 = rr(e, 14, 64) ^ rr(e, 18, 64) ^ rr(e, 41, 64)
+            S1 = utils.rr(e, 14, 64) ^ utils.rr(e, 18, 64) ^ utils.rr(e, 41, 64)
             ch = (e & f) ^ ((~e) & g)
-            T1 = (h + S1 + ch + K[i] + W[i]) % (2 ** 64)
-            S0 = rr(a, 28, 64) ^ rr(a, 34, 64) ^ rr(a, 39, 64)
+            T1 = (h + S1 + ch + K[i] + W[i]) % 0x10000000000000000
+            S0 = utils.rr(a, 28, 64) ^ utils.rr(a, 34, 64) ^ utils.rr(a, 39, 64)
             maj = (a & b) ^ (a & c) ^ (b & c)
-            T2 = (S0 + maj) % (2 ** 64)
+            T2 = (S0 + maj) % 0x10000000000000000
             h = g
             g = f
             f = e
-            e = (d + T1) % (2 ** 64)
+            e = (d + T1) % 0x10000000000000000
             d = c
             c = b
             b = a
-            a = (T1 + T2) % (2 ** 64)
-        H[0] = (H[0] + a) % (2 ** 64)
-        H[1] = (H[1] + b) % (2 ** 64)
-        H[2] = (H[2] + c) % (2 ** 64)
-        H[3] = (H[3] + d) % (2 ** 64)
-        H[4] = (H[4] + e) % (2 ** 64)
-        H[5] = (H[5] + f) % (2 ** 64)
-        H[6] = (H[6] + g) % (2 ** 64)
-        H[7] = (H[7] + h) % (2 ** 64)
+            a = (T1 + T2) % 0x10000000000000000
+        H[0] = (H[0] + a) % 0x10000000000000000
+        H[1] = (H[1] + b) % 0x10000000000000000
+        H[2] = (H[2] + c) % 0x10000000000000000
+        H[3] = (H[3] + d) % 0x10000000000000000
+        H[4] = (H[4] + e) % 0x10000000000000000
+        H[5] = (H[5] + f) % 0x10000000000000000
+        H[6] = (H[6] + g) % 0x10000000000000000
+        H[7] = (H[7] + h) % 0x10000000000000000
     resultado = 0
     for i in range(6):  # En este caso se descartan H[6] y H[7], resultando H[0..5]
         resultado += H[i] << (64 * (5 - i))
     if formato == "hex":
-        return int2hex(resultado, 96, "")
+        return utils.int2hex(resultado, 96, "")
     if formato == "bin":
-        return int2bin(resultado, 384, "")
+        return utils.int2bin(resultado, 384, "")
     if formato == "bytes":
         return resultado.to_bytes(48, "big")
     if formato == "int":
@@ -364,8 +327,7 @@ def sha512(ms, formato="hex"):
     # De entrada, los enteros aquí son Big Endian de 64 bits, y las sumas módulo 2^64.
     longitud = len(ms) * 8
     # La longitud de padding debe ser 896 bits módulo 1024 (112 bytes módulo 128)
-    if len(ms) % 128 != 112:
-        ms += b'\x80'
+    ms += b'\x80'
     if len(ms) % 128 == 112:
         bytes0_padding = 0
     elif len(ms) % 128 < 112:
@@ -394,9 +356,9 @@ def sha512(ms, formato="hex"):
         for t in range(16, 80):  # En este caso, son 80 W's
             # sigma0(x) = rr(x,1) xor rr(x,8) xor shr(x,7)
             # sigma1(x) = rr(x,19) xor rr(x,61) xor shr(x,6)
-            s0 = rr(W[t - 15], 1, 64) ^ rr(W[t - 15], 8, 64) ^ (W[t - 15] >> 7)
-            s1 = rr(W[t - 2], 19, 64) ^ rr(W[t - 2], 61, 64) ^ (W[t - 2] >>  6)
-            nextW = (s0 + W[t - 16] + s1 + W[t - 7]) % (2 ** 64)
+            s0 = utils.rr(W[t - 15], 1, 64) ^ utils.rr(W[t - 15], 8, 64) ^ (W[t - 15] >> 7)
+            s1 = utils.rr(W[t - 2], 19, 64) ^ utils.rr(W[t - 2], 61, 64) ^ (W[t - 2] >>  6)
+            nextW = (s0 + W[t - 16] + s1 + W[t - 7]) % 0x10000000000000000
             W.append(nextW)
         a = H[0]
         b = H[1]
@@ -409,35 +371,35 @@ def sha512(ms, formato="hex"):
         for i in range(80):  # En este caso son 80 rounds
             # SUM0(x) = rr(x,28) xor rr(x,34) xor rr(x,39)
             # SUM1(x) = rr(x,14) xor rr(x,18) xor rr(x,41)
-            S1 = rr(e, 14, 64) ^ rr(e, 18, 64) ^ rr(e, 41, 64)
+            S1 = utils.rr(e, 14, 64) ^ utils.rr(e, 18, 64) ^ utils.rr(e, 41, 64)
             ch = (e & f) ^ ((~e) & g)
-            T1 = (h + S1 + ch + K[i] + W[i]) % (2 ** 64)
-            S0 = rr(a, 28, 64) ^ rr(a, 34, 64) ^ rr(a, 39, 64)
+            T1 = (h + S1 + ch + K[i] + W[i]) % 0x10000000000000000
+            S0 = utils.rr(a, 28, 64) ^ utils.rr(a, 34, 64) ^ utils.rr(a, 39, 64)
             maj = (a & b) ^ (a & c) ^ (b & c)
-            T2 = (S0 + maj) % (2 ** 64)
+            T2 = (S0 + maj) % 0x10000000000000000
             h = g
             g = f
             f = e
-            e = (d + T1) % (2 ** 64)
+            e = (d + T1) % 0x10000000000000000
             d = c
             c = b
             b = a
-            a = (T1 + T2) % (2 ** 64)
-        H[0] = (H[0] + a) % (2 ** 64)
-        H[1] = (H[1] + b) % (2 ** 64)
-        H[2] = (H[2] + c) % (2 ** 64)
-        H[3] = (H[3] + d) % (2 ** 64)
-        H[4] = (H[4] + e) % (2 ** 64)
-        H[5] = (H[5] + f) % (2 ** 64)
-        H[6] = (H[6] + g) % (2 ** 64)
-        H[7] = (H[7] + h) % (2 ** 64)
+            a = (T1 + T2) % 0x10000000000000000
+        H[0] = (H[0] + a) % 0x10000000000000000
+        H[1] = (H[1] + b) % 0x10000000000000000
+        H[2] = (H[2] + c) % 0x10000000000000000
+        H[3] = (H[3] + d) % 0x10000000000000000
+        H[4] = (H[4] + e) % 0x10000000000000000
+        H[5] = (H[5] + f) % 0x10000000000000000
+        H[6] = (H[6] + g) % 0x10000000000000000
+        H[7] = (H[7] + h) % 0x10000000000000000
     resultado = 0
     for i in range(8):
         resultado += H[i] << (64 * (7 - i))
     if formato == "hex":
-        return int2hex(resultado, 128, "")
+        return utils.int2hex(resultado, 128, "")
     if formato == "bin":
-        return int2bin(resultado, 512, "")
+        return utils.int2bin(resultado, 512, "")
     if formato == "bytes":
         return resultado.to_bytes(64, "big")
     if formato == "int":
@@ -473,7 +435,7 @@ def menu_generatabs():
         n *= 2 ** 64  # corremos la coma 64 posiciones a la derecha (en binario, no en decimal)
         n = int(n)  # descartamos ahora la parte fraccional restante, obteniendo un entero de 64 bits
         n &= 2 ** 32 - 1  # eliminamos los primeros 32 bits y nos quedamos con los segundos
-        n = int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
+        n = utils.int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
         hash_json['SHA-224']['h'].append(n)
     # SHA-256 - h[0..7] - primeros 32 bits de la parte fraccional de las raíces cuadradas de los primeros 8 primos:
     for i in range(8):
@@ -481,7 +443,7 @@ def menu_generatabs():
         n -= int(n)  # eliminamos la parte entera
         n *= 2 ** 32  # corremos la coma 32 posiciones a la derecha (en binario, no en decimal)
         n = int(n)  # descartamos ahora la parte fraccional restante, obteniendo el entero de 32 bits que buscamos
-        n = int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
+        n = utils.int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
         hash_json['SHA-256']['h'].append(n)
     # SHA-224 y SHA-256 - k[0..63] - primeros 32 bits de parte fraccional de raíces cúbicas de los primeros 64 primos:
     for i in range(64):
@@ -489,7 +451,7 @@ def menu_generatabs():
         n -= int(n)  # eliminamos la parte entera
         n *= 2 ** 32  # corremos la coma 32 posiciones a la derecha (en binario, no en decimal)
         n = int (n)  # descartamos ahora la parte fraccional restante, obteniendo el entero de 32 bits que buscamos
-        n = int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
+        n = utils.int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
         hash_json['SHA-224']['k'].append(n)
         hash_json['SHA-256']['k'].append(n)
 
@@ -505,7 +467,7 @@ def menu_generatabs():
         n -= int(n)  # eliminamos la parte entera
         n *= 2 ** 64  # corremos la coma 64 posiciones a la derecha (en binario, no en decimal)
         n = int(n)  # descartamos ahora la parte fraccional restante, obteniendo el entero de 64 bits buscado
-        n = int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
+        n = utils.int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
         hash_json['SHA-384']['h'].append(n)
     # SHA-512 - h[0..7] - primeros 64 bits de la parte fraccional de las raíces cuadradas de los primeros 8 primos:
     for i in range(8):
@@ -513,7 +475,7 @@ def menu_generatabs():
         n -= int(n)  # eliminamos la parte entera
         n *= 2 ** 64  # corremos la coma 64 posiciones a la derecha (en binario, no en decimal)
         n = int(n)  # descartamos ahora la parte fraccional restante, obteniendo el entero de 64 bits que buscamos
-        n = int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
+        n = utils.int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
         hash_json['SHA-512']['h'].append(n)
     # SHA-384 y SHA-512 - k[0..79] - primeros 64 bits de parte fraccional de raíces cúbicas de los primeros 80 primos:
     for i in range(80):
@@ -522,7 +484,7 @@ def menu_generatabs():
         n -= int(n)  # eliminamos la parte entera
         n *= 2 ** 64  # corremos la coma 64 posiciones a la derecha (en binario, no en decimal)
         n = int (n)  # descartamos ahora la parte fraccional restante, obteniendo el entero de 64 bits que buscamos
-        n = int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
+        n = utils.int2hex(n, 8)  # pasamos el entero a un string: número hexadecimal de 8 cifras (4 bytes)
         hash_json['SHA-384']['k'].append(n)
         hash_json['SHA-512']['k'].append(n)
 
