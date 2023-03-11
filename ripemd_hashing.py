@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-# Algoritmos de hashing RIPEMD, específicamente RIPEMD-160.
+# Algoritmo de hashing RIPEMD-160.
 
 import os
 import utils
@@ -34,7 +34,7 @@ r = [
     4, 0, 5, 9, 7, 12, 2, 10, 14, 1, 3, 8, 11, 6, 15, 13
 ]
 
-# r prima:
+# r':
 rp = [
     5, 14, 7, 0, 9, 2, 11, 4, 13, 6, 15, 8, 1, 10, 3, 12,
     6, 11, 3, 7, 0, 13, 5, 10, 14, 15, 8, 12, 4, 9, 1, 2,
@@ -43,21 +43,14 @@ rp = [
     12, 15, 10, 4, 1, 5, 8, 7, 6, 2, 13, 14, 0, 3, 9, 11
 ]
 
+# K:
+K = [0x00000000, 0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xa953fd4e]
+
+# K':
+Kp = [0x50a28be6, 0x5c4dd124, 0x6d703ef3, 0x7a6d76e9, 0x00000000]
+
+
 # Funciones auxiliares *************************************************************************************************
-
-def k(numero, prima):
-    """Retorna un valor de los vectores K o K'
-
-    :param numero: número de índice
-    :param prima: indica si retornar el valor de K o de K'
-    :return: valor adecuado (prima o no) con tras corrección del índice
-    """
-    k_vals = [0x00000000, 0x5a827999, 0x6ed9eba1, 0x8f1bbcdc, 0xa953fd4e]  # K
-    kp_vals = [0x50a28be6, 0x5c4dd124, 0x6d703ef3, 0x7a6d76e9, 0x00000000]  # K' (K prima)
-    if prima:
-        return kp_vals[numero // 16]
-    else:
-        return k_vals[numero // 16]
 
 def func_f(j, x, y, z):
     """Función para barajar los bits de los argumentos de entrada x, y, z
@@ -82,12 +75,12 @@ def ripemd160(ms, formato="hex"):
     """Retorna el digest del mensaje de entrada, aplicando RIPEMD-160
 
     :param ms: Mensaje de entrada (bytes)
-    :param formato: Formato de la salida: 'hex' (string), 'bin' (string), 'bytes' (bytes) o 'int' (entero)
+    :param formato: Formato de la salida: "hex" (string), "bin" (string), "bytes" (bytes) o "int" (entero)
     :return: El digest resultante
     """
     # Se asume que el mensaje tiene una longitud en bits múltiplo de 8 (porque la entrada es en bytes).
-    # Los enteros aquí son Little Endian (!) de 32 bits, y las sumas, módulo 2^32.
-    global s, sp, r, rp
+    # Los enteros aquí son Little Endian de 32 bits, y las sumas, módulo 2^32.
+    global s, sp, r, rp, K, Kp
     longitud = len(ms) * 8  # longitud en bits del mensaje inicial
     # La longitud de bits tras el padding debe ser de 448 bits módulo 512 (56 bytes módulo 64)
     ms += b'\x80'  # es obligatorio 1 bit '1', con lo que también los 7 '0' correspondientes
@@ -110,8 +103,9 @@ def ripemd160(ms, formato="hex"):
         words = [int.from_bytes(bloque[i:i + 4], "little") for i in range(0, 64, 4)]
         A, B, C, D, E = Ap, Bp, Cp, Dp, Ep = h
         for j in range(80):   # 5 rondas de 16 iteraciones
+            nronda = j // 16
             # A - E:
-            T = (A + func_f(j, B, C, D) + words[r[j]] + k(j, False)) % 0x100000000
+            T = (A + func_f(j, B, C, D) + words[r[j]] + K[nronda]) % 0x100000000
             T = (utils.lr(T, s[j], 32) + E) % 0x100000000
             A = E
             E = D
@@ -119,7 +113,7 @@ def ripemd160(ms, formato="hex"):
             C = B
             B = T
             # A' - E':
-            T = (Ap + func_f(79 - j, Bp, Cp, Dp) + words[rp[j]] + k(j, True)) % 0x100000000
+            T = (Ap + func_f(79 - j, Bp, Cp, Dp) + words[rp[j]] + Kp[nronda]) % 0x100000000
             T = (utils.lr(T, sp[j], 32) + Ep) % 0x100000000
             Ap = Ep
             Ep = Dp
