@@ -25,8 +25,10 @@ Se implementa la versión *RIPEMD-160*.
 
 ### RIPEMD-160
 
-En este algoritmo es importante tener en cuenta la *endianness*: el mensaje está dividido en bloques de 512 bits (64 bytes). Estos bloques está a su vez divididos en palabras de 32 bits (4 bytes). Estas palabras están codificadas como Little Endian, con lo que el orden de los 4 bytes que la componen va de menos significativo a más significativo. Sin embargo, la ordenación interna de cada byte es big endian.
+En este algoritmo es importante tener en cuenta la *endianness*: el mensaje está dividido en bloques de 512 bits (64 bytes). Estos bloques está a su vez divididos en enteros (palabras) de 32 bits (4 bytes). Estas palabras están codificadas como *Little Endian*, con lo que el orden de los 4 bytes que la componen va de menos significativo a más significativo. Sin embargo, la ordenación interna de cada byte (orden de los bits) es *big endian*.
 
-A tener en cuenta, el *padding* inicial del mensaje lleva al final un entero de 64 bits (8 bytes): este entero también es little endian, con lo que debe invertirse la secuencia de 8 bytes al añadirse. 
+A tener en cuenta, el *padding* inicial del mensaje lleva al final un entero de 64 bits (8 bytes): este entero también es little endian, con lo que debe invertirse la secuencia de 8 bytes al añadirse.
+
+Esta *endianness* debe tenerse en cuenta al convertir enteros en *bytes* o viceversa. Fuera de las conversiones, no afecta en absoluto.
 
 El resultado del *digest* es de 160 bits.

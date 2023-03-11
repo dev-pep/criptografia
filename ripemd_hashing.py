@@ -133,16 +133,17 @@ def ripemd160(ms, formato="hex"):
         h[4] = (h[0] + B + Cp) % 0x100000000
         h[0] = T
     # Listo. El resultado está en h[0..4]; recordemos que los enteros deben representarse en little endian:
-    resultado = 0
-    for i in range(5):
-        resultado <<= 32
-        resultado += utils.int_reverse_bytes(h[i], 4)    # little endian
+    resultado = b""
+    for elemento in h:
+        resultado += elemento.to_bytes(4, "little")
+    if formato == "bytes":
+        return resultado
+    # Lo pasaremos a entero, manteniendo el orden de bytes little indian:
+    resultado = int.from_bytes(resultado, "big")
     if formato == "hex":
         return utils.int2hex(resultado, 40, "")
     if formato == "bin":
         return utils.int2bin(resultado, 160, "")
-    if formato == "bytes":
-        return resultado.to_bytes(20, "big")
     if formato == "int":
         return resultado
     return None
