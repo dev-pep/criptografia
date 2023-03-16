@@ -14,7 +14,7 @@ Este repositorio contiene apuntes de criptografía y utilidades programadas en *
 1. [Criptografía de Curva Elíptica](capitulos/curva-eliptica.md)
 1. [Firma digital](capitulos/firma.md)
 1. [BIP-39](capitulos/bip39.md)
-1. BIP-32
+1. [BIP-32](capitulos/bip32.md)
 1. BIP-44
 
 ## Scripts
@@ -52,3 +52,7 @@ Funciones relacionadas con la firma digital.
 ### [bip39.py](bip39.py)
 
 Explora el [Bitcoin Improvement Proposal 39](https://github.com/bitcoin/bips/blob/master/bip-0039.mediawiki), relativo a la *seed phrase* y la semilla para la generación de monederos. Utiliza la *wordlist* oficial en inglés, almacenada en el archivo ***wordlist.json***.
+
+### [bip32.py](bip32.py)
+
+Funciones relativas al [Bitcoin Improvement Proposal 32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki), relativo a la generación de monederos jerárquicos deterministas, a partir de una semilla (como la originada en *BIP-39*).

@@ -90,6 +90,25 @@ def list2string(lista, tobytes=False):
         resul = bytes(resul, "utf-8")
     return resul
 
+def string2list(cadena):
+    """Convierte un string conteniendo una seed phrase en una lista con los índices correspondientes
+
+    :param cadena: string con la seed phrase (str)
+    :return: lista de índices (int) de las palabras de la frase
+    """
+    # Leemos wordlist:
+    with open("datos/wordlist.json", "rt") as fjson:
+        wordlist = json.load(fjson)
+    resul = []
+    palabras = cadena.strip().split()
+    for palabra in palabras:
+        try:
+            i = wordlist.index(palabra)
+        except ValueError:
+            return []    # palabra no válida
+        resul.append(i)
+    return resul
+
 def hmac_sha512(k, ms):
     """Es la función pseudo aleatoria utilizada por pbkdf2()
 
@@ -200,6 +219,19 @@ def menu_check():
     else:
         print('Frase incorrecta.')
 
+def phrase2seed(phrase, password, niter=2048):
+    """Dada una seed phrase correcta y una contraseña, generará la seed
+
+    La función no comprueba si se trata de una seed phrase correcta o no.
+    :param phrase: seed phrase correcta (str)
+    :param password: contraseña (puede estar en blanco) (str)
+    :param niter: número de iteraciones para pbkdf2() (int)
+    :return: seed de 512 bits (int)
+    """
+    seed = pbkdf2(bytes(phrase, "utf-8"), bytes(password, "utf-8"), niter)
+    seed = int.from_bytes(seed, "big")
+    return seed
+
 def menu_numbers():
     """Solicita una seed phrase y algunos datos más, y muestra los cálculos asociados"""
     phrase = input_frase()
@@ -226,9 +258,7 @@ def menu_numbers():
     n_bits_check = n_bits_entropy // 32
     int_entropy = int_phrase >> n_bits_check
     int_check = int_phrase & (2 ** n_bits_check - 1)
-    # Vamos a generar la semilla (seed):
-    seed = pbkdf2(bytes(list2string(phrase), "utf-8"), bytes(passphrase, "utf-8"), niter)
-    seed = int.from_bytes(seed, "big")
+    seed = phrase2seed(list2string(phrase), passphrase, niter)
     # Presentación de resultados
     print("Secuencia completa binaria:")
     print(bin(int_phrase)[2:].zfill(n_bits_check + n_bits_entropy))

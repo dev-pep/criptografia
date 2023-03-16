@@ -388,12 +388,13 @@ def from_base64(ms, formato="hex"):
         return int.from_bytes(resul, "big")
     return hex(int.from_bytes(resul, "big"))[2:]
 
-def to_base58(entero):
+def to_base58(entero, formato="bytes"):
     """Convierte un entero o secuencia de bytes en una secuencia de bytes codificada en base58
 
     Base58 se hizo para generar direcciones Bitcoin, eliminando los caracteres "+/lI0O" de base64.
     :param entero: entero o bytes a convertir
-    :return: secuencia resultante
+    :param formato: indica el formato de salida: "str" o "bytes"
+    :return: secuencia resultante (bytes o str)
     """
     tabla = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
     prefix = b""
@@ -410,14 +411,17 @@ def to_base58(entero):
     while entero:
         resul = tabla[entero % 58].to_bytes(1, "big") + resul
         entero //= 58
-    return prefix + resul
+    resul = prefix + resul
+    if formato == "str":
+        return resul.decode("utf-8")
+    return resul
 
 def from_base58(ent_bytes, formato="int"):
     """Convierte una secuencia de bytes codificada en base58 en un entero
 
     Base58 se hizo para generar direcciones Bitcoin, eliminando los caracteres "+/lI0O" de base64.
     :param ent_bytes: secuencia de bytes a decodificar (bytes)
-    :param formato: formato de salida "int" (entero) o "hex" (string)
+    :param formato: formato de salida "int" (entero), "bytes" (bytes) o "hex" (string)
     :return: el mensaje decodificado
     """
     tabla = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
@@ -427,4 +431,6 @@ def from_base58(ent_bytes, formato="int"):
         resul = resul * 58 + numero
     if formato == "int":
         return resul
+    if formato == "bytes":
+        return utils.int2bytes(resul)
     return hex(resul)[2:]
