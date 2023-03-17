@@ -14,8 +14,7 @@ Este repositorio contiene apuntes de criptografía y utilidades programadas en *
 1. [Criptografía de Curva Elíptica](capitulos/curva-eliptica.md)
 1. [Firma digital](capitulos/firma.md)
 1. [BIP-39](capitulos/bip39.md)
-1. [BIP-32](capitulos/bip32.md)
-1. BIP-44
+1. [BIP-32 (y BIP-44)](capitulos/bip32.md)
 
 ## Scripts
 

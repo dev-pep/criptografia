@@ -223,3 +223,27 @@ Dando una clave pública, un atacante no puede hallar la correspondiente clave p
 Dando una clave privada extendida $(k_i,c_i)$ y su correspondiente índice $i$ (por ejemplo a una de las sucursales de nuestra empresa), un atacante no podría encontrar la clave privada del nodo padre.
 
 > No es algo inmediato de fácil deducción, pero es bueno saber que el conocimiento de la clave pública extendida de un nodo más una clave privada no *hardened* de alguno de sus descendientes, es equivalente a saber la clave privada extendida de ese nodo (y así todos los pares extendidos del subárbol entero). Por eso es útil la derivación *hardened*. En todo caso, hay que ir con cuidado a la hora de compartir claves públicas **extendidas**.
+
+## BIP-44
+
+El documento *BIP-44* aconseja un uso concreto del árbol de nodos.
+
+El nivel 0 es, en todos los casos, el nodo maestro, y ahí no puede haber cambio.
+
+El siguiente nivel (nivel 1) sirve para definir el propósito, es decir, para especificar el formato que tendrá el subárbol. En este caso, será el hijo 44, indicando que este subárbol tiene este formato. Esta derivación es *hardened*. El hecho de que el nivel 1 marque el estándar utilizado por el subárbol es precisamente lo que recomienda *BIP-43*.
+
+En el nivel 2 tenemos la moneda para la que se usará el el subárbol. Dado que utilizar un mismo par de claves (un mismo nodo, la misma dirección) para monedas distintas puede llevar distintos problemas, aunque puede hacerse (es típico usar una misma dirección para monedas que usan el mismo método de generación de direcciones a partir de las claves). En este caso, tendríamos en este nivel un subárbol para cada moneda. Esta derivación es *hardened*.
+
+El nivel 3 es para las distintas cuentas que queramos tener de cada moneda, empezado por la 0. Disponemos de un par de miles de millones de cuentas a nuestra disposición. La derivación es *hardened*.
+
+El nivel 4 está pensado para el cambio. A *grosso modo*, en el caso específico de Bitcoin, las transacciones no pueden ser de una cantidad arbitraria de moneda. Por el modo en que está diseñado, sino que es frecuente tras recibir un pago, tener que devolver el "cambio", como hace el dependiente en una tienda de chuches.
+
+De esta forma, el nivel 4 tendrá dos nodos, el 0 y el 1. Cada nodo tendrá a su vez una cadena de hijos, que formarán el nivel más bajo del árbol (nivel 5). Tanto el nivel 4 como el 5 son derivaciones normales.
+
+El nodo 0 del nivel 4 se usará para recibir pagos, es decir, se compartirán las claves públicas de sus hijos. El hijo correspondiente del nivel 1 se utilizará para enviar ese cambio.
+
+Supongamos que tenemos la cuenta ***m/44'/0'/7'*** para recibir pagos. Es decir: nodo maestro; estándar *BIP-44*; moneda Bitcoin (tiene el número 0), y cuenta número 7. Entonces, nuestra cadena externa será la ***m/44'/0'/7'/0***, es decir, compartiremos las claves públicas de ***m/44'/0'/7'/0/0***, ***m/44'/0'/7'/0/1***, ***m/44'/0'/7'/0/2***, etc. (o la clave pública extendida de ***m/44'/0'/7'/0*** para que alguien comparta las claves mencionadas). En este caso, cuando recibamos un pago en, por ejemplo, la cuenta ***m/44'/0'/7'/0/147***, utilizaremos la cuenta interna (o cuenta de cambio) ***m/44'/0'/7'/1/147*** para retornar el cambio al pagador. De todo esto se debe encargar el cliente (software monedero), sin que el usuario tenga que conocer todos estos mecanismos.
+
+Veamos otro ejemplo: podríamos tener, además (o solamente), un nodo para cuentas Ethereum (moneda con número 60). En este caso, no es necesario tener una cadena de cambio, puesto que en Ethereum las transacciones sí pueden tener el tamaño que deseemos. Por tanto, en lugar de tener cadena 0 y cadena 1, solo suele haber una cadena 0 en árboles Ethereum. Una dirección así podría ser la ***m/44'/60'/7'/0/35***. No es necesario tener la cuenta asociada ***m/44'/60'/7'/1/35***.
+
+En cuanto al software monedero, al generar el árbol, debe realizar un descubrimiento de cuentas, es decir, en la cadena externa, empezará por el 0, y si esta tiene transacciones en la *blockchain*, seguirá con la 1, la 2, etc., hasta encontrar un hueco (*gap*) prudencial de direcciones sin transacciones (actualmente se recomienda 20). En la cadena interna (si existe) no hace falta buscar, solo replicar lo encontrado en la externa, porque las cuentas internas están asociadas a las respectivas cuentas de la cadena externa.
