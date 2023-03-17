@@ -18,13 +18,15 @@ El algoritmo *DSA* (*Digital Signature Algorithm*) utiliza el problema del logar
 
 Primero hay que elegir el algoritmo *hash* a utilizar, y encriptar el mensaje con él, generándose así $H(M)$.
 
-A continuación hay que elegir el número de bits del tamaño del grupo ($L$). Originalmente se restringía $L$ a ser múltiplo de 64, entre 512 y 1024. Con el tiempo se solían usar tamaños mayores.
+A continuación hay que elegir dos longitudes de bits, $L$ y $N$.
 
-Por otro lado se debe elegir el tamaño $N$ de la clave privada, de tal modo que $N < L$; $N$ tampoco puede superar el tamaño de salida de la función *hash*. Valores recomendados de $(L,N)$ son (1024, 160), (2048, 224), (2048, 256), o (3072, 256).
+Originalmente se restringía $L$ a ser múltiplo de 64, entre 512 y 1024. Con el tiempo se solían usar tamaños mayores.
 
-Ahora se elige un número primo $q$ de $N$ bits. Después, un número primo $p$ de $L$ bits, tal que $(p-1)$ sea múltiplo de $q$.
+En cuanto a $N$, tendremos que $N < L$, y además, $N \leq |H|$, donde $|H|$ es la longitud en bits de la salida de la función *hash*. Existen algunas parejas de valores $(L, N)$ recomendados: (1024, 160), (2048, 224), (2048, 256), o (3072, 256).
 
-Finalmente se elegirá un número $g$ generador, de orden $q$. Este se calcula así: $g = h^{(p-1)/q} \bmod p$, siendo $h$ un número aleatorio en $[2,p-2]$. En el improbable caso de que $g=1$, probaremos con un $h$ distinto (típicamente, $h=2$).
+A continuación se elegirán dos números primos: $q$, de $N$ bits, y $p$, de $L$ bits. En este caso, se tiene que cumplir que $(p-1)$ sea múltiplo de $q$.
+
+Finalmente se calculará el número $g$ generador, de orden $q$. Este se calcula así: $g = h^{(p-1)/q} \bmod p$, siendo $h$ un número aleatorio en el intervalo $[2,p-2]$. En el improbable caso de que $g=1$, probaremos con un $h$ distinto (típicamente, $h=2$).
 
 Los parámetros del sistema, a compartir entre todos los participantes, son $(H,p,q,g)$.
 
@@ -61,28 +63,28 @@ Se puede comprobar matemáticamente que la firma es válida si y solo si $v=r$.
 
 El *Elliptic Curve Digital Signature Algorithm* está basado en *DSA*, pero usa curva elíptica en lugar del problema del logaritmo discreto.
 
-#### Parámetros del sistema
+### Parámetros del sistema
 
 En este caso, los parámetros del sistema son los propios de la curva elegida (por ejemplo, la *SECP256K1*), como el campo elegido (de orden $p$), la ecuación correspondiente (como $y^2=x^3+ax+b$), los factores $a$ y $b$, el punto generador $G$ o el orden $n$ de la curva. También incluiremos la función *hash* $H$ a utilizar.
 
-#### Claves
+### Claves
 
 El usuario firmante tendrá una clave privada $d$, dentro del intervalo $[1,n-1]$ y una pública ($Q=dG$):
 
-#### Firma
+### Firma
 
 El remitente envía al receptor o receptores el mensaje $M$, junto con la firma:
 
-Si el *digest hash* $H(M)$ es más largo (en bits) que el número de bits del orden de la curva $n$, se descartarán los bits necesarios de dicho *digest* (por la derecha). El *digest* puede ser más **grande** (en magnitud) que $n$, pero no más **largo** (en bits). Llamaremos $z$ a ese *digest* modificado (o no modificado si no ha hecho falta).
+Si el *digest hash* $H(M)$ es más largo (en bits) que el número de bits del orden de la curva $n$, se descartarán los bits sobrantes de dicho *digest* (por la derecha). El *digest* puede ser más **grande** (en magnitud) que $n$, pero no más **largo** (en bits). Llamaremos $z$ a ese *digest* modificado (o no modificado si no ha hecho falta).
 
-- Se elige un entero al azar de $[1,n-1]$. Cada vez que se firma, **se debe elegir un número distinto**.
+- Se elige un entero $k$ al azar en el intervalo $[1,n-1]$. Cada vez que se firma, **se debe elegir un número distinto**.
 - Se calcula el punto de la curva correspondiente: $(x_1, y_1) = kG$.
 - $r = x_1 \bmod n$. Si $r=0$, volvemos a empezar con otro $k$.
 - $s = (k^{-1} (z + dr)) \bmod n$. Si $s=0$, volvemos a empezar con otro $k$.
 
 La firma es precisamente el par $(r,s)$.
 
-#### Validación
+### Validación
 
 El receptor recibe el mensaje $M$ y la firma $(r,s)$. Ahora debe calcular:
 
