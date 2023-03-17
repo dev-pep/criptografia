@@ -1,6 +1,6 @@
 # BIP-32
 
-Este documento especifica cómo crear un **monedero determinista jerárquico** (*Hierarchical Deterministic Wallet*, *HDW*) a partir de una semilla (*seed*) obtenida mediante lo especificado en *BIP-39*.
+Este documento especifica cómo crear un **monedero determinista jerárquico** (*Hierarchical Deterministic Wallet*, *HDW*) a partir de una semilla (*seed*), obtenida preferentemente mediante la especificación *BIP-39*.
 
 ## Introducción: monederos
 
