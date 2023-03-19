@@ -15,6 +15,7 @@ Este repositorio contiene apuntes de criptografía y utilidades programadas en *
 1. [Firma digital](capitulos/firma.md)
 1. [BIP-39](capitulos/bip39.md)
 1. [BIP-32 (y BIP-44)](capitulos/bip32.md)
+1. [Direcciones](capitulos/direcciones.md)
 
 ## Scripts
 
@@ -55,3 +56,7 @@ Explora el [Bitcoin Improvement Proposal 39](https://github.com/bitcoin/bips/blo
 ### [bip32.py](bip32.py)
 
 Funciones relativas al [Bitcoin Improvement Proposal 32](https://github.com/bitcoin/bips/blob/master/bip-0032.mediawiki), relativo a la generación de monederos jerárquicos deterministas, a partir de una semilla (como la originada en *BIP-39*).
+
+### [direcciones.py](direcciones.py)
+
+Utilidades para calcular las direcciones (cuentas de monedero) de algunas criptomonedas.

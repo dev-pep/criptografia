@@ -4,7 +4,7 @@
 
 import random
 import primos
-import utils
+import sha2_hashing
 
 
 # Menú principal *******************************************************************************************************
@@ -388,16 +388,23 @@ def from_base64(ms, formato="hex"):
         return int.from_bytes(resul, "big")
     return hex(int.from_bytes(resul, "big"))[2:]
 
-def to_base58(entero, formato="bytes"):
+def to_base58(entero, formato="bytes", check=False):
     """Convierte un entero o secuencia de bytes en una secuencia de bytes codificada en base58
 
     Base58 se hizo para generar direcciones Bitcoin, eliminando los caracteres "+/lI0O" de base64.
     :param entero: entero o bytes a convertir
     :param formato: indica el formato de salida: "str" o "bytes"
+    :param check: si es True, aplica la versión con checksum, llamada Base58Check (bool)
     :return: secuencia resultante (bytes o str)
     """
     tabla = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
     prefix = b""
+    # Si es la versión check, lo debemos tener primero en bytes:
+    if check:
+        if isinstance(entero, int):
+            entero = int2bytes(entero)
+        checksum = sha2_hashing.sha256(sha2_hashing.sha256(entero, formato="bytes"), formato="bytes")[:4]
+        entero += checksum
     if isinstance(entero, bytes):
         # Los leading zeroes se deben traducir al final como 1's:
         i = 0
@@ -416,12 +423,13 @@ def to_base58(entero, formato="bytes"):
         return resul.decode("utf-8")
     return resul
 
-def from_base58(ent_bytes, formato="int"):
+def from_base58(ent_bytes, formato="int", check=False):
     """Convierte una secuencia de bytes codificada en base58 en un entero
 
     Base58 se hizo para generar direcciones Bitcoin, eliminando los caracteres "+/lI0O" de base64.
     :param ent_bytes: secuencia de bytes a decodificar (bytes)
     :param formato: formato de salida "int" (entero), "bytes" (bytes) o "hex" (string)
+    :param check: si es True, tras descodificar eliminaremos los 4 últimos bytes (32 bits) del checksum (bool)
     :return: el mensaje decodificado
     """
     tabla = b"123456789ABCDEFGHJKLMNPQRSTUVWXYZabcdefghijkmnopqrstuvwxyz"
@@ -429,8 +437,14 @@ def from_base58(ent_bytes, formato="int"):
     for b in ent_bytes:
         numero = tabla.find(b)
         resul = resul * 58 + numero
+    # Si es la versión check, tras la decodificación chequeamos los 32 últimos bits y los eliminamos del resultado:
+    if check:
+        checksum1 = (resul & 0xffffffff).to_bytes(4, "big")
+        resul >>= 32
+        checksum2 = sha2_hashing.sha256(sha2_hashing.sha256(int2bytes(resul), "bytes"), "bytes")[:4]
+        assert checksum1 == checksum2, "El checksum no coincide"
     if formato == "int":
         return resul
     if formato == "bytes":
-        return utils.int2bytes(resul)
+        return int2bytes(resul)
     return hex(resul)[2:]

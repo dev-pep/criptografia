@@ -67,6 +67,8 @@ La serialización de un punto tiene esta forma:
 
 Así, la serialización de un punto de la curva tiene 33 *bytes*.
 
+> Dada una coordenada $x$, existen 2 coordenadas $y$ posibles, que son $y=a$, y $y=-a$; como las operaciones son módulo $p$, estas dos posibilidades son congruentes con $a$ y $p-a$. Como $p$ es un número impar (y primo), entonces si $a$ es par, $p-a$ es impar, y viceversa. Por lo tanto, es suficiente saber si la coordenada $y$ es par o impar para saber cuál de las dos posibilidades es.
+
 ## Obtención de las claves maestras
 
 A partir de una semilla como la obtenida a partir de la *seed phrase* (*BIP-39*), obtenemos el primer nodo del árbol, o **nodo maestro** (*master node*); la clave privada del nodo maesto, se simboliza como $m$ (la pública es $M$).
