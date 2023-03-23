@@ -6,7 +6,6 @@ import random
 import primos
 import sha2_hashing
 
-
 # Menú principal *******************************************************************************************************
 
 def menu(opciones):
@@ -158,7 +157,7 @@ def inverso_modn(x, n):
     return inv
 
 def sqrt_mod(n, p):
-    """ Calcula la raíz cuadrada del número n, módulo p, usando el algoritmo Tonelli–Shanks
+    """Calcula la raíz cuadrada del número n, módulo p, usando el algoritmo Tonelli–Shanks
 
     :param n: número del que calcular la raíz cuadrada (si no es mod p, se le aplicará al principio mod p)
     :param p: módulo (debe ser primo, mayor que 2)
@@ -209,8 +208,7 @@ def sqrt_mod(n, p):
 # Bytes y enteros ******************************************************************************************************
 
 def lr(entero, n, ancho):
-    """
-    Left rotation, rotación cíclica de bits a la izquierda
+    """Left rotation, rotación cíclica de bits a la izquierda
 
     :param entero:   El entero a rotar
     :param n:        Cuántos bits hay que rotar
@@ -221,8 +219,7 @@ def lr(entero, n, ancho):
     return (entero << n | entero >> (ancho - n)) & (2 ** ancho - 1)
 
 def rr(entero, n, ancho):
-    """
-    Right rotation, rotación cíclica de bits a la derecha
+    """Right rotation, rotación cíclica de bits a la derecha
 
     :param entero:   El entero a rotar
     :param n:        Cuántos bits hay que rotar
@@ -233,8 +230,7 @@ def rr(entero, n, ancho):
     return (entero >> n | entero << (ancho - n)) & (2 ** ancho - 1)
 
 def int2hex(entero, ancho, prefijo="0x"):
-    """
-    A partir de un entero, retorna un string con el mismo, en formato de literal hexadecimal
+    """A partir de un entero, retorna un string con el mismo, en formato de literal hexadecimal
 
     :param entero:  El entero en sí
     :param ancho:   El número de cifras hexadecimales; no corta, pero puede añadir ceros a la izquierda
@@ -244,8 +240,7 @@ def int2hex(entero, ancho, prefijo="0x"):
     return prefijo + format(hex(entero)[2:], f">0{ancho}")
 
 def int2bin(entero, ancho, prefijo="0b"):
-    """
-    A partir de un entero, retorna un string con el mismo, en formato de literal binario
+    """A partir de un entero, retorna un string con el mismo, en formato de literal binario
 
     :param entero:  El entero en sí
     :param ancho:   El número de cifras binarias; no corta, pero puede añadir ceros a la izquierda
