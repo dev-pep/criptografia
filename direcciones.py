@@ -44,7 +44,7 @@ def ethereum_dir(clave, checksummed=True):
     """
     digest = keccak256(int.to_bytes(clave, 64, "big"), "int")
     digest = digest & (2 ** 160 - 1)    # solo nos interesan los últimos 160 bits
-    aux = utils.int2hex(digest, 20, "")  # dirección sin checksum
+    aux = utils.int2hex(digest, 40, "")  # dirección sin checksum
     if checksummed:
         resul = ""
         checksum = keccak256(bytes(aux, "utf-8"), "bin")

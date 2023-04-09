@@ -7,3 +7,4 @@ __pycache__/
 # Otros:
 datos/primos.json
 datos/hash.json
+test*.py
