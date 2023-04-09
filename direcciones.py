@@ -47,9 +47,10 @@ def ethereum_dir(clave, checksummed=True):
     aux = utils.int2hex(digest, 40, "")  # dirección sin checksum
     if checksummed:
         resul = ""
-        checksum = keccak256(bytes(aux, "utf-8"), "bin")
+        checksum = keccak256(bytes(aux, "utf-8"), "int")
+        checksum = utils.int2hex(checksum, 64, "")  # son 32 bytes, y por tanto 64 caracteres hexadecimales
         for i in range(40):
-            if checksum[i * 4] == "1":
+            if int(checksum[i], 16) >= 8:
                 resul += aux[i].upper()
             else:
                 resul += aux[i]
