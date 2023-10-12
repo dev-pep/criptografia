@@ -131,6 +131,7 @@ def menu_dirs():
 
 opciones_menu = (
     ("Direcciones a partir de una seed", menu_dirs),
+    # TODO: direcciones a partir de una clave privada
 )
 
 # Programa *************************************************************************************************************

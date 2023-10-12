@@ -180,6 +180,66 @@ def random_phrase(nwords, formato="num"):
         return list2string(phrase)
     return bytes(list2string(phrase), "utf-8")
 
+def print_frases(palabras, wordlist):
+    """Genera una lista de seed phrases coincidentes con las palabras del patrón indicado
+
+    :param palabras: lista de palabras del patrón (puede incluir las palabra '1', '2' y/o '3')
+    :param wordlist: la wordlist estándar
+    :return: la lista de seed phrases
+    """
+    comodines = [[], [], []]  # índices de las palabras comodín '1', '2' o '3', respectivamente
+    palabrasInt = []  # palabras no comodín (y None para los comodines)
+    for i in range(len(palabras)):
+        if palabras[i] in ["1", "2", "3"]:
+            palabrasInt.append(None)
+            comodines[int(palabras[i]) - 1].append(i)
+        else:
+            palabrasInt.append(wordlist.index(palabras[i]))
+    # Vamos a generar todas las frases posibles, dependiendo del número de comodines:
+    # 0 comodines:
+    if not comodines[0]:
+        if check_phrase(palabrasInt):
+            print("1.", list2string(palabrasInt))
+    # 1 comodín:
+    elif not comodines[1]:
+        nfrase = 1
+        for palabra1 in range(2048):
+            for indice in comodines[0]:
+                palabrasInt[indice] = palabra1
+            if check_phrase(palabrasInt):
+                print(nfrase, end='')
+                print(".", list2string(palabrasInt))
+                nfrase += 1
+    # 2 comodines:
+    elif not comodines[2]:
+        nfrase = 1
+        for palabra1 in range(2048):
+            for indice in comodines[0]:
+                palabrasInt[indice] = palabra1
+            for palabra2 in range(2048):
+                for indice in comodines[1]:
+                    palabrasInt[indice] = palabra2
+                if check_phrase(palabrasInt):
+                    print(nfrase, end='')
+                    print(".", list2string(palabrasInt))
+                    nfrase += 1
+    # 3 comodines:
+    else:
+        nfrase = 1
+        for palabra1 in range(2048):
+            for indice in comodines[0]:
+                palabrasInt[indice] = palabra1
+            for palabra2 in range(2048):
+                for indice in comodines[1]:
+                    palabrasInt[indice] = palabra2
+                for palabra3 in range(2048):
+                    for indice in comodines[2]:
+                        palabrasInt[indice] = palabra3
+                    if check_phrase(palabrasInt):
+                        print(nfrase, end='')
+                        print(".", list2string(palabrasInt))
+                        nfrase += 1
+
 # Funciones de las opciones de menú ************************************************************************************
 
 def menu_genera():
@@ -188,6 +248,47 @@ def menu_genera():
     nwords = utils.input_int("Número de palabras (12, 15, 18, 21, 24; por defecto 12)",
                        [12, 15, 18, 21, 24], 12)
     print(random_phrase(nwords, "str"))
+
+def menu_genera_pattern():
+    """Genera una lista de seed phrases que cumplen con el patron dado, y las muestra en pantalla"""
+    ok = False
+    nwords = [12, 15, 18, 21, 24]
+    # Leemos wordlist:
+    with open("datos/wordlist.json", "rt") as fjson:
+        wordlist = json.load(fjson)
+    # Primero debemos introducir un patrón correcto:
+    while not ok:
+        pattern = input("Introduce patrón; usa '1', '2' o '3' como palabras comodín (sin saltos, se pueden repetir).\n"
+                        + "'X' cancela la operación:\n")
+        if pattern.strip().upper() == "X":
+            return
+        palabras = pattern.split()
+        if len(palabras) not in nwords:
+            print("Solo es válido un patrón con 12, 15, 18, 21 o 24 palabras.")
+            continue
+        nextComodin = 1
+        palabrasInvalidas = []
+        for palabra in palabras:
+            if palabra in ['1', '2', '3']:
+                comodin = int(palabra)
+                if comodin > nextComodin:  # salto en los comodines
+                    nextComodin = 0
+                    break
+                elif comodin == nextComodin and nextComodin < 3:
+                    nextComodin += 1
+            elif palabra not in wordlist:
+                palabrasInvalidas.append(palabra)
+        if not nextComodin:
+            print("No es posible indicar saltos en los comodines.")
+            continue
+        if palabrasInvalidas:
+            print("Palabras inválidas:")
+            for palabra in palabrasInvalidas:
+                print("    ", palabra)
+            continue
+        ok = True
+    # Ya tenemos el patrón introducido como lista (variable palabras), vamos a imprimir las frases:
+    print_frases(palabras, wordlist)
 
 def menu_ultima():
     """Calcula la última palabra de una frase incompleta (a la que le falta esta) y muestra todas las posibilidades"""
@@ -273,6 +374,7 @@ def menu_numbers():
 
 opciones_menu = (
     ("Generar seed phrase aleatoria", menu_genera),
+    ("Generar seed phrases (con patrón)", menu_genera_pattern),
     ("Cálculo última palabra", menu_ultima),
     ("Comprobar seed phrase", menu_check),
     ("Mostrar números de una seed phrase", menu_numbers),
