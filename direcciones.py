@@ -3,6 +3,7 @@
 # Funciones para generar las direcciones de las cuentas de varias criptomonedas a partir de
 # las claves pública y/o privada. Son las direcciones del nodo maestro (m).
 
+import ce
 import bip32
 import sha2_hashing
 import ripemd_hashing
@@ -97,17 +98,15 @@ def bitcoin_publica(clave, prefijo=b"\x00", compressed=True):
     # Ahora le aplicamos un Base58Check:
     return utils.to_base58(clave, formato="str", check=True)
 
-# Funciones de las opciones de menú ************************************************************************************
+def genera_dirs(k):
+    """Genera las direcciones a partir de la clave privada indicada
 
-def menu_dirs():
-    """Opción de menú para mostrar ejemplos de direcciones"""
-    # Obtenemos semilla:
-    semilla = bip32.input_seed()
-    # Generamos nodo:
-    master = bip32.seed2master(semilla, forcelen=64)
-    # Extraemos sus claves:
-    k = master.k  # clave privada
-    K = (master.K["x"] << 256) | master.K["y"]  # clave pública
+    :param k: clave privada (int)
+    """
+    # Utilizaremos una curva elíptica para calcular la clave pública a partir de la privada:
+    curva = ce.Curva("secp256k1")
+    publica = curva.k_g(k)  # par de enteros (x,y)
+    K = (publica["x"] << 256) | publica["y"]  # clave pública
     # General:
     print("\nGENERAL:")
     print(f"Clave privada: {hex(k)[2:]}")
@@ -127,11 +126,33 @@ def menu_dirs():
     dir_ethereum = ethereum_dir(K)
     print("Dirección:", dir_ethereum)
 
+# Funciones de las opciones de menú ************************************************************************************
+
+def menu_dirs_seed():
+    """Opción de menú para mostrar ejemplos de direcciones a partir de una semilla"""
+    # Obtenemos semilla:
+    semilla = bip32.input_seed()
+    # Generamos nodo maestro:
+    master = bip32.seed2master(semilla, forcelen=64)
+    # Extraemos su clave privada y la pasamos al generador de direcciones:
+    genera_dirs(master.k)
+
+def menu_dirs_k():
+    """Opción de menú para mostrar ejemplos de direcciones a partir de una clave privada"""
+    clave = input("Introduce clave privada: entero decimal/hexadecimal, o clave extendida (en base-58): ").strip()
+    if clave.isnumeric():  # entero decimal
+        k = int(clave)
+    elif clave[:4] in ["xprv", "xpub", "tprv", "tpub"]:  # clave extendida (base-58)
+        k = int(bip32.key_info(clave, True)["clave"], 16)
+    else:  # entero hexadecimal
+        k = int(clave, 16)
+    genera_dirs(k)
+
 # Menu *****************************************************************************************************************
 
 opciones_menu = (
-    ("Direcciones a partir de una seed", menu_dirs),
-    # TODO: direcciones a partir de una clave privada
+    ("Direcciones a partir de una seed", menu_dirs_seed),
+    ("Direcciones a partir de una clave privada", menu_dirs_k),
 )
 
 # Programa *************************************************************************************************************

@@ -230,12 +230,13 @@ def seed_path_2node(s, ruta, forcelen=None):
             nodo = nodo.deriva(int(chunk), False)
     return nodo
 
-def key_info(key):
+def key_info(key, ret=False):
     """Recibe una clave extendida en formato Base-58 y muestra sus parámetros en pantalla
 
     La clave podría ser errónea. Esta función no lo detecta.
 
     :param key: Clave a decodificar, en formato Base-58 (bytes o str)
+    :param ret: Si es True, retorna los datos; si es False, los muestra en pantalla (boolean)
     """
     # Nos aseguramos que la clave está en bytes:
     if isinstance(key, str):
@@ -244,13 +245,13 @@ def key_info(key):
     key = utils.from_base58(key, "bytes")
     # Vamos a extraer los campos:
     version = hex(int.from_bytes(key[:4], "big")).lower()[2:]
-    if version == "488b21e":
+    if version == "488b21e":  # clave codificada empieza con 'xpub'
         version_str = "clave pública extendida, red principal"
-    elif version == "488ade4":
+    elif version == "488ade4":  # clave codificada empieza con 'xprv'
         version_str = "clave privada extendida, red principal"
-    elif version == "43587cf":
+    elif version == "43587cf":  # clave codificada empieza con 'tpub'
         version_str = "clave pública extendida, red de pruebas"
-    elif version == "4358394":
+    elif version == "4358394":  # clave codificada empieza con 'tprv'
         version_str = "clave privada extendida, red de pruebas"
     else:
         version_str = "desconocido"
@@ -261,16 +262,28 @@ def key_info(key):
     prefijo = key[45]
     clave = hex(int.from_bytes(key[46:78], "big"))[2:]
     checksum = hex(int.from_bytes(key[78:82], "big"))[2:]
-    # Presentamos resultados
-    print(f"Versión: {version} ({version_str})")
-    print(f"Nivel: {depth}")
-    print(f"Fingerprint del padre: {parent_fp}")
-    print(f"Nº hijo: {child}")
-    print(f"Chain code: {c}")
-    print(f"Prefijo clave: {prefijo}")
-    print(f"Clave: {clave}")
-    print(f"Checksum: {checksum}")
-    print("-" * 80)
+    if ret:
+        return {
+            "version": version_str,  # string
+            "nivel": depth,          # int
+            "parentfp": parent_fp,   # int
+            "nhijo": child,          # int
+            "chaincode": c,          # string
+            "prefijokey": prefijo,   # int
+            "clave": clave,          # string
+            "checksum": checksum     # string
+        }
+    else:
+        # Presentamos resultados
+        print(f"Versión: {version} ({version_str})")
+        print(f"Nivel: {depth}")
+        print(f"Fingerprint del padre: {parent_fp}")
+        print(f"Nº hijo: {child}")
+        print(f"Chain code: {c}")
+        print(f"Prefijo clave: {prefijo}")
+        print(f"Clave: {clave}")
+        print(f"Checksum: {checksum}")
+        print("-" * 80)
 
 def input_seed():
     """Espera la entrada de una seed en forma de entero decimal, hexadecimal (con o sin prefijo 0x) o seed phrase
