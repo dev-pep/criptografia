@@ -360,6 +360,49 @@ def menu_genpub():
         nodo = nodo.deriva_pub(i)
         nodo.info()
 
+def menu_nav():
+    """Pregunta una semilla o seed phrase, y permite navegar por un árbol desde el nodo maestro"""
+    # Obtenemos seed:
+    seed = input_seed()
+    if not seed:
+        print("Semilla incorrecta.")
+        return
+    ruta = "m"
+    nodo = seed_path_2node(seed, ruta, forcelen=64)
+    while True:
+        nodo.info()
+        salto_ok = False
+        while not salto_ok:
+            salto = input("Hijo (entero seguido o no de apóstrofe '), padre (UP) o salir (X): ").upper().strip()
+            if salto == "UP":  # ascendemos 1 nivel
+                if ruta == "m":
+                    print("Ya estamos en el nodo maestro.")
+                else:
+                    ruta = ruta[:ruta.rfind("/")]
+                    print("Calculando...")
+                    nodo = seed_path_2node(seed, ruta, forcelen=64)
+                    salto_ok = True
+            elif salto == "X":  # salir
+                return
+            else:  # bajamos 1 nivel
+                if salto.endswith("'"):  # hardened
+                    hardened = "'"
+                    salto = salto[:-1]
+                else:
+                    hardened = ""
+                try:
+                    nhijo = int(salto)
+                except ValueError:
+                    print("Número no válido.")
+                    continue
+                if nhijo >= 0x80000000 or nhijo < 0:
+                    print("El número debe ser mayor que 0 y menor que 2^31.")
+                    continue
+                ruta += "/" + salto + hardened
+                print("Calculando...")
+                nodo = seed_path_2node(seed, ruta, forcelen=64)
+                salto_ok = True
+
 def menu_clave():
     """Pregunta una clave extendida, en base-58, y muestra sus datos; no detecta si es incorrecta"""
     clave = input("Introduce una clave (pública o privada) extendida, codificada en base-58:\n")
@@ -370,6 +413,7 @@ def menu_clave():
 opciones_menu = (
     ("Generar árbol", menu_gen),
     ("Generar árbol con derivación pública", menu_genpub),
+    ("Navegar por un árbol", menu_nav),
     ("Leer clave", menu_clave)
 )
 
