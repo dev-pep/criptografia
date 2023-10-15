@@ -12,7 +12,7 @@ Sin embargo, es más cómodo recordar una información mnemónica como la *seed 
 
 ### Clientes de criptomonedas
 
-Muchos clientes son incompatibles entre sí, usando su propia *wordlist*, o cambiando cualquier parámetro del sistema (incluso usando un sistema completamente distinto), de tal modo que la *seed phrase* solo sirve para trasladar el monedero al mismo cliente (en otro equipo o en el mismo).
+Muchos clientes son incompatibles entre sí, utilizando su propia forma de generar el número semilla, usando su propia *wordlist*, o cambiando cualquier parámetro del sistema (incluso usando un sistema completamente distinto), de tal modo que la *seed phrase* solo sirve para trasladar el monedero al mismo cliente (en otro equipo o en el mismo). Algunos monederos incorporan métodos portables (como *BIP-39*) como método nativo, o como método adicional.
 
 Un software cliente, llamado normalmente un "monedero", es cualquier programa que permita esa generación de claves (de monederos), así como la obtención de la *seed phrase* para traslado o recuperación del monedero, firmar transacciones (enviar fondos), etc.
 
@@ -198,17 +198,17 @@ En el caso de que hubiera un paso con derivación *hardened*:
 
 ## Uso
 
-La idea general es que un par de claves (pública + privada) definen una cuenta de criptomoneda. En general, a partir de la clave pública se obtiene una dirección pública, que es la que se usará para recibir pagos, con lo que deberemos compartir esa clave pública o dirección pública si queremos que alguien realice una transacción hacia nuestra dirección.
+La idea general es que un par de claves (pública + privada) definen una cuenta cripto. En general, a partir de la clave pública se obtiene una dirección pública, que es la que se usará para recibir pagos, con lo que deberemos compartir esa clave pública o dirección pública si queremos que alguien realice una transacción hacia nuestra cuenta.
 
-Por otro lado, una clave privada se utiliza para obtener la correspondiente dirección privada, que no hay que compartir más que con quien deba tener acceso a los fondos de esa dirección. Con la clave privada se firma una transacción (mediante *ECDSA*), y se envía esa transacción firmada al *blockchain*.
+Por otro lado, en algunas criptomonedas como Bitcoin, una clave privada se utiliza para obtener la correspondiente **dirección privada**, que no hay que compartir más que con quien deba tener acceso a los fondos de esa dirección. Es una forma de compartir la clave privada (por ejemplo, Ethereum no tiene direcciones privadas). Con la clave privada se firma una transacción (mediante *ECDSA*), y se envía esa transacción firmada al *blockchain*.
 
 Entonces, el uso del árbol de nodos visto hasta ahora es precisamente otorgar a terceros la posibilidad de acceder a la información que nosotros deseemos.
 
 El documento *BIP-32* hace unas sugerencias generales acerca del uso del árbol de claves. Una posibilidad es, a partir del nodo maestro, generar una serie de cuentas correspondientes a los hijos de dicho nodo. Tomemos una de esas cuentas; podríamos dotarla de dos cadenas de claves (*key chains*) llamadas **cadena interna** y **cadena externa**.
 
-La cadena externa, correspondiente al hijo 0 de esa cuenta, se podría compartir con terceros entregándoles la clave pública y el *chain code*, es decir, la **clave pública extendida**. Así, tal tercero podría generar todo un subárbol de claves públicas, en cada una de las cuales se podrían recibir fondos. Esto sería útil, por ejemplo, si el monedero es propiedad de una empresa que tiene una página *web* desarrollada por un una compañía externa. Los desarrolladores indicarán las direcciones públicas necesarias para recibir los pagos *online*, pudiendo generar todos los que deseen (la idea sería no dejar huecos en los índices), subdividiendo el árbol como desearan, utilizando cada dirección pública para un producto, cliente o familia de productos, etc.
+La cadena externa, correspondiente al hijo 0 de esa cuenta, se podría compartir con terceros entregándoles la clave pública y el *chain code*, es decir, la **clave pública extendida**. Así, tal tercero podría generar todo un subárbol de claves públicas (mediante derivación de clave pública), en cada una de las cuales se podrían recibir fondos. Esto sería útil, por ejemplo, si el monedero es propiedad de una empresa que tiene una *web* desarrollada por un una compañía externa. Los desarrolladores indicarán las direcciones públicas necesarias para recibir los pagos *online*, pudiendo generar todos los que deseen (la idea sería no dejar huecos en los índices), subdividiendo el árbol como desearan, utilizando cada dirección pública para un producto, cliente o familia de productos, etc.
 
-El departamento de contabilidad de la propia empresa sí dispondría de las claves privadas extendidas, con lo que podría generar las claves privadas correspondientes a esas cuentas, para posteriormente redistribuir los fondos que hubiesen entrado.
+El departamento de contabilidad de la propia empresa sí dispondría de las claves privadas extendidas, con lo que podría generar las claves privadas correspondientes a esas direcciones, para posteriormente redistribuir los fondos que hubiesen entrado.
 
 En cuanto a la cadena interna de una cuenta, estaría formada por subcuentas que no tuviesen nada que ver con el exterior, y para el propio funcionamiento interno de la empresa.
 
@@ -230,24 +230,34 @@ Dando una clave privada extendida $(k_i,c_i)$ y su correspondiente índice $i$ (
 
 El documento *BIP-44* aconseja un uso concreto del árbol de nodos.
 
-El nivel 0 es, en todos los casos, el nodo maestro, y ahí no puede haber cambio.
+El **nivel 0** es, en todos los casos, el **nodo maestro**, y ahí no puede haber cambio.
 
-El siguiente nivel (nivel 1) sirve para definir el propósito, es decir, para especificar el formato que tendrá el subárbol. En este caso, será el hijo 44, indicando que este subárbol tiene este formato. Esta derivación es *hardened*. El hecho de que el nivel 1 marque el estándar utilizado por el subárbol es precisamente lo que recomienda *BIP-43*.
+El siguiente nivel (**nivel 1**) sirve para definir el **propósito**, es decir, para especificar el formato que tendrá el subárbol. En el caso de utilizar el estándar *BIP-44*, el primer hijo será el número 44, indicando que este subárbol sigue esta especificación (puede haber otros subárboles que sigan otras especificaciones). Esta derivación es siempre *hardened*. El hecho de que el nivel 1 marque el estándar utilizado por el subárbol es precisamente lo que recomienda *BIP-43*.
 
-En el nivel 2 tenemos la moneda para la que se usará el el subárbol. Dado que utilizar un mismo par de claves (un mismo nodo, la misma dirección) para monedas distintas puede llevar distintos problemas, aunque puede hacerse (es típico usar una misma dirección para monedas que usan el mismo método de generación de direcciones a partir de las claves). En este caso, tendríamos en este nivel un subárbol para cada moneda. Esta derivación es *hardened*.
+En el **nivel 2** tenemos la **criptomoneda** para la que se usará el el subárbol. Dado que utilizar un mismo par de claves (un mismo nodo, la misma dirección) para monedas distintas puede llevar distintos problemas, aunque puede hacerse: es frecuente, aunque no recomendable, usar una misma dirección para monedas que usan el mismo método de generación de direcciones. En este caso, tendríamos en este nivel un subárbol para cada moneda. Esta derivación es también *hardened*. Como ejemplos, Bitcoin es la moneda 0, Litecoin la 2 o Ether la 60.
 
-El nivel 3 es para las distintas cuentas que queramos tener de cada moneda, empezado por la 0. Disponemos de un par de miles de millones de cuentas a nuestra disposición. La derivación es *hardened*.
+El **nivel 3** es para las distintas **cuentas** que queramos tener de cada moneda, empezado por la 0. Disponemos de un par de miles de millones de cuentas a nuestra disposición. La derivación en este caso es también *hardened*. De esta forma podemos compartimentar las cuentas que queramos, para nuestros distintos tipo de usos personales (o departamentales de una empresa).
 
-El nivel 4 está pensado para el cambio. A *grosso modo*, en el caso específico de Bitcoin, las transacciones no pueden ser de una cantidad arbitraria de moneda. Por el modo en que está diseñado, sino que es frecuente tras recibir un pago, tener que devolver el "cambio", como hace el dependiente en una tienda de chuches.
+El **nivel 4** (de **cambio**) contiende dos únicos nodos: el 0 y el 1 (derivación normal, no *hardened*). Son las llamada *internal chain* y *external chain*.
 
-De esta forma, el nivel 4 tendrá dos nodos, el 0 y el 1. Cada nodo tendrá a su vez una cadena de hijos, que formarán el nivel más bajo del árbol (nivel 5). Tanto el nivel 4 como el 5 son derivaciones normales.
+El nodo 0 se corresponderá con la llamada **cadena externa** (*external chain*): un subárbol de direcciones en las que recibiremos nuestros pagos. Estas direcciones son las que debemos compartir con quienes van a enviar pagos a nuestra cuenta.
 
-El nodo 0 del nivel 4 se usará para recibir pagos, es decir, se compartirán las claves públicas de sus hijos. El hijo correspondiente del nivel 1 se utilizará para enviar ese cambio.
+Esta cadena externa la que utilizan las aplicaciones monedero para crear nuevas direcciones **automáticamente**. De esta forma, aumenta la privacidad, ya que si siempre exponemos la misma dirección para recibir pagos, cualquiera puede ver todas las transacciones de la cuenta en la *blockchain*. De esta forma, si recibimos cada pago en una dirección distinta, no es posible asociar las diferentes transacciones como pertenecientes al mismo propietario. En cuanto la dirección tenga saldo, la aplicación monedero nos proporcionará una dirección distinta (la siguiente) para compartir. Lo mismo sucede con las direcciones de cambio: si recibiésemos los cambios siempre en la misma dirección, disminuiría nuestra privacidad.
 
-Supongamos que tenemos la cuenta ***m/44'/0'/7'*** para recibir pagos. Es decir: nodo maestro; estándar *BIP-44*; moneda Bitcoin (tiene el número 0), y cuenta número 7. Entonces, nuestra cadena externa será la ***m/44'/0'/7'/0***, es decir, compartiremos las claves públicas de ***m/44'/0'/7'/0/0***, ***m/44'/0'/7'/0/1***, ***m/44'/0'/7'/0/2***, etc. (o la clave pública extendida de ***m/44'/0'/7'/0*** para que alguien comparta las claves mencionadas). En este caso, cuando recibamos un pago en, por ejemplo, la cuenta ***m/44'/0'/7'/0/147***, utilizaremos la cuenta interna (o cuenta de cambio) ***m/44'/0'/7'/1/147*** para retornar el cambio al pagador. De todo esto se debe encargar el cliente (software monedero), sin que el usuario tenga que conocer todos estos mecanismos.
+En cuanto al nodo 1 correponde a la **cadena interna**, y forma un subárbol de direcciones pensado para recibir el **cambio** de los pagos que efectuamos. Al pagar, utilizamos una *UTXO*. El importe sobrante lo recogeremos en una dirección de cambio de esta cadena interna. 
 
-Veamos otro ejemplo: podríamos tener, además (o solamente), un nodo para cuentas Ethereum (moneda con número 60). En este caso, no es necesario tener una cadena de cambio, puesto que en Ethereum las transacciones sí pueden tener el tamaño que deseemos. Por tanto, en lugar de tener cadena 0 y cadena 1, solo suele haber una cadena 0 en árboles Ethereum. Una dirección así podría ser la ***m/44'/60'/7'/0/35***. No es necesario tener la cuenta asociada ***m/44'/60'/7'/1/35***.
+El **nivel 5** (**índice**) se corresponde con la serie de direcciones que componen la cadana interna y la cadena externa. Se usa derivación normal para obtenerlas.
 
-En cuanto al software monedero, al generar el árbol, debe realizar un descubrimiento de cuentas, es decir, en la cadena externa, empezará por el 0, y si esta tiene transacciones en la *blockchain*, seguirá con la 1, la 2, etc., hasta encontrar un hueco (*gap*) prudencial de direcciones sin transacciones (actualmente se recomienda 20). En la cadena interna (si existe) no hace falta buscar, solo replicar lo encontrado en la externa, porque las cuentas internas están asociadas a las respectivas cuentas de la cadena externa.
+A partir del nivel 4, las direcciones pueden obtenerse mediante derivación pública. Así, pueden compartirse tranquilamente. Posteriormente, para mover los saldos, usaremos la derivación normal (no *hardened*) para obtener las claves privadas de esas direcciones.
 
-> A nivel anecdótico, *Atomic Wallet* usa el nodo maestro para obtener la dirección Ethereum, y sin embargo usa la ruta ***m/44'/0'/0'/0/0*** para Bitcoin. Por otro lado, *Metamask* usa, para Ethereum, la ruta ***m/44'/60'/0'/0/0***.
+### Ejemplos
+
+Supongamos que tenemos la cuenta ***m/44'/0'/7'*** para gestionar los pagos de clientes de nuestra empresa. Es decir: nodo maestro; estándar *BIP-44*; moneda Bitcoin (tiene el número 0), y cuenta número 7. Entonces, nuestra cadena externa será la ***m/44'/0'/7'/0***, es decir, compartiremos las claves públicas de ***m/44'/0'/7'/0/0***, ***m/44'/0'/7'/0/1***, ***m/44'/0'/7'/0/2***, etc. (o la clave pública extendida de ***m/44'/0'/7'/0*** para que alguien comparta las claves de la cadena externa).
+
+Podríamos tener un nodo de la cadena externa para cada cliente. Podríamos compartir la dirección del nodo ***m/44'/0'/7'/0/147*** con uno de nuestros clientes, el cual efectuaría sus pagos allí. Si este consulta la información de esa dirección en la *blockchain*, solo verá los movimientos relativos a sus pagos, y no los de otros clientes.
+
+Por otro lado, si debemos hacer un reembolso (pago) a este cliente, la aplicación monedero podría efectuar una transacción en la que la dirección de retorno del cambio fuese la correspondiente a cualquier dirección de la cadena interna, normalmente, la primera sin usar (con saldo 0), por ejemplo la ***m/44'/0'/7'/1/8***. Esta dirección para el cambio no hay que compartirla con el cliente.
+
+## Evoluciones
+
+Existen modelos que refinan la creación de monederos jerárquicos deterministas, como *BIP-49* o *BIP-84*. En estos, puede variar el formato, los cálculos, el uso etc. Por ejemplo, no debe extrañarnos ver claves extendidas serializadas con prefijos distintos a los de *BIP-32* (***yprv***, ***ypub***, ***zprv***, ***zpub***, etc.).
